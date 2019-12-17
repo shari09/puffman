@@ -7,22 +7,23 @@ import items.*;
 import characters.*;
 import blocks.*;
 
-
-public class World extends JFrame {
+public class World extends JPanel implements KeyListener {
+  public static final long serialVersionUID = 43L;
+  
   private int gravity = 8;
   private int margin = 30;
 
   public World() {
-    this.setSize(1000, 800);
-    this.setLayout(null);
-    this.setVisible(true);
-    this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-    this.setFocusable(true);
-  }
+    setPreferredSize(new Dimension(1000,800));
+    addKeyListener(this);
+    setFocusable(true);
+    requestFocusInWindow();
+  };
 
-  ArrayList<Item> allItems;
-  PlayableCharacter[] players = new PlayableCharacter[2];
-  Block[] blocks = new Block[7];
+  private ArrayList<Item> allItems;
+  private PlayableCharacter[] players = new PlayableCharacter[2];
+  private Block[] blocks = new Block[7];
+
 
   /**
    * gets the gravity constant of this world
@@ -31,7 +32,32 @@ public class World extends JFrame {
   public int getGravity() {
     return this.gravity;
   }
-  
-  
+
+  //key listeners
+  public void keyPressed(KeyEvent e) {
+    char key = KeyEvent.getKeyText(e.getKeyCode()).charAt(0);
+    System.out.println(key);
+  }
+
+  public void keyTyped(KeyEvent e) {
+
+  }
+
+  public void keyReleased(KeyEvent e) {
+    
+  }
+
+
+  public void updateGame() {
+
+  }
+
+  private int test = 50;
+  public void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    Graphics2D g2d = (Graphics2D) g;
+    g2d.drawRect(this.test, 100, 100, 100);
+    repaint();
+  }
 
 }
