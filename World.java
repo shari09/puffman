@@ -1,7 +1,12 @@
-import java.swing.*;
+import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.ArrayList;
+
+import items.*;
+import characters.*;
+import blocks.*;
+
 
 public class World extends JFrame {
   private int gravity = 8;
@@ -16,7 +21,7 @@ public class World extends JFrame {
   }
 
   ArrayList<Item> allItems;
-  Character[] players = new Character[2];
+  PlayableCharacter[] players = new PlayableCharacter[2];
   Block[] blocks = new Block[7];
 
   /**
