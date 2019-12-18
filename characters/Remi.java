@@ -1,6 +1,6 @@
 package characters;
 
 
-public class Remi extends PlayableCharacter {
+public class Remi extends Hero {
 
 }

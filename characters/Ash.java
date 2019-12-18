@@ -1,6 +1,6 @@
 package characters;
 
 
-public class Ash extends PlayableCharacter {
+public class Ash extends Hero {
 
 }

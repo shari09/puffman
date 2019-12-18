@@ -1,0 +1,168 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++
+Game loop
+    - make a world obj
+    - make a window obj containing the world obj
+
+GameWindow extends JFrame
+    - just the window configs
+    - void display()
+
+World extends JPanel (implements Event listeners)
+    - int gravity
+    - int screenMargin
+    - ArrayList<Item> allItems
+    - Hero[] players
+    - Block[] blocks
+
+    - event listeners
+
++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+interface RectCollidable
+    - getX()
+    - getY()
+    - getWidth()
+    - getHeight()
+
+interface CircleCollidable
+    - getX()
+    - getY()
+    - getRadius()
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+abstract Block
+    - abstract Image blockImage
+
+TriangularBlock extends Block
+
+RectBlock extends Block
+
+Platform extends Block
+
+MovingPlatform extends Platform
+    - move()
++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Collision checking:
+    - always check player collision
+    - if this.collided(Object thing)
+
+
+//all collisions are done through iteration
+//unless I wanna change it later
+
+abstract Hero
+    - int lightAttackPower
+    - int heavyAttackPower
+    - int nextWeapon
+    - int downAcceleration
+    - int xVel
+    - int xMaxVel
+    - int yVel
+    - int yMaxVel
+    - int damageTaken 
+    - int numJumps
+    - int direction
+
+    - int stungTime 
+        //can't move after getting hit
+    - int attackLoadingTime
+    - int attackRecoveryTime
+        // higher damage attacks takes longer to load/recover  
+
+    - hashmap<string, int> hitBox
+    - hasmap<string, int> attackHitBox
+    - Object curItem 
+        //weapon or Item or null
+    - abstract HashMap<String, ArrayList<Image>> sprites
+        //sprites of different actions
+    
+    // check curItem
+    // calculated on speed and intersecting pos??
+    - lightAttack()    
+    - heavyAttack()
+
+    - takeDamage(int damage)
+        //calculates damage taken + knockback
+        //knockback depends on the this.damageTaken
+
+
+    // all movements are based on time passed and not frame
+    // move based on velocity and not keypressed 
+    
+    - jump() (gravity/ jump height/no. of jumps)
+    - moveLeft()
+    - moveRight()
+    - dropDown() 
+        //speeds down falling process
+        //go down platforms
+    - dodge()
+    - dash()
+    - collide(Object thing)
+        //get the object type and decide what to do
+    - attackCollide(Hero player)
+    - display()
+    - isDead()
+
+    - throw()
+    - pickUp(Item[] items) //iterate through all items
+
+Ash extends Hero
+
+Bob extends Hero
+
++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+abstract Item
+    - abstract Image sprite
+    - abstract throwingDamage
+    - HashMap<String, int> disappear
+
+    - boolean onPlayer 
+        // if not on player
+        // pickupable
+        // check disappear timer
+    - int[] pos
+
+    - bool shouldDisappear()
+    - void onPickUp()
+
+    - void onThrow()
+        - runThrowingAnimation() 
+            //change position and stuff
+        - abstract collide(Object thing) 
+            // player, wall, or mines 
+            // if collide with floor -> stop moving and start disappearTimer
+
+        
+////////////////////////////
+abstract Weapon extends Item
+    - abstract int id
+    - abstract int damageOnPlayer
+    - //does not 'do' damage themselves
+    - //changes the state of the player once picked up (casts)
+
+Bow extends Weapon
+
+Sword extends Weapon
+
+Wand extends Weapon
+
+Hammer extends Weapon
+
+///////////////////////////
+
+Mine extends Item
+    // if collide with block stay there
+SpikeBall extends Item
+
+Horn extends Item
+    callFire()
+    //if j is pressed, rather than throwing, it spawns fire
+
+Bomb extends Item
+
++++++++++++++++++++++++++++++++++++++++++++
