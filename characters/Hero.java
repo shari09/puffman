@@ -38,8 +38,9 @@ public abstract class Hero implements CircleCollidable {
   private HashMap<String, BufferedImage[]> sprites;
   private Object curItem;
   
-  public Hero() {
-
+  public Hero(int x, int y) {
+    this.x = x;
+    this.y = y;
   }
 
   public int getLightAttackPower() {

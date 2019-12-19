@@ -15,11 +15,13 @@ import blocks.*;
 public class World extends JPanel implements KeyListener {
   public static final long serialVersionUID = 1L;
   
-  private static final int GRAVITY = 8;
-  private int screenMargin = 30;
+  public static final int GRAVITY = 8;
+  public static final int screenMargin = 30;
+  
   private BufferedImage background;
 
-  private ArrayList<Item> allItems;
+  private ArrayList<Item> activeItems;
+  private ArrayList<Item> inactiveItems;
   private Hero[] players;
   private Block[] blocks;
 
@@ -37,13 +39,6 @@ public class World extends JPanel implements KeyListener {
       "images/blocks/test.jpg", 400, 700, 800, 50);
   };
 
-  /**
-   * gets the gravity constant of the world
-   * @return World.GRAVITY int, the world's gravity
-   */
-  public int getGravity() {
-    return World.GRAVITY;
-  }
 
   //key listeners
   public void keyPressed(KeyEvent e) {
