@@ -1,0 +1,46 @@
+while (player not quit):
+  if (in menu screen):
+    display menu
+    (mouseClick listener) buttons that leads to:
+      - instruction page
+          display the instructions with back button
+      - start game (choose character)
+
+      - quit game
+
+  else if (character choosing):
+    (mouseClick listener)
+    let the players choose their characters (new World() args)
+    buttons:
+      - start
+      - back
+
+  else if (in middle of game):
+    display all objects in World (iteration)
+    (key listeners)
+    constantly checks for collision:
+      player:
+        - all blocks
+      active-items:
+        - all blocks 
+        - applicableAttacks (owner != this)
+    if collide:
+      - move back the player for blocks
+      - knockback for weapon (attackHitbox)
+    if key is pressed and it does something (ex. move, jump, etc):
+      call the .jump(), .pickUp(), etc methods of the player
+
+
+  else if (pause): //? not sure if I want a pause or not
+    display the pause menu on top of the game
+    buttons:
+      - resume
+      - main menu
+      - quit
+      - restart 
+  else if (game Over):
+    destroy all data (null pointers)
+    buttons:
+      - main menu
+      - restart
+      - quit

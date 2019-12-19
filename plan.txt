@@ -1,39 +1,31 @@
+- all properties are private so there will be getters/setters
+- all methods are self explanatory
+- some obvious methods/properties are omitted
+- config details (ex. attackDamage amount) are undecided
+
 +++++++++++++++++++++++++++++++++++++++++++++++++++
 Game loop
     - make a world obj
     - make a window obj containing the world obj
+    - run 60fps
 
 GameWindow extends JFrame
     - just the window configs
     - void display()
 
 World extends JPanel (implements Event listeners)
-    - int gravity
-    - int screenMargin
-    - ArrayList<Item> allItems
+    - static int gravity
+    - static int screenMargin
+    - ArrayList<Item> displayedItems //items that can't do damage`
+    - ArrayList<Item> activeItems //items that are able to create damage
     - Hero[] players
     - Block[] blocks
 
     - event listeners
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++
-
-interface RectCollidable
-    - getX()
-    - getY()
-    - getWidth()
-    - getHeight()
-
-interface CircleCollidable
-    - getX()
-    - getY()
-    - getRadius()
-
-
-
 ++++++++++++++++++++++++++++++++++++++++++++++++++++
 abstract Block
-    - abstract Image blockImage
+    - BufferedImage blockImage
 
 TriangularBlock extends Block
 
@@ -42,12 +34,12 @@ RectBlock extends Block
 Platform extends Block
 
 MovingPlatform extends Platform
-    - move()
+    - void move()
 +++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Collision checking:
-    - always check player collision
-    - if this.collided(Object thing)
+    - all collisions happen in the world
+    - there might be methods of what to do onCollide()
 
 
 //all collisions are done through iteration
@@ -72,19 +64,19 @@ abstract Hero
     - int attackRecoveryTime
         // higher damage attacks takes longer to load/recover  
 
-    - hashmap<string, int> hitBox
-    - hasmap<string, int> attackHitBox
+    - Hashmap<string, int> hitBox
+    - Hasmap<string, int> attackHitBox
     - Object curItem 
         //weapon or Item or null
-    - abstract HashMap<String, ArrayList<Image>> sprites
+    - HashMap<String, ArrayList<Image>> sprites
         //sprites of different actions
     
     // check curItem
     // calculated on speed and intersecting pos??
-    - lightAttack()    
-    - heavyAttack()
+    - void lightAttack()    
+    - void heavyAttack()
 
-    - takeDamage(int damage)
+    - void takeDamage(int damage)
         //calculates damage taken + knockback
         //knockback depends on the this.damageTaken
 
@@ -92,34 +84,34 @@ abstract Hero
     // all movements are based on time passed and not frame
     // move based on velocity and not keypressed 
     
-    - jump() (gravity/ jump height/no. of jumps)
-    - moveLeft()
-    - moveRight()
-    - dropDown() 
+    - void jump() (gravity/ jump height/no. of jumps)
+    - void moveLeft()
+    - void dmoveRight()
+    - void dropDown() 
         //speeds down falling process
         //go down platforms
-    - dodge()
-    - dash()
-    - collide(Object thing)
-        //get the object type and decide what to do
-    - attackCollide(Hero player)
-    - display()
-    - isDead()
+    - void dodge()
+    - void dash()
+    - void display()
+    - boolean isDead()
 
-    - throw()
-    - pickUp(Item[] items) //iterate through all items
+    - void throwItem()
+    - void pickUp(Item[] items) //iterate through all items
 
 Ash extends Hero
-
+    - has Sword and Wand
 Bob extends Hero
+    - has Hammer and Bow
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 abstract Item
-    - abstract Image sprite
-    - abstract throwingDamage
-    - HashMap<String, int> disappear
+    - Hero owner;
+    - Image sprite
+    - throwingDamage
+    - HashMap<String, int> hitbox
+    - HashMap<String, int> disappear //timer for disappearing
 
     - boolean onPlayer 
         // if not on player
@@ -137,11 +129,14 @@ abstract Item
             // player, wall, or mines 
             // if collide with floor -> stop moving and start disappearTimer
 
-        
+///////////////
+interface Spawnable //able to spawn in the world
+    - BufferedImage sprite
+
 ////////////////////////////
 abstract Weapon extends Item
-    - abstract int id
-    - abstract int damageOnPlayer
+ 
+    - int damageOnPlayer
     - //does not 'do' damage themselves
     - //changes the state of the player once picked up (casts)
 
@@ -152,17 +147,36 @@ Sword extends Weapon
 Wand extends Weapon
 
 Hammer extends Weapon
+/////////////////////////////
+
+WeaponIcon implements Spawnable
+       - int id //either the first type or second type of weapon
+
 
 ///////////////////////////
 
-Mine extends Item
+Mine extends Item implements Spawnable
     // if collide with block stay there
 SpikeBall extends Item
 
-Horn extends Item
+Horn extends Item implements Spawnable
     callFire()
     //if j is pressed, rather than throwing, it spawns fire
 
-Bomb extends Item
+Bomb extends Item implements Spawnable
 
 +++++++++++++++++++++++++++++++++++++++++++
+
+interface CircleCollidable
+    - int getX()
+    - int getY()
+    - int getRadius()
+
+interface RectCollidable
+    - int getX()
+    - int getY()
+    - int getWidth()
+    - int getHeight()
+
+GeneralCollision
+    - boolean intersects() //overloaded with different circle/rect combo

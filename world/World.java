@@ -1,3 +1,5 @@
+package world;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
@@ -26,12 +28,13 @@ public class World extends JPanel implements KeyListener {
     this.setFocusable(true);
     this.requestFocusInWindow();
     this.background = ImageIO.read(
-      new File("./images/background/background.jpg")
+      new File("images/background/background.jpg")
     );
     this.players = new Hero[2];
     // this.players[0] = new Ash();
-    this.blocks = new Block[7];
-    this.blocks[0] = new RectBlock();
+    this.blocks = new Block[1];
+    this.blocks[0] = new RectBlock(
+      "images/blocks/test.jpg", 400, 700, 800, 50);
   };
 
   /**
@@ -45,8 +48,6 @@ public class World extends JPanel implements KeyListener {
   //key listeners
   public void keyPressed(KeyEvent e) {
     String key = KeyEvent.getKeyText(e.getKeyCode());
-    this.test += 10;
-    // System.out.println(key);
   }
 
   public void keyTyped(KeyEvent e) {
@@ -62,7 +63,6 @@ public class World extends JPanel implements KeyListener {
 
   }
 
-  private int test = 50;
   
   /**
    * draws the background
@@ -76,6 +76,12 @@ public class World extends JPanel implements KeyListener {
                   this);
   }
 
+  private void displayAllBlocks(Graphics2D g2d) {
+    for (int i = 0; i < this.blocks.length; i++) {
+      this.blocks[i].display(this, g2d);
+    }
+  }
+
   @Override
   /**
    * displays everything on the screen
@@ -83,7 +89,7 @@ public class World extends JPanel implements KeyListener {
   public void paintComponent(Graphics g) {
     Graphics2D g2d = (Graphics2D) g;
     this.drawBackground(g2d);
-    g2d.fillRect(this.test, 100, 100, 100);
+    this.displayAllBlocks(g2d);
   }
 
 }
