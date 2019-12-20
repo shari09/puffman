@@ -86,7 +86,7 @@ abstract Hero
     
     - void jump() (gravity/ jump height/no. of jumps)
     - void moveLeft()
-    - void dmoveRight()
+    - void moveRight()
     - void dropDown() 
         //speeds down falling process
         //go down platforms
