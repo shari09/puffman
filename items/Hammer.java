@@ -1,6 +1,6 @@
 package items;
 
 
-public class Hammer extends Weapon {
+public class Hammer extends Weapon implements Spawnable {
 
 }

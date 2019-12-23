@@ -1,6 +1,6 @@
 package util;
 
-public class GeneralCollision {
+public class Collision {
 
   /**
    * checks whether if a circle and a rectangle intersects
@@ -8,7 +8,7 @@ public class GeneralCollision {
    * @param rect, the rectangular hitbox
    * @return boolean, whether they intersect or not
    */
-  public static boolean intersect (CircleCollidable circle, 
+  public static boolean isCollided(CircleCollidable circle, 
                                    RectCollidable rect) {
     int distX = Math.abs(circle.getX() - rect.getX());
     int distY = Math.abs(circle.getY() - rect.getY());
@@ -34,7 +34,7 @@ public class GeneralCollision {
    * @param circle2 CircleCollidable, the second circular hitbox
    * @return boolean, whether they intersect or not
    */
-  public static boolean intersect (CircleCollidable circle,
+  public static boolean isCollided(CircleCollidable circle,
                                    CircleCollidable circle2) {
 
     int distSq = (int)(Math.pow((circle2.getX() - circle.getX())
@@ -53,7 +53,7 @@ public class GeneralCollision {
    * @param rect2 RectCollidable, the second rectangular hitbox
    * @return boolean, whether they intersect or not
    */
-  public static boolean intersect (RectCollidable rect,
+  public static boolean isCollided(RectCollidable rect,
                                    RectCollidable rect2) {
 
       int distX = Math.abs(rect.getX() - rect2.getX());
@@ -64,4 +64,24 @@ public class GeneralCollision {
       }
       return false;
   }
+
+  //first obj bottom, second obj top
+  //these will be fixed later to be more accurate
+  public static boolean top(Object first, Object second) {
+    int firstX, secondX;
+    if (first instanceof CircleCollidable) {
+      firstX = ((CircleCollidable)first).getX();
+    } else {
+      firstX = ((RectCollidable)first).getX();
+    }
+
+    if (second instanceof CircleCollidable) {
+      secondX = ((CircleCollidable)second).getX();
+    } else {
+      secondX = ((RectCollidable)second).getX();
+    }
+
+    return firstX < secondX;
+  }
+    
 }

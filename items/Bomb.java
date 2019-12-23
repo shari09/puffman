@@ -1,6 +1,6 @@
 package items;
 
 
-public class Bomb extends Item {
+public class Bomb extends Item implements Spawnable {
 
 }

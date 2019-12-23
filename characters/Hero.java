@@ -4,6 +4,7 @@ import java.util.*;
 import javax.swing.*;
 // import javax.imageio.*;
 import java.awt.image.*;
+import java.awt.geom.*;
 import java.awt.*;
 
 import items.*;
@@ -13,13 +14,19 @@ import world.*;
 
 public abstract class Hero implements CircleCollidable {
 
+  private final Color hitboxColour = new Color(200, 0, 0, 60);
   private int x;
   private int y;
+  private int width;
+  private int height;
   private int radius;
 
-  private int downAcceleration;
+
+  // private int downAcceleration;
   private int xVel;
-  private int xMaxVel;
+  private final int acceleration = 1;
+  private final int xMaxVel = 5;
+  private int dir;
   private int yVel;
   private int yMaxVel;
   private int numJumps;
@@ -33,14 +40,17 @@ public abstract class Hero implements CircleCollidable {
   private int nextWeapon;
   private int damageTaken;
 
-  private HashMap<String, Integer> attackHitBox;
+  private HashMap<String, Integer> attackHitBox = new HashMap<>();
   private String state;
-  private HashMap<String, BufferedImage[]> sprites;
+  private HashMap<String, BufferedImage[]> sprites = new HashMap<>();
   private Object curItem;
   
-  public Hero(int x, int y) {
+  public Hero(int x, int y, int width, int height, int hitboxRadius) {
     this.x = x;
     this.y = y;
+    this.width = width;
+    this.height = height;
+    this.radius = hitboxRadius;
   }
 
   public int getLightAttackPower() {
@@ -59,12 +69,46 @@ public abstract class Hero implements CircleCollidable {
 
   }
 
-  public void moveLeft() {
+  /**
+   * resets the y-velocity to 0
+   */
+  public void resetYVel() {
+    this.yVel = 0;
+  }
 
+  /**
+   * falling because of gravity
+   * freefall acceleration
+   */
+  public void fall() {
+    this.yVel += World.GRAVITY;
+  }
+
+  public void moveLeft() {
+    this.dir = -1;
   }
 
   public void moveRight() {
+    this.dir = 1;
+  }
 
+  public void resetXMovement() {
+    // System.out.println("released");
+    this.xVel = 0;
+    this.dir = 0;
+  }
+
+  /**
+   * update all movements (left, right, up, down)
+   */
+  //the logic is kinda messy here, come back later to fix it
+  public void updateMovement() {
+    if (Math.abs(this.xVel) < this.xMaxVel && this.dir != 0) {
+      this.xVel += this.acceleration*this.dir;
+    }
+
+    this.x += this.xVel;
+    this.y += this.yVel;
   }
 
   public void dropDown() {
@@ -106,49 +150,33 @@ public abstract class Hero implements CircleCollidable {
   //but that's for later :D
   public void display(JPanel panel, Graphics2D g2d) {
     g2d.drawImage(this.sprites.get(this.state)[0],
-                  this.x - this.radius/2, this.y - this.radius/2,
-                  this.radius*2, this.radius*2,
+                  this.x, this.y,
+                  this.width, this.height,
                   panel);
   }
 
+  public void displayHitbox(Graphics2D g2d) {
+    g2d.setColor(this.hitboxColour);
+    g2d.fill(new Ellipse2D.Double(this.x, this.y, 
+                                  this.radius*2, this.radius*2));
+  }
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //setters and getters
 
   /**
-   * @param x the x to set
-   */
-  public void setX(int x) {
-    this.x = x;
-  }
-
-  /**
    * @return int return the x
    */
   public int getX() {
-    return this.x;
+    return this.x+this.width/2;
   }
 
   /**
    * @return int return the y
    */
   public int getY() {
-    return this.y;
-  }
-
-  /**
-   * @param y the y to set
-   */
-  public void setY(int y) {
-    this.y = y;
-  }
-
-  /**
-   * @param radius the radius to set
-   */
-  public void setRadius(int radius) {
-    this.radius = radius;
+    return this.y+this.height/2;
   }
 
   /**
@@ -158,228 +186,16 @@ public abstract class Hero implements CircleCollidable {
     return this.radius;
   }
 
-  /**
-   * @return int return the downAcceleration
-   */
-  public int getDownAcceleration() {
-      return this.downAcceleration;
+  public void addSprite(String type, BufferedImage[] images) {
+    this.sprites.put(type, images);
   }
 
   /**
-   * @param downAcceleration the downAcceleration to set
+   * Sets the current state of the player for displaying
+   * Such as facing left/right, attack, dodge, etc
+   * @param state
    */
-  public void setDownAcceleration(int downAcceleration) {
-      this.downAcceleration = downAcceleration;
+  public void setState(String state) {
+    this.state = state;
   }
-
-  /**
-   * @return int return the xVel
-   */
-  public int getXVel() {
-      return this.xVel;
-  }
-
-  /**
-   * @param xVel the xVel to set
-   */
-  public void setXVel(int xVel) {
-      this.xVel = xVel;
-  }
-
-  /**
-   * @return int return the xMaxVel
-   */
-  public int getXMaxVel() {
-      return this.xMaxVel;
-  }
-
-  /**
-   * @param xMaxVel the xMaxVel to set
-   */
-  public void setXMaxVel(int xMaxVel) {
-      this.xMaxVel = xMaxVel;
-  }
-
-  /**
-   * @return int return the yVel
-   */
-  public int getYVel() {
-      return this.yVel;
-  }
-
-  /**
-   * @param yVel the yVel to set
-   */
-  public void setYVel(int yVel) {
-      this.yVel = yVel;
-  }
-
-  /**
-   * @return int return the yMaxVel
-   */
-  public int getYMaxVel() {
-      return this.yMaxVel;
-  }
-
-  /**
-   * @param yMaxVel the yMaxVel to set
-   */
-  public void setYMaxVel(int yMaxVel) {
-      this.yMaxVel = yMaxVel;
-  }
-
-  /**
-   * @return int return the numJumps
-   */
-  public int getNumJumps() {
-      return this.numJumps;
-  }
-
-  /**
-   * @param numJumps the numJumps to set
-   */
-  public void setNumJumps(int numJumps) {
-      this.numJumps = numJumps;
-  }
-
-  /**
-   * @return int return the direction
-   */
-  public int getDirection() {
-      return this.direction;
-  }
-
-  /**
-   * @param direction the direction to set
-   */
-  public void setDirection(int direction) {
-      this.direction = direction;
-  }
-
-  /**
-   * @param lightAttackPower the lightAttackPower to set
-   */
-  public void setLightAttackPower(int lightAttackPower) {
-      this.lightAttackPower = lightAttackPower;
-  }
-
-  /**
-   * @param heavyAttackPower the heavyAttackPower to set
-   */
-  public void setHeavyAttackPower(int heavyAttackPower) {
-      this.heavyAttackPower = heavyAttackPower;
-  }
-
-  /**
-   * @return int return the stungTime
-   */
-  public int getStungTime() {
-      return this.stungTime;
-  }
-
-  /**
-   * @param stungTime the stungTime to set
-   */
-  public void setStungTime(int stungTime) {
-      this.stungTime = stungTime;
-  }
-
-  /**
-   * @return int return the attackLoadingTime
-   */
-  public int getAttackLoadingTime() {
-      return this.attackLoadingTime;
-  }
-
-  /**
-   * @param attackLoadingTime the attackLoadingTime to set
-   */
-  public void setAttackLoadingTime(int attackLoadingTime) {
-      this.attackLoadingTime = attackLoadingTime;
-  }
-
-  /**
-   * @return int return the attackRecoveryTime
-   */
-  public int getAttackRecoveryTime() {
-      return this.attackRecoveryTime;
-  }
-
-  /**
-   * @param attackRecoveryTime the attackRecoveryTime to set
-   */
-  public void setAttackRecoveryTime(int attackRecoveryTime) {
-      this.attackRecoveryTime = attackRecoveryTime;
-  }
-
-  /**
-   * @return int return the nextWeapon
-   */
-  public int getNextWeapon() {
-      return this.nextWeapon;
-  }
-
-  /**
-   * @param nextWeapon the nextWeapon to set
-   */
-  public void setNextWeapon(int nextWeapon) {
-      this.nextWeapon = nextWeapon;
-  }
-
-  /**
-   * @return int return the damageTaken
-   */
-  public int getDamageTaken() {
-      return this.damageTaken;
-  }
-
-  /**
-   * @param damageTaken the damageTaken to set
-   */
-  public void setDamageTaken(int damageTaken) {
-      this.damageTaken = damageTaken;
-  }
-
-  /**
-   * @return HashMap<String, Integer> return the attackHitBox
-   */
-  public HashMap<String, Integer> getAttackHitBox() {
-      return this.attackHitBox;
-  }
-
-  /**
-   * @param attackHitBox the attackHitBox to set
-   */
-  public void setAttackHitBox(HashMap<String, Integer> attackHitBox) {
-      this.attackHitBox = attackHitBox;
-  }
-
-  /**
-   * @return HashMap<String, BufferedImage[]> return the sprites
-   */
-  public HashMap<String, BufferedImage[]> getSprites() {
-      return this.sprites;
-  }
-
-  /**
-   * @param sprites the sprites to set
-   */
-  public void setSprites(HashMap<String, BufferedImage[]> sprites) {
-      this.sprites = sprites;
-  }
-
-  /**
-   * @return Object return the curItem
-   */
-  public Object getCurItem() {
-      return this.curItem;
-  }
-
-  /**
-   * @param curItem the curItem to set
-   */
-  public void setCurItem(Object curItem) {
-      this.curItem = curItem;
-  }
-
 }
