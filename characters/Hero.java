@@ -12,26 +12,30 @@ import blocks.*;
 import util.*;
 import world.*;
 
-public abstract class Hero implements CircleCollidable {
+public abstract class Hero implements CircleCollidable, RectCollidable {
 
   private final Color hitboxColour = new Color(200, 0, 0, 60);
-  private int x;
-  private int y;
+  private double x;
+  private double y;
   private int width;
   private int height;
   private int radius;
 
 
   // private int downAcceleration;
-  private int xVel;
-  private final int acceleration = 1;
-  private final int jumpVel = -6;
-  private final int xMaxVel = 8;
+  private double xVel;
+  private final double acceleration = Util.scaleX(2.0);
+  private final double jumpVel = Util.scaleY(-11.0);
+  private final double xMaxVel = Util.scaleX(8.0);
+  private final double dropVel = Util.scaleY(5.0);
   private int dir;
   private double yVel;
   private int yMaxVel;
   private int numJumps;
   private int direction;
+
+  //boolean flags
+  private boolean jumpFromWall = false;
 
   private int lightAttackPower;
   private int heavyAttackPower;
@@ -42,10 +46,12 @@ public abstract class Hero implements CircleCollidable {
   private int damageTaken;
 
   private HashMap<String, Integer> attackHitBox = new HashMap<>();
+  //states: onWall, faceRight
   private String state;
   private HashMap<String, BufferedImage[]> sprites = new HashMap<>();
   private Object curItem;
   
+  //constructor
   public Hero(int x, int y, int width, int height, int hitboxRadius) {
     this.x = x;
     this.y = y;
@@ -66,8 +72,21 @@ public abstract class Hero implements CircleCollidable {
 
   }
 
+  /**
+   * make the player jump if they are still allowed to jump
+   */
   public void jump() {
-    this.yVel = this.jumpVel;
+    if (this.numJumps < 3) {
+      if (this.state.equals("onLeftWall")) {
+        this.dir = 1;
+        this.jumpFromWall = true;
+      } else if (this.state.equals("onRightWall")) {
+        this.dir = -1;
+        this.jumpFromWall = true;
+      }
+      this.yVel = this.jumpVel;
+      this.numJumps++;
+    }
   }
 
   /**
@@ -75,14 +94,6 @@ public abstract class Hero implements CircleCollidable {
    */
   public void resetYVel() {
     this.yVel = 0;
-  }
-
-  /**
-   * falling because of gravity
-   * freefall acceleration
-   */
-  private void fall() {
-    this.yVel += World.GRAVITY;
   }
 
   public void moveLeft() {
@@ -98,6 +109,10 @@ public abstract class Hero implements CircleCollidable {
     this.dir = 0;
   }
 
+  public void resetJumps() {
+    this.numJumps = 0;
+  }
+
   /**
    * update all movements (left, right, up, down)
    */
@@ -106,24 +121,32 @@ public abstract class Hero implements CircleCollidable {
     if (Math.abs(this.xVel) < this.xMaxVel && this.dir != 0) {
       this.xVel += this.acceleration*this.dir;
     }
+
+    //reset x to 0 after bounce is complete
+    if (this.jumpFromWall && Math.abs(this.xVel) == this.xMaxVel) {
+      this.resetXMovement();
+      this.jumpFromWall = false;
+    }
+
+    //falling because of gravity -> freefall acceleration
+    this.yVel += World.GRAVITY;
+
+    //cling onto wall
+    if (this.state.equals("onLeftWall")
+        || this.state.equals("onRightWall")) {
+      this.yVel -= World.GRAVITY/1.5;
+    }
+
     this.x += this.xVel;
     this.y += this.yVel;
-    this.fall();
+    
   }
 
   public void dropDown() {
-
+    this.yVel += this.dropVel;
   }
 
   public void dodge() {
-
-  }
-
-  public void collide(Object thing) {
-
-  }
-
-  public void attackCollide(Hero player) {
 
   }
 
@@ -138,7 +161,6 @@ public abstract class Hero implements CircleCollidable {
   public boolean isDead() {
     if (this.x + this.radius/2 < 0
         || this.x - this.radius/2 > GameWindow.width
-
         || this.y + this.radius < 0
         || this.y - this.radius > GameWindow.height) {
       return true;
@@ -151,7 +173,7 @@ public abstract class Hero implements CircleCollidable {
   //but that's for later :D
   public void display(JPanel panel, Graphics2D g2d) {
     g2d.drawImage(this.sprites.get(this.state)[0],
-                  this.x, this.y,
+                  (int)(this.x), (int)(this.y),
                   this.width, this.height,
                   panel);
     
@@ -171,14 +193,14 @@ public abstract class Hero implements CircleCollidable {
    * @return int return the x
    */
   public int getX() {
-    return this.x+this.width/2;
+    return (int)(this.x+this.width/2);
   }
 
   /**
    * @return int return the y
    */
   public int getY() {
-    return this.y+this.height/2;
+    return (int)(this.y+this.height/2);
   }
 
   /**
@@ -188,6 +210,58 @@ public abstract class Hero implements CircleCollidable {
     return this.radius;
   }
 
+  /**
+   * @return int, the width of the image
+   */
+  public int getWidth() {
+    return this.width;
+  }
+
+  /**
+   * @return int, the height of the image
+   */
+  public int getHeight() {
+    return this.height;
+  }
+
+  /**
+   * get the x velocity
+   * @return double, the xVel
+   */
+  public double getXVel() {
+    return this.xVel;
+  }
+
+  /**
+   * get the y velocity
+   * @return double, the yVel
+   */
+  public double getYVel() {
+    return this.yVel;
+  }
+
+  /**
+   * moves the x pos of the player
+   * @param x double, the x change
+   */
+  public void moveX(double x) {
+    this.x += x;
+  }
+
+  /**
+   * moves the y pos of the player
+   * @param y double, the y change
+   */
+  public void moveY(double y) {
+    this.y += y;
+  }
+
+
+  /**
+   * Add sprites to the character
+   * @param type the name of the collection of sprites
+   * @param images the sprites
+   */
   public void addSprite(String type, BufferedImage[] images) {
     this.sprites.put(type, images);
   }

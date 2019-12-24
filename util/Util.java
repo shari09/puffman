@@ -11,8 +11,16 @@ public class Util {
   private static int DEV_HEIGHT = 1080;
 
 
+  public static double scaleX(double x) {
+    return GameWindow.width*x / DEV_WIDTH;
+  }
+
   public static int scaleX(int x) {
     return GameWindow.width*x / DEV_WIDTH;
+  }
+
+  public static double scaleY(double y) {
+    return GameWindow.height*y / DEV_HEIGHT;
   }
 
   public static int scaleY(int y) {

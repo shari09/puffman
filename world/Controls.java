@@ -20,6 +20,18 @@ public class Controls implements KeyListener {
       this.world.getPlayers()[0].moveLeft();
     } else if (key.equals("Space")) {
       this.world.getPlayers()[0].jump();
+    } else if (key.equals("S")) {
+      this.world.getPlayers()[0].dropDown();
+    }
+
+    if (key.equals("Right")) {
+      this.world.getPlayers()[1].moveRight();
+    } else if (key.equals("Left")) {
+      this.world.getPlayers()[1].moveLeft();
+    } else if (key.equals("Up")) {
+      this.world.getPlayers()[1].jump();
+    } else if (key.equals("Down")) {
+      this.world.getPlayers()[1].dropDown();
     }
   }
 
@@ -35,6 +47,10 @@ public class Controls implements KeyListener {
     if (key.equals("D") || key.equals("A")) {
       // System.out.println(key);
       this.world.getPlayers()[0].resetXMovement();
+    }
+    if (key.equals("Left") || key.equals("Right")) {
+      // System.out.println(key);
+      this.world.getPlayers()[1].resetXMovement();
     }
   }
 }

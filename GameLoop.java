@@ -2,6 +2,7 @@ import java.io.IOException;
 
 
 import world.*;
+import java.awt.event.*;
 
 public class GameLoop {
   public static void main(String[] args) throws IOException {
@@ -14,7 +15,7 @@ public class GameLoop {
     // long lastTime = System.currentTimeMillis();
     // long elapsedTime = 0;
 
-    while (true) {
+    while (world.isRunning()) {
       // elapsedTime = System.currentTimeMillis() - lastTime;
       // if (elapsedTime >= timePerFrame) {
       //   elapsedTime = 0;
@@ -26,5 +27,6 @@ public class GameLoop {
       try {Thread.sleep(timePerFrame);} catch (Exception e) {}
 
     }
+    window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
   }
 }

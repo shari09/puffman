@@ -15,7 +15,12 @@ public class Ash extends Hero {
     BufferedImage[] faceRight = {
       Util.urlToImage("images/characters/gray.jpg")
     };
-    this.setState("faceRight");
+
     this.addSprite("faceRight", faceRight);
+    this.addSprite("onLeftWall", faceRight);
+    this.addSprite("onRightWall", faceRight);
+    this.addSprite("inAir", faceRight);
+    this.addSprite("onGround", faceRight);
+    this.setState("inAir");
   }
 }
