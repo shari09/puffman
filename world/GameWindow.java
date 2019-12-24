@@ -27,5 +27,6 @@ public class GameWindow extends JFrame {
   public void update(World world) {
     world.update();
     repaint();
+    // world.paintComponent(world.getGraphics());
   }
 }

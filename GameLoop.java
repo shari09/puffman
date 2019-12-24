@@ -1,5 +1,6 @@
 import java.io.IOException;
 
+
 import world.*;
 
 public class GameLoop {
@@ -10,8 +11,8 @@ public class GameLoop {
     World world = new World();
     GameWindow window = new GameWindow(world);
 
-    long lastTime = System.currentTimeMillis();
-    long elapsedTime = 0;
+    // long lastTime = System.currentTimeMillis();
+    // long elapsedTime = 0;
 
     while (true) {
       // elapsedTime = System.currentTimeMillis() - lastTime;
@@ -21,7 +22,6 @@ public class GameLoop {
       //   window.update(world);
       // }
       window.update(world);
-
       //decreases cpu intensity
       try {Thread.sleep(timePerFrame);} catch (Exception e) {}
 

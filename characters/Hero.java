@@ -25,9 +25,10 @@ public abstract class Hero implements CircleCollidable {
   // private int downAcceleration;
   private int xVel;
   private final int acceleration = 1;
-  private final int xMaxVel = 5;
+  private final int jumpVel = -6;
+  private final int xMaxVel = 8;
   private int dir;
-  private int yVel;
+  private double yVel;
   private int yMaxVel;
   private int numJumps;
   private int direction;
@@ -66,7 +67,7 @@ public abstract class Hero implements CircleCollidable {
   }
 
   public void jump() {
-
+    this.yVel = this.jumpVel;
   }
 
   /**
@@ -80,7 +81,7 @@ public abstract class Hero implements CircleCollidable {
    * falling because of gravity
    * freefall acceleration
    */
-  public void fall() {
+  private void fall() {
     this.yVel += World.GRAVITY;
   }
 
@@ -93,7 +94,6 @@ public abstract class Hero implements CircleCollidable {
   }
 
   public void resetXMovement() {
-    // System.out.println("released");
     this.xVel = 0;
     this.dir = 0;
   }
@@ -106,9 +106,9 @@ public abstract class Hero implements CircleCollidable {
     if (Math.abs(this.xVel) < this.xMaxVel && this.dir != 0) {
       this.xVel += this.acceleration*this.dir;
     }
-
     this.x += this.xVel;
     this.y += this.yVel;
+    this.fall();
   }
 
   public void dropDown() {
@@ -138,6 +138,7 @@ public abstract class Hero implements CircleCollidable {
   public boolean isDead() {
     if (this.x + this.radius/2 < 0
         || this.x - this.radius/2 > GameWindow.width
+
         || this.y + this.radius < 0
         || this.y - this.radius > GameWindow.height) {
       return true;
@@ -153,6 +154,7 @@ public abstract class Hero implements CircleCollidable {
                   this.x, this.y,
                   this.width, this.height,
                   panel);
+    
   }
 
   public void displayHitbox(Graphics2D g2d) {

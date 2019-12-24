@@ -10,6 +10,7 @@ public class Controls implements KeyListener {
   }
 
   //key listeners
+  @Override
   public void keyPressed(KeyEvent e) {
     String key = KeyEvent.getKeyText(e.getKeyCode());
     // System.out.println(key);
@@ -17,20 +18,17 @@ public class Controls implements KeyListener {
       this.world.getPlayers()[0].moveRight();
     } else if (key.equals("A")) {
       this.world.getPlayers()[0].moveLeft();
+    } else if (key.equals("Space")) {
+      this.world.getPlayers()[0].jump();
     }
-    
   }
 
+  @Override
   public void keyTyped(KeyEvent e) {
-    // char key = e.getKeyChar();
-    // // System.out.println(key);
-    // if (key == 'd') {
-    //   this.players[0].moveRight();
-    // } else if (key == 'a') {
-    //   this.players[0].moveLeft();
-    // }
-  }
 
+  }
+  
+  @Override
   public void keyReleased(KeyEvent e) {
     String key = KeyEvent.getKeyText(e.getKeyCode());
     // System.out.println(key);

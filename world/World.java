@@ -14,7 +14,7 @@ import util.*;
 public class World extends JPanel {
   public static final long serialVersionUID = 1L;
   
-  public static final int GRAVITY = 8;
+  public static final double GRAVITY = 0.1;
   public static final int screenMargin = 30;
   
   private BufferedImage background;
@@ -97,6 +97,7 @@ public class World extends JPanel {
     Graphics2D g2d = (Graphics2D) g;
     this.drawBackground(g2d);
     this.displayAll(g2d);
+    Toolkit.getDefaultToolkit().sync();
   }
 
 }
