@@ -108,7 +108,6 @@ public class Collision {
     if (isTouching(first, second)) {
       HashMap<String, Integer> firstPos = getSides(first);
       HashMap<String, Integer> secondPos = getSides(second); 
-      
       if (firstPos.get("x").equals(secondPos.get("x2"))) {
         return "left";
       } else if (firstPos.get("x2").equals(secondPos.get("x"))) {

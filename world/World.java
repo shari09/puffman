@@ -2,7 +2,7 @@ package world;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.awt.image.*;
 import java.io.*;
 
@@ -19,11 +19,17 @@ public class World extends JPanel {
   
   private BufferedImage background;
 
-  private ArrayList<Item> activeItems; //picked up, do I need this tho??
-  private ArrayList<Item> inactiveItems;
+  private HashSet<Item> damagables = new HashSet<>();
+  private HashSet<Hero> attackingPlayers = new HashSet<>();
+  private HashSet<Item> pickUpableItems = new HashSet<>();
   private Hero[] players;
   private Block[] blocks;
   private boolean running = true;
+
+
+  //key listeners doesn't work all the time
+  //need constant update on keys
+  private HashSet<String> activeHeldKeys = new HashSet<>();
 
 
   /**
@@ -40,7 +46,7 @@ public class World extends JPanel {
       scaledPlayerSize,
       scaledPlayerSize/2);
 
-    this.players[1] = new Remi(
+    this.players[1] = new Ash(
       Util.scaleX(1100),
       Util.scaleY(500),
       scaledPlayerSize,
@@ -53,7 +59,7 @@ public class World extends JPanel {
    * @throws IOException ImageIO
    */
   private void addBlocks() throws IOException {
-    this.blocks = new Block[2];
+    this.blocks = new Block[3];
     this.blocks[0] = new RectBlock(
       "images/blocks/test.jpg", 
       Util.scaleX(400), Util.scaleY(700), Util.scaleX(800), Util.scaleY(50)
@@ -61,6 +67,10 @@ public class World extends JPanel {
     this.blocks[1] = new RectBlock(
       "images/blocks/test.jpg", 
       Util.scaleX(800), Util.scaleY(300), Util.scaleX(100), Util.scaleY(500)
+    );
+    this.blocks[2] = new RectBlock(
+      "images/blocks/test.jpg", 
+      Util.scaleX(1400), Util.scaleY(500), Util.scaleX(400), Util.scaleY(40)
     );
   }
 
@@ -80,89 +90,181 @@ public class World extends JPanel {
   };
 
   /**
+   * for every block in the game: 
+   * Checks whether the player collides with the block
+   * moves the player back until it no longer collides
+   * also sets the movement state for the player
+   * @param curPlayer the player that's checked for collision
+   * @param curBlock the block that's being checked for collision
+   */
+  private void updateBlockCollisions(Hero curPlayer) {
+
+    boolean inAir = true;
+
+    for (int i = 0; i < this.blocks.length; i++) {
+      Block curBlock = this.blocks[i];
+
+      if (Collision.isCollided((RectCollidable)curPlayer, 
+                               (RectCollidable)curBlock)) {
+
+        double xVel = curPlayer.getXVel();
+        double yVel = curPlayer.getYVel();
+
+        //for push back calculations
+        boolean biggerX = false;
+        if (Math.abs(xVel) > Math.abs(yVel)) {
+          biggerX = true;
+        }
+
+        //move the player back until they no longer collide
+        while (Collision.isCollided((RectCollidable)curPlayer, 
+                                    (RectCollidable)curBlock)) {
+          if (biggerX) {
+            curPlayer.moveX(-xVel/Math.abs(xVel));
+            curPlayer.moveY(-yVel/Math.abs(xVel));
+          } else {
+            curPlayer.moveX(-xVel/Math.abs(yVel));
+            curPlayer.moveY(-yVel/Math.abs(yVel));
+          } 
+        }
+      }
+      inAir = !setMovementState(curPlayer, curBlock) && inAir;
+
+    }
+
+    if (inAir) {
+      curPlayer.setState("inAir");
+    }
+    
+  }
+
+  /**
+   * Check to see what the state the player is in
+   * in terms of movement (ex, mid-air, at a wall, on the ground)
+   * there
+   * @param curPlayer the player being checked
+   * @param curBlock the block being checked
+   * @return true if it's not in mid-air
+   */
+  private boolean setMovementState(Hero curPlayer, Block curBlock) {
+  //reset values if the sides are touching
+    // technically collision but not overlapping
+    // sets the state of the player
+    String side = Collision.getTouchingSide((RectCollidable)curPlayer, 
+                                            (RectCollidable)curBlock);
+
+    if (side.equals("left")) {
+      curPlayer.setState("onLeftWall");
+    }
+    if (side.equals("right")) {
+      curPlayer.setState("onRightWall");
+    }
+    
+    if (side.equals("left") || side.equals("right")) {
+      curPlayer.resetXMovement();
+      if (curPlayer.getYVel() < 0) {
+        curPlayer.resetYVel();
+      }
+    }
+
+    if (side.equals("top") || side.equals("bottom")) {
+      curPlayer.resetYVel();
+    }
+
+    //move back the gravity if it's on the floor
+    if (side.equals("bottom")) {
+      curPlayer.setState("onGround");
+      curPlayer.moveY(-World.GRAVITY);
+    }
+
+    if (!side.equals("none") && !side.equals("top")) {
+      curPlayer.resetJumps();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  private void updateAttackCollisions(Hero curPlayer) {
+    if (curPlayer.isAttackState()) {
+      for (int i = 0; i < this.players.length; i++) {
+        Hero targetPlayer = this.players[i];
+        if (targetPlayer != curPlayer
+            && Collision.isCollided(
+              (CircleCollidable)(curPlayer.getAttackHitbox()),
+              //casting player to circle to get hitbox
+              //hmmmm kinda sketchy heheh
+              (CircleCollidable)targetPlayer)
+            ) {
+          targetPlayer.takeDamage(curPlayer.getDir(), 
+                                  curPlayer.getPower());
+          System.out.println(targetPlayer.getDamageTaken());
+        }
+
+      }
+    }
+  }
+
+  /**
    * handle player related updates (ex. movements, collisions)
    */
-  private void handlePlayers() {
-    for (int i = 0; i < this.players.length; i++) {
-      this.players[i].updateMovement();
+  private void updatePlayers() {
 
-      if (this.players[i].isDead()) {
+    //for each player
+    for (int i = 0; i < this.players.length; i++) {
+      Hero curPlayer = this.players[i];
+      curPlayer.updateMovement();
+      curPlayer.updateSprite();
+      curPlayer.updateStateFunction();
+
+      updateBlockCollisions(curPlayer);
+      updateAttackCollisions(curPlayer);
+
+      if (curPlayer.isDead()) {
         this.running = false;
         return;
-      }
-
-      //collision with blocks
-      for (int j = 0; j < this.blocks.length; j++) {
-
-        if (Collision.isCollided((RectCollidable)(this.players[i]), 
-                                 (RectCollidable)(this.blocks[j]))) {
-          
-          double xVel = this.players[i].getXVel();
-          double yVel = this.players[i].getYVel();
-          
-          //for push back calculations
-          boolean biggerX = false;
-          if (Math.abs(xVel) > Math.abs(yVel)) {
-            biggerX = true;
-          }
-
-          //move the player back until they no longer collide
-          while (Collision.isCollided(
-                 (RectCollidable)(this.players[i]), 
-                 (RectCollidable)(this.blocks[j]))) {
-            if (biggerX) {
-              this.players[i].moveX(-xVel/Math.abs(xVel));
-              this.players[i].moveY(-yVel/Math.abs(xVel));
-            } else {
-              this.players[i].moveX(-xVel/Math.abs(yVel));
-              this.players[i].moveY(-yVel/Math.abs(yVel));
-            } 
-          }
-        }
-
-        //reset values if the sides are touching
-        // technically collision but not overlapping
-        // sets the state of the player
-        String side = Collision.getTouchingSide(
-          (RectCollidable)(this.players[i]), 
-          (RectCollidable)(this.blocks[j]));
-
-        if (side.equals("left")) {
-          this.players[i].resetXMovement();
-          this.players[i].setState("onLeftWall");
-        }
-        if (side.equals("right")) {
-          this.players[i].resetXMovement();
-          this.players[i].setState("onRightWall");
-        }
-
-        if (side.equals("bottom") || side.equals("top")) {
-          this.players[i].resetYVel();
-        }
-
-        //move back the gravity if it's on the floor
-        if (side.equals("bottom")) {
-          this.players[i].setState("onGround");
-          this.players[i].moveY(-World.GRAVITY);
-        }
-
-        if (side.equals("none")) {
-          this.players[i].setState("inAir");
-        }
-
-        if (!side.equals("none")) {
-          this.players[i].resetJumps();
-        }
       }
 
     }
   }
 
   /**
-   * necessary updates for players (ex. movement)
+   * update the held-key controls for the players
+   */
+  private void updateControls() {
+    Iterator<String> itr = this.activeHeldKeys.iterator();
+
+    while (itr.hasNext()) {
+      String key = itr.next();
+      if (!this.players[0].inSpecialState()) {
+        if (key.equals("D")) {
+          this.players[0].moveRight();
+        } else if (key.equals("A")) {
+          this.players[0].moveLeft();
+        } else if (key.equals("S")) {
+          this.players[0].dropDown();
+        } 
+      }
+      
+      if (!this.players[1].inSpecialState()) {
+        if (key.equals("Right")) {
+          this.players[1].moveRight();
+        } else if (key.equals("Left")) {
+          this.players[1].moveLeft();
+        } else if (key.equals("Down")) {
+          this.players[1].dropDown();
+        }
+      }
+      
+    }
+  }
+
+  /**
+   * updates the world
    */
   public void update() {
-    handlePlayers();
+    this.updateControls();
+    this.updatePlayers();
     
   }
 
@@ -180,7 +282,7 @@ public class World extends JPanel {
 
   /**
    * display everything on the screen
-   * @param g2d
+   * @param g2d the Graphics2D to draw on
    */
   private void displayAll(Graphics2D g2d) {
     for (int i = 0; i < this.blocks.length; i++) {
@@ -189,6 +291,9 @@ public class World extends JPanel {
     for (int i = 0; i < this.players.length; i++) {
       this.players[i].display(this, g2d);
       this.players[i].displayHitbox(g2d);
+      if (this.players[i].isAttackState()) {
+        this.players[i].displayAttackHitbox(g2d);
+      }
     }
   }
 
@@ -209,6 +314,15 @@ public class World extends JPanel {
   /////////////////////////
 
   /**
+   * Add a damagable object to the damagable list
+   * @param obj Item, the object to add
+   */
+  public void addDamagable(Item obj) {
+    this.damagables.add(obj);
+  }
+
+
+  /**
    * get the players
    * @return Hero[], the players
    */
@@ -216,8 +330,38 @@ public class World extends JPanel {
     return this.players;
   }
 
+  /**
+   * @return boolean, whether the game is running or not
+   */
   public boolean isRunning() {
     return this.running;
+  }
+
+  /**
+   * add an active key to the active key set
+   * @param key the key to add
+   */
+  public void addActiveHeldKey(String key) {
+    this.activeHeldKeys.add(key);
+  }
+
+  /**
+   * remove an active key from the active key set
+   * @param key the key to remove
+   */
+  public void removeActiveHeldKey(String key) {
+    this.activeHeldKeys.remove(key);
+
+    //if the player is in a special state,
+    //no keys should work
+    if (!this.players[0].inSpecialState() 
+        && (key.equals("D") || key.equals("A"))) {
+      this.players[0].resetXMovement();
+    }
+    if (!this.players[1].inSpecialState() 
+        && (key.equals("Left") || key.equals("Right"))) {
+      this.players[1].resetXMovement();
+    }
   }
 
 }
