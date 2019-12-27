@@ -39,7 +39,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   private final double xMaxVel = Util.scaleX(5.0);
   private final double dropVel = Util.scaleY(3.0);
   
-  private int dir;
+  private int dir = 1;
   private double yVel;
   private int numJumps;
 
@@ -96,8 +96,10 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    * 
    */
   public void lightAttack() {
-    this.xVel = 0;
-    this.xTargetVel = this.xMaxVel/2;
+    if (this.xVel != 0) {
+      this.xVel = 0;
+      this.xTargetVel = this.xMaxVel/2;
+    }
     this.attackHitbox = new CircleHitbox(
       (int)(this.getX()+this.dir*Util.scaleX(40)),
       this.getY(),
@@ -110,8 +112,10 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    * update the hitbox position for the light attack
    */
   private void updateLightAttack() {
+
     this.attackHitbox.adjustPos(
-      (int)(this.getX()+this.dir*Util.scaleX(40)), this.getY());
+      (int)(this.getX()+this.dir*Util.scaleX(20)), 
+      (int)(this.getY()+this.yVel*Util.scaleY(5)));
   }
   
   /**
@@ -132,7 +136,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     this.setSpecialState("knockedBack", 300);
     this.yVel = Util.scaleY(-1.0)*damage-(this.damageTaken/30);
     this.dir = dir;
-    this.xTargetVel = Util.scaleX(1.0)*damage+(this.damageTaken/30);
+    this.xTargetVel = Util.scaleX(1.0)*damage+(this.damageTaken/20);
   }
 
   /**
@@ -232,7 +236,6 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
 
     this.x += this.xVel;
     this.y += this.yVel;
-    
   }
 
   /**
@@ -248,6 +251,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    * allow the player to drop down faster
    */
   public void dropDown() {
+    this.setState("drop");
     this.yVel += this.dropVel;
   }
 

@@ -3,6 +3,9 @@ faceRight
 onLeftWall
 onRightWall
 inAir
+drop
+dash
+dodge
 onGround
 jumpFromWall
 lightAttack

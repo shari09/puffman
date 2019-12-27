@@ -12,6 +12,9 @@ public class Zoom {
   private static final int WIDTH = 2;
   private static final int HEIGHT = 3;
 
+  private static final int minWidth = Util.scaleX(700);
+  private static final int minHeight = 
+    minWidth*GameWindow.height/GameWindow.width;
 
   /**
    * Get the section of the map for displaying
@@ -47,31 +50,35 @@ public class Zoom {
     int addValY = GameWindow.height*width/GameWindow.width - height;
     if (addValX > 0) {
       minX -= addValX/2;
-      maxX += addValX/2;
+      width += addValX;
     } else {
       minY -= addValY/2;
-      maxY += addValY/2;
+      height += addValY;
+    }
+
+    //max zoom
+    if (width < minWidth) {
+      minX -= (minWidth-width)/2;
+      minY -= (minHeight-height)/2;
+      width = minWidth;
+      height = minHeight;
     }
 
     //prevent it from going out the map
     if (minX < 0) {
-      maxX += -minX;
       minX = 0;
     }
     if (minY < 0) {
-      maxY += -minY;
       minY = 0;
     }
     if (maxX > World.mapWidth) {
       minX -= maxX-World.mapWidth;
-      maxX = World.mapWidth;
     }
     if (maxY > World.mapHeight) {
       minY -= maxY-World.mapHeight;
-      maxY = World.mapHeight;
     }
 
-    return new int[]{minX, minY, maxX-minX, maxY-minY};
+    return new int[]{minX, minY, width, height};
   }
 
 

@@ -1,6 +1,5 @@
 import java.io.IOException;
 
-
 import world.*;
 import java.awt.event.*;
 import util.Timer;
@@ -11,7 +10,7 @@ public class GameLoop {
     int timePerFrame = 1000/fps;
 
     World world = new World();
-    GameWindow window = new GameWindow(world);
+    GameWindow window = new GameWindow(world);    
 
     while (world.isRunning()) {
       Timer.update();
@@ -22,7 +21,6 @@ public class GameLoop {
       } catch (Exception e) {
         System.err.println(e);
       }
-
     }
     window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
   }

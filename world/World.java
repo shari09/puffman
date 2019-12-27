@@ -15,7 +15,7 @@ public class World extends JPanel {
   public static final long serialVersionUID = 1L;
 
   public static final int mapWidth = Util.scaleX(3000);
-  public static final int mapHeight = Util.scaleY(2000);
+  public static final int mapHeight = Util.scaleY(1500);
 
   public static final int screenMarginX = Util.scaleX(150);
   public static final int screenMarginY = Util.scaleY(150);
@@ -65,7 +65,7 @@ public class World extends JPanel {
    * @throws IOException ImageIO
    */
   private void addBlocks() throws IOException {
-    this.blocks = new Block[3];
+    this.blocks = new Block[4];
     this.blocks[0] = new RectBlock(
       "blocks/test.jpg", 
       Util.scaleX(1000), Util.scaleY(800), 
@@ -74,12 +74,17 @@ public class World extends JPanel {
     this.blocks[1] = new RectBlock(
       "blocks/test.jpg", 
       Util.scaleX(800), Util.scaleY(400), 
-      Util.scaleX(150), Util.scaleY(100)
+      Util.scaleX(50), Util.scaleY(400)
     );
     this.blocks[2] = new RectBlock(
       "blocks/test.jpg", 
       Util.scaleX(1400), Util.scaleY(500), 
       Util.scaleX(400), Util.scaleY(40)
+    );
+    this.blocks[3] = new RectBlock(
+      "blocks/test.jpg", 
+      Util.scaleX(600), Util.scaleY(400), 
+      Util.scaleX(220), Util.scaleY(50)
     );
   }
 

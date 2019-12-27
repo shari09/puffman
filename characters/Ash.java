@@ -35,6 +35,7 @@ public class Ash extends Hero {
     this.addSprite("onRightWall", faceRight);
     this.addSprite("inAir", faceRight);
     this.addSprite("onGround", faceRight);
+    this.addSprite("drop", faceRight);
     this.addSprite("jumpFromWall", jumpFromWall);
     this.addSprite("knockedBack", jumpFromWall);
 
