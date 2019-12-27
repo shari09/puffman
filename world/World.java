@@ -20,7 +20,7 @@ public class World extends JPanel {
   public static final int screenMarginX = Util.scaleX(150);
   public static final int screenMarginY = Util.scaleY(150);
 
-  public static final double GRAVITY = Util.scaleY(0.5);
+  public static final double GRAVITY = Util.scaleY(0.25);
   
   private BufferedImage background;
 
@@ -52,7 +52,7 @@ public class World extends JPanel {
       "A", "D", "Space", "S", "J");
 
     this.players[1] = new Ash(
-      Util.scaleX(1800),
+      Util.scaleX(1850),
       Util.scaleY(500),
       scaledPlayerSize,
       scaledPlayerSize,
@@ -193,7 +193,7 @@ public class World extends JPanel {
       curPlayer.setState("onGround");
       curPlayer.moveY(-World.GRAVITY);
     }
-
+    
     if (!side.equals("none") && !side.equals("top")) {
       curPlayer.resetJumps();
       return true;
@@ -292,17 +292,11 @@ public class World extends JPanel {
    * @param g2d Graphics2D, the graphics control of this component
    */
   private void drawBackground(Graphics2D g2d) {
-    // int[] pos = {0, 0, GameWindow.width, GameWindow.height};
-    // int[] newPos = Zoom.getDisplayPos(this.players, pos);
     g2d.drawImage(this.background, 
                   0, 0,
                   GameWindow.width,
                   GameWindow.height, 
                   this);
-    // g2d.drawImage(this.background, 
-    //               newPos[0], newPos[1],
-    //               newPos[2], newPos[3],
-    //               this);
   }
 
   /**

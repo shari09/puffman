@@ -35,9 +35,9 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   private double xVel;
   private double xTargetVel;
   private final double acceleration = Util.scaleX(2.0);
-  private final double jumpVel = Util.scaleY(-11.0);
+  private final double jumpVel = -World.GRAVITY*30;
   private final double xMaxVel = Util.scaleX(5.0);
-  private final double dropVel = Util.scaleY(3.0);
+  private final double dropVel = World.GRAVITY*3;
   
   private int dir = 1;
   private double yVel;
@@ -112,10 +112,12 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    * update the hitbox position for the light attack
    */
   private void updateLightAttack() {
-
+    int offsetX = this.dir*Util.scaleX(20);
+    int offsetY = (int)(this.yVel*Util.scaleY(5));
+    offsetY = Math.min(Util.scaleY(20), offsetY);
     this.attackHitbox.adjustPos(
-      (int)(this.getX()+this.dir*Util.scaleX(20)), 
-      (int)(this.getY()+this.yVel*Util.scaleY(5)));
+      this.getX()+offsetX, 
+      this.getY()+offsetY);
   }
   
   /**

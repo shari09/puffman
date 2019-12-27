@@ -1,0 +1,13 @@
+//state               loadTime   activeTime   recoveryTime
+lightAttackLeft         100         200           150
+lighAttackRight         100         200           150
+lightAttackNeutral      50          150           100
+lightAttackJump         60          160           100 
+lightAttackDown         30          150           100
+
+
+heavyAttackLeft         200         400           300 
+heavyAttackRight        200         400           300
+heavyAttackNeutral      150         300           200
+heavyAttackJump         100         400           250
+lightAttackDown         100         400           200     
