@@ -4,6 +4,7 @@ import java.awt.image.*;
 import javax.swing.*;
 
 import util.*;
+import characters.*;
 
 import java.awt.*;
 import java.io.*;
@@ -19,6 +20,8 @@ public abstract class Block {
     return this.sprite;
   }
 
-  public abstract void display(JPanel panel, Graphics2D g2d);
+  public abstract void display(JPanel panel, 
+                               Graphics2D g2d, 
+                               Hero[] players);
 
 }

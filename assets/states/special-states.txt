@@ -1,0 +1,4 @@
+lightAttack
+heavyAttack
+jumpFromWall
+knockedBack

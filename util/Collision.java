@@ -1,8 +1,12 @@
 package util;
 
-import java.util.HashMap;
-
 public class Collision {
+
+  private static final int X = 0;
+  private static final int X2 = 1;
+  private static final int Y = 2;
+  private static final int Y2 = 3;
+
 
   /**
    * checks whether if a circle and a rectangle intersects
@@ -70,15 +74,15 @@ public class Collision {
   /**
    * Get the bounding box of a RectCollidable object
    * @param obj the object (ex. player, weapon)
-   * @return HashMap<String, Integer>, the position
+   * @return int[], the position
    */
-  private static HashMap<String, Integer> getSides(RectCollidable obj) {
-    HashMap<String, Integer> position = new HashMap<>();
+  private static int[] getSides(RectCollidable obj) {
+    int[] position = new int[4];
 
-    position.put("x", obj.getX() - obj.getWidth()/2);
-    position.put("x2", obj.getX() + obj.getWidth()/2);
-    position.put("y", obj.getY() - obj.getHeight()/2);
-    position.put("y2", obj.getY() + obj.getHeight()/2);
+    position[X]  = obj.getX() - obj.getWidth()/2;
+    position[X2] = obj.getX() + obj.getWidth()/2;
+    position[Y] = obj.getY() - obj.getHeight()/2;
+    position[Y2] = obj.getY() + obj.getHeight()/2;
 
     return position;
   }
@@ -106,15 +110,15 @@ public class Collision {
   public static String getTouchingSide(RectCollidable first, 
                                        RectCollidable second) {
     if (isTouching(first, second)) {
-      HashMap<String, Integer> firstPos = getSides(first);
-      HashMap<String, Integer> secondPos = getSides(second); 
-      if (firstPos.get("x").equals(secondPos.get("x2"))) {
+      int[] firstPos = getSides(first);
+      int[] secondPos = getSides(second); 
+      if (firstPos[X] == secondPos[X2]) {
         return "left";
-      } else if (firstPos.get("x2").equals(secondPos.get("x"))) {
+      } else if (firstPos[X2] == secondPos[X]) {
         return "right";
-      } else if (firstPos.get("y").equals(secondPos.get("y2"))) {
+      } else if (firstPos[Y] == secondPos[Y2]) {
         return "top";
-      } else if (firstPos.get("y2").equals(secondPos.get("y"))) {
+      } else if (firstPos[Y2] == secondPos[Y]) {
         return "bottom";
       }
     }

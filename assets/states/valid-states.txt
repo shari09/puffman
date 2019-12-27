@@ -1,0 +1,10 @@
+faceLeft
+faceRight
+onLeftWall
+onRightWall
+inAir
+onGround
+jumpFromWall
+lightAttack
+heavyAttack
+knockedBack

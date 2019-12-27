@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import util.*;
+import characters.*;
 
 public class RectBlock extends Block implements RectCollidable {
   private int x;
@@ -22,27 +23,33 @@ public class RectBlock extends Block implements RectCollidable {
     this.height = height;
   }
 
+  @Override
   public int getX() {
     return this.x + this.width/2;
   }
 
+  @Override
   public int getY() {
     return this.y + this.height/2;
   }
 
+  @Override
   public int getWidth() {
     return this.width;
   }
 
+  @Override
   public int getHeight() {
     return this.height;
   }
 
-  public void display(JPanel panel, Graphics2D g2d) {
+  @Override
+  public void display(JPanel panel, Graphics2D g2d, Hero[] players) {
+    int[] pos = {this.x, this.y, this.width, this.height};
+    int[] newPos = Zoom.getDisplayPos(g2d, players, pos);
     g2d.drawImage(this.getSprite(), 
-                  this.x, this.y, 
-                  this.width, 
-                  this.height, 
+                  newPos[0], newPos[1], 
+                  newPos[2], newPos[3], 
                   panel);
   }
 

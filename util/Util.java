@@ -28,6 +28,6 @@ public class Util {
   }
 
   public static BufferedImage urlToImage(String url) throws IOException {
-    return ImageIO.read(new File(url));
+    return ImageIO.read(new File("assets/images/" + url));
   }
 }

@@ -2,6 +2,8 @@ package util;
 
 import java.awt.*;
 
+import characters.Hero;
+
 public abstract class Hitbox {
 
   private final Color colour = new Color(15, 15, 15);
@@ -30,5 +32,5 @@ public abstract class Hitbox {
     this.y = y;
   }
 
-  public abstract void display(Graphics2D g2d);
+  public abstract void display(Graphics2D g2d, Hero[] players);
 }

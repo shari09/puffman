@@ -13,14 +13,18 @@ import util.*;
 
 public class World extends JPanel {
   public static final long serialVersionUID = 1L;
-  
+
+  public static final int mapWidth = Util.scaleX(3000);
+  public static final int mapHeight = Util.scaleY(2000);
+
+  public static final int screenMarginX = Util.scaleX(150);
+  public static final int screenMarginY = Util.scaleY(150);
+
   public static final double GRAVITY = Util.scaleY(0.5);
-  public static final int screenMargin = 30;
   
   private BufferedImage background;
 
-  private HashSet<Item> damagables = new HashSet<>();
-  private HashSet<Hero> attackingPlayers = new HashSet<>();
+  private HashSet<Item> damagableItems = new HashSet<>();
   private HashSet<Item> pickUpableItems = new HashSet<>();
   private Hero[] players;
   private Block[] blocks;
@@ -40,18 +44,20 @@ public class World extends JPanel {
     this.players = new Hero[2];
     int scaledPlayerSize = Math.min(Util.scaleX(40), Util.scaleY(40));
     this.players[0] = new Ash(
-      Util.scaleX(500),
+      Util.scaleX(1200),
       Util.scaleY(500),
       scaledPlayerSize,
       scaledPlayerSize,
-      scaledPlayerSize/2);
+      scaledPlayerSize/2,
+      "A", "D", "Space", "S", "J");
 
     this.players[1] = new Ash(
-      Util.scaleX(1100),
+      Util.scaleX(1800),
       Util.scaleY(500),
       scaledPlayerSize,
       scaledPlayerSize,
-      scaledPlayerSize/2);
+      scaledPlayerSize/2,
+      "Left", "Right", "Up", "Down", "Slash");
   }
   
   /**
@@ -61,16 +67,19 @@ public class World extends JPanel {
   private void addBlocks() throws IOException {
     this.blocks = new Block[3];
     this.blocks[0] = new RectBlock(
-      "images/blocks/test.jpg", 
-      Util.scaleX(400), Util.scaleY(700), Util.scaleX(800), Util.scaleY(50)
+      "blocks/test.jpg", 
+      Util.scaleX(1000), Util.scaleY(800), 
+      Util.scaleX(1000), Util.scaleY(50)
     );
     this.blocks[1] = new RectBlock(
-      "images/blocks/test.jpg", 
-      Util.scaleX(800), Util.scaleY(300), Util.scaleX(100), Util.scaleY(500)
+      "blocks/test.jpg", 
+      Util.scaleX(800), Util.scaleY(400), 
+      Util.scaleX(150), Util.scaleY(100)
     );
     this.blocks[2] = new RectBlock(
-      "images/blocks/test.jpg", 
-      Util.scaleX(1400), Util.scaleY(500), Util.scaleX(400), Util.scaleY(40)
+      "blocks/test.jpg", 
+      Util.scaleX(1400), Util.scaleY(500), 
+      Util.scaleX(400), Util.scaleY(40)
     );
   }
 
@@ -83,7 +92,7 @@ public class World extends JPanel {
     this.setFocusable(true);
     this.requestFocusInWindow();
     this.setPreferredSize(GameWindow.screenSize);
-    this.background = Util.urlToImage("images/background/background.jpg");
+    this.background = Util.urlToImage("background/background.jpg");
 
     this.addPlayers();
     this.addBlocks();
@@ -138,6 +147,9 @@ public class World extends JPanel {
     
   }
 
+  // this method is
+  // reaaaallllyyyyy sketchy
+  // the return doesnt make sense other than that it's convenient
   /**
    * Check to see what the state the player is in
    * in terms of movement (ex, mid-air, at a wall, on the ground)
@@ -147,7 +159,7 @@ public class World extends JPanel {
    * @return true if it's not in mid-air
    */
   private boolean setMovementState(Hero curPlayer, Block curBlock) {
-  //reset values if the sides are touching
+    //reset values if the sides are touching
     // technically collision but not overlapping
     // sets the state of the player
     String side = Collision.getTouchingSide((RectCollidable)curPlayer, 
@@ -185,11 +197,17 @@ public class World extends JPanel {
     }
   }
 
+  /**
+   * checks whether the player's attack is hitting another player
+   * if it is, the other player takes knockback
+   * @param curPlayer the current player being checked for
+   */
   private void updateAttackCollisions(Hero curPlayer) {
     if (curPlayer.isAttackState()) {
       for (int i = 0; i < this.players.length; i++) {
         Hero targetPlayer = this.players[i];
         if (targetPlayer != curPlayer
+            && targetPlayer.damagable()
             && Collision.isCollided(
               (CircleCollidable)(curPlayer.getAttackHitbox()),
               //casting player to circle to get hitbox
@@ -236,25 +254,21 @@ public class World extends JPanel {
 
     while (itr.hasNext()) {
       String key = itr.next();
-      if (!this.players[0].inSpecialState()) {
-        if (key.equals("D")) {
-          this.players[0].moveRight();
-        } else if (key.equals("A")) {
-          this.players[0].moveLeft();
-        } else if (key.equals("S")) {
-          this.players[0].dropDown();
-        } 
-      }
-      
-      if (!this.players[1].inSpecialState()) {
-        if (key.equals("Right")) {
-          this.players[1].moveRight();
-        } else if (key.equals("Left")) {
-          this.players[1].moveLeft();
-        } else if (key.equals("Down")) {
-          this.players[1].dropDown();
+
+      for (int i = 0; i < this.players.length; i++) {
+        Hero curPlayer = this.players[i];
+        if (!curPlayer.inSpecialState()) {
+          if (key.equals(curPlayer.getLeftKey())) {
+            curPlayer.moveLeft();
+          } else if (key.equals(curPlayer.getRightKey())) {
+            curPlayer.moveRight();
+          } else if (key.equals(curPlayer.getDropKey())) {
+            curPlayer.dropDown();
+          }
         }
-      }
+
+      } 
+      
       
     }
   }
@@ -273,11 +287,17 @@ public class World extends JPanel {
    * @param g2d Graphics2D, the graphics control of this component
    */
   private void drawBackground(Graphics2D g2d) {
+    // int[] pos = {0, 0, GameWindow.width, GameWindow.height};
+    // int[] newPos = Zoom.getDisplayPos(this.players, pos);
     g2d.drawImage(this.background, 
                   0, 0,
                   GameWindow.width,
                   GameWindow.height, 
                   this);
+    // g2d.drawImage(this.background, 
+    //               newPos[0], newPos[1],
+    //               newPos[2], newPos[3],
+    //               this);
   }
 
   /**
@@ -286,13 +306,13 @@ public class World extends JPanel {
    */
   private void displayAll(Graphics2D g2d) {
     for (int i = 0; i < this.blocks.length; i++) {
-      this.blocks[i].display(this, g2d);
+      this.blocks[i].display(this, g2d, this.players);
     }
     for (int i = 0; i < this.players.length; i++) {
-      this.players[i].display(this, g2d);
-      this.players[i].displayHitbox(g2d);
+      this.players[i].display(this, g2d, this.players);
+      this.players[i].displayHitbox(g2d, this.players);
       if (this.players[i].isAttackState()) {
-        this.players[i].displayAttackHitbox(g2d);
+        this.players[i].displayAttackHitbox(g2d, this.players);
       }
     }
   }
@@ -312,14 +332,6 @@ public class World extends JPanel {
 
   //getters and setters
   /////////////////////////
-
-  /**
-   * Add a damagable object to the damagable list
-   * @param obj Item, the object to add
-   */
-  public void addDamagable(Item obj) {
-    this.damagables.add(obj);
-  }
 
 
   /**
@@ -354,13 +366,13 @@ public class World extends JPanel {
 
     //if the player is in a special state,
     //no keys should work
-    if (!this.players[0].inSpecialState() 
-        && (key.equals("D") || key.equals("A"))) {
-      this.players[0].resetXMovement();
-    }
-    if (!this.players[1].inSpecialState() 
-        && (key.equals("Left") || key.equals("Right"))) {
-      this.players[1].resetXMovement();
+    for (int i = 0; i < this.players.length; i++) {
+      Hero curPlayer = this.players[i];
+      if (!curPlayer.inSpecialState()
+          && (key.equals(curPlayer.getLeftKey())
+              || key.equals(curPlayer.getRightKey()))) {
+        curPlayer.resetXMovement();
+      }
     }
   }
 

@@ -1,5 +1,6 @@
 package world;
 
+import characters.Hero;
 import java.awt.event.*;
 import java.util.HashSet;
 
@@ -25,21 +26,20 @@ public class Controls implements KeyListener {
 
   //key listeners
   @Override
-  public synchronized void keyPressed(KeyEvent e) {
+  public void keyPressed(KeyEvent e) {
     String key = KeyEvent.getKeyText(e.getKeyCode());
 
     //handle tap keys here
     if (!this.heldKeyList.contains(key)
         && !this.tappedKeys.contains(key)) {
       this.tappedKeys.add(key);
-      if (key.equals("Space")) {
-        this.world.getPlayers()[0].jump();
-      } else if (key.equals("J")) {
-        this.world.getPlayers()[0].lightAttack();
-      } else if (key.equals("Up")) {
-        this.world.getPlayers()[1].jump();
-      } else if (key.equals("Slash")) {
-        this.world.getPlayers()[1].lightAttack();
+      for (int i = 0; i < this.world.getPlayers().length; i++) {
+        Hero curPlayer = this.world.getPlayers()[i];
+        if (key.equals(curPlayer.getJumpKey())) {
+          curPlayer.jump();
+        } else if (key.equals(curPlayer.getLightAttackKey())) {
+          curPlayer.lightAttack();
+        }
       }
     }
     
@@ -61,8 +61,6 @@ public class Controls implements KeyListener {
 
     this.world.removeActiveHeldKey(key);
     this.tappedKeys.remove(key);
-
-    // System.out.println(key);
     
   }
 }
