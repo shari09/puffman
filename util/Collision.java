@@ -43,8 +43,8 @@ public class Collision {
   public static boolean isCollided(CircleCollidable circle,
                                    CircleCollidable circle2) {
 
-    int distSq = (int)(Math.pow((circle2.getX() - circle.getX())
-                 + (circle2.getY() - circle.getY()), 2));
+    int distSq = (int)(Math.pow((circle2.getX() - circle.getX()), 2)
+                 + Math.pow(circle2.getY() - circle.getY(), 2));
 
     int minDist = (int)(Math.pow(
                   (circle.getRadius() + circle2.getRadius()),

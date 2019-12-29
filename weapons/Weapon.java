@@ -14,9 +14,23 @@ public abstract class Weapon {
   private static final int SIZE = 4;
 
   private HashMap<String, Double[]> states = new HashMap<>();
-  private Hurtbox hurtbox = new Hurtbox();
+  private Hurtbox[] hurtboxes = new Hurtbox[10];
+  private int numHurtboxes = 1;
 
-  public Weapon(String filePath) throws IOException {
+  public Weapon(String filePath)  throws IOException {
+    this.getStates(filePath);
+    for (int i = 0; i < this.hurtboxes.length; i++) {
+      this.hurtboxes[i] = new Hurtbox();
+    }
+  }
+
+
+  /**
+   * get the states data of the weapon
+   * @param filePath the file path to the data sheet
+   * @throws IOException exception reading the file
+   */
+  private void getStates(String filePath) throws IOException {
     File file = new File(filePath);
 
     Scanner fin = new Scanner(file);
@@ -38,11 +52,75 @@ public abstract class Weapon {
   }
 
   /**
-   * get the hurtbox of this weapon
-   * @return this.hurtbox Hurtbox, the hurtbox for this weapon
+   * sets the number of hurtboxes during the attack
+   * @param num the number of hurtboxes
    */
-  public Hurtbox getHurtbox() {
-    return this.hurtbox;
+  public void setNumHurtboxes(int num) {
+    this.numHurtboxes = num;
+  }
+
+  /**
+   * get the number of hurtboxes the current attack has
+   * @return numHurtboxes int, the number of hurtboxes
+   */
+  public int getNumHurtboxes() {
+    return this.numHurtboxes;
+  }
+
+
+  /**
+   * get the hurtboxes of this weapon
+   * @return this.hurtbox Hurtbox[], the hurtbox for this weapon
+   */
+  public Hurtbox[] getHurtboxes() {
+    return this.hurtboxes;
+  }
+
+  /**
+   * sets the position/dimension of a hurtbox
+   * @param num the ordinal number of this hurtbox (first, second, etc)
+   * @param x the x-pos of the hurtbox
+   * @param y the y-pos of the hurtbox
+   * @param size the size of the hurtbox
+   */
+  public void setHurtboxPos(int num, int x, int y, int size) {
+    this.hurtboxes[num-1].setPos(x, y);
+    this.hurtboxes[num-1].setSize(size);
+  }
+
+  /**
+   * overloaded method that sets the position/dimension of a
+   * moving hurtbox (has offsets relative to the original position)
+   * @param num the ordinal number of this hurtbox (first, second, etc)
+   * @param x the x-pos of the hurtbox
+   * @param y the y-pos of the hurtbox
+   * @param size the size of the hurtbox
+   * @param OffsetX the x-offset
+   * @param OffsetY the y-offset
+   */
+  public void setHurtboxPos(int num, int x, int y, int size, 
+                            int OffsetX, int OffsetY) {
+    this.hurtboxes[num-1].setPos(x, y);
+    this.hurtboxes[num-1].setSize(size);
+    this.hurtboxes[num-1].setOffset(OffsetX, OffsetY);
+  }
+
+  /**
+   * get the current x-offset of the hurtbox
+   * @param num the ordinal number of the hurtbox
+   * @return int, the x-offset
+   */
+  public int getOffsetX(int num) {
+    return this.hurtboxes[num-1].getOffsetX();
+  }
+
+  /**
+   * get the current y-pos of the hurtbox
+   * @param num the ordinal number of the hurtbox
+   * @return int, the y-offset
+   */
+  public int getOffsetY(int num) {
+    return this.hurtboxes[num-1].getOffsetY();
   }
 
   /**
@@ -108,6 +186,14 @@ public abstract class Weapon {
   //   }
   // }
 
+  /**
+   * reset the offsets of the hurtboxes to zero
+   */
+  private void resetHurtboxes() {
+    for (int i = 0; i < this.hurtboxes.length; i++) {
+      this.hurtboxes[i].resetOffset();
+    }
+  }
 
   /**
    * The attack manager
@@ -116,21 +202,20 @@ public abstract class Weapon {
    * @param curPlayer the player performing the attack
    * @param state the state/type of the attack
    */
-  public void attack(Hero curPlayer, String state) {
-    if (state.equals("lightLeft")) {
-      this.lightSideAttack(curPlayer, -1, state);
-    } else if (state.equals("lightRight")) {
-      this.lightSideAttack(curPlayer, 1, state);
-    } else if (state.equals("lightNLeft")) {
-      this.lightNeutralAttack(curPlayer, -1, state);
-    } else if (state.equals("lightNRight")) {
-      this.lightNeutralAttack(curPlayer, 1, state);
+  public void attack(Hero curPlayer, String state, int dir) {
+    this.resetHurtboxes();
+    if (state.equals("lightLeft") || state.equals("lightRight")) {
+      this.lightSideAttack(curPlayer, dir, state);
+    } else if (state.equals("lightNLeft") || state.equals("lightNRight")) {
+      this.lightNeutralAttack(curPlayer, dir, state);
     } else if (state.equals("lightJump")) {
       this.lightJumpAttack(curPlayer);
-    } else if (state.equals("lightDLeft")) {
-      this.lightDownAttack(curPlayer, -1, state);
-    } else if (state.equals("lightDRight")) {
-      this.lightDownAttack(curPlayer, 1, state);
+    } else if (state.equals("lightDLeft") || state.equals("lightDRight")) {
+      this.lightDownAttack(curPlayer, dir, state);
+    } else if (state.equals("lightNLair") || state.equals("lightNRair")) {
+      this.lightNairAttack(curPlayer, dir, state);
+    } else if (state.equals("lightSLair") || state.equals("lightSRair")) {
+      this.lightSairAttack(curPlayer, dir, state);
     }
   }
 
@@ -142,20 +227,18 @@ public abstract class Weapon {
    * @param state the state/type of the attack
    */
   public void knockBack(Hero other, String state, int dir) {
-    if (state.equals("lightLeft")) {
+    if (state.equals("lightLeft") || state.equals("lightRight")) {
       this.lightSideKnockback(other, dir);
-    } else if (state.equals("lightRight")) {
-      this.lightSideKnockback(other, dir);
-    } else if (state.equals("lightNLeft")) {
-      this.lightNeutralKnockback(other, dir);
-    } else if (state.equals("lightNRight")) {
+    } else if (state.equals("lightNLeft") || state.equals("lightNRight")) {
       this.lightNeutralKnockback(other, dir);
     } else if (state.equals("lightJump")) {
       this.lightJumpKnockback(other);
-    } else if (state.equals("lightDLeft")) {
+    } else if (state.equals("lightDLeft") || state.equals("lightDRight")) {
       this.lightDownKnockback(other, dir);
-    } else if (state.equals("lightDRight")) {
-      this.lightDownKnockback(other, dir);
+    } else if (state.equals("lightNLair") || state.equals("lightNRair")) {
+      this.lightNairKnockback(other, dir);
+    } else if (state.equals("lightSLair") || state.equals("lightSRair")) {
+      this.lightSairKnockback(other, dir);
     }
   }
 
@@ -166,21 +249,19 @@ public abstract class Weapon {
    * @param curPlayer the player performing the attack
    * @param state the state/type of the attack
    */
-  public void updateHurtbox(Hero curPlayer, String state) {
-    if (state.equals("lightLeft")) {
-      this.lightSideHurtbox(curPlayer, -1);
-    } else if (state.equals("lightRight")) {
-      this.lightSideHurtbox(curPlayer, 1);
-    } else if (state.equals("lightNLeft")) {
-      this.lightNeutralHurtbox(curPlayer, -1);
-    } else if (state.equals("lightNRight")) {
-      this.lightNeutralHurtbox(curPlayer, 1);
+  public void updateHurtbox(Hero curPlayer, String state, int dir) {
+    if (state.equals("lightLeft") || state.equals("lightRight")) {
+      this.lightSideHurtbox(curPlayer, dir);
+    } else if (state.equals("lightNLeft") || state.equals("lightNRight")) {
+      this.lightNeutralHurtbox(curPlayer, dir);
     } else if (state.equals("lightJump")) {
       this.lightJumpHurtbox(curPlayer);
-    } else if (state.equals("lightDLeft")) {
-      this.lightDownHurtbox(curPlayer, -1);
-    } else if (state.equals("lightDRight")) {
-      this.lightDownHurtbox(curPlayer, 1);
+    } else if (state.equals("lightDLeft") || state.equals("lightDRight")) {
+      this.lightDownHurtbox(curPlayer, dir);
+    } else if (state.equals("lightNLair") || state.equals("lightNRair")) {
+      this.lightNairHurtbox(curPlayer, dir);
+    } else if (state.equals("lightSLair") || state.equals("lightSRair")) {
+      this.lightSairHurtbox(curPlayer, dir);
     }
   }
 
@@ -196,6 +277,7 @@ public abstract class Weapon {
 
   /**
    * sets the movement of the player of the player that got hit
+   * during a side light attack
    * @param other the player that was hit by the attack
    * @param dir the direction the attacking player is facing
    */
@@ -210,18 +292,131 @@ public abstract class Weapon {
 
 
 
+  /**
+   * sets the movement of the player during a side neutral attack
+   * @param curPlayer the player performing the attack
+   * @param dir the direction the attacking player is facing
+   * @param originalState the original state of the player,
+   * whether it's left/right side 
+   */
   public abstract void lightNeutralAttack(Hero curPlayer, int dir,
                                           String originalState);
+
+  /**
+   * sets the movement of the player of the player that got hit
+   * during a neutral attack
+   * @param other the player that was hit by the attack
+   * @param dir the direction the attacking player is facing
+   */
   public abstract void lightNeutralKnockback(Hero other, int dir);
+
+  /**
+   * sets the hurtbox movement for the player during a neutral light attack
+   * @param curPlayer the player performing the attack
+   * @param dir the direction of the player attacking
+   */
   public abstract void lightNeutralHurtbox(Hero curPlayer, int dir);
 
+
+  /**
+   * sets the movement of the player during a jump light attack
+   * @param curPlayer the player performing the attack
+   * @param dir the direction the attacking player is facing
+   * @param originalState the original state of the player,
+   * whether it's left/right side 
+   */
   public abstract void lightJumpAttack(Hero curPlayer);
+
+  /**
+   * sets the movement of the player of the player that got hit
+   * during a jump light attack
+   * @param other the player that was hit by the attack
+   * @param dir the direction the attacking player is facing
+   */
   public abstract void lightJumpKnockback(Hero other);
+
+  /**
+   * sets the hurtbox movement for the player during a jump light attack
+   * @param curPlayer the player performing the attack
+   * @param dir the direction of the player attacking
+   */
   public abstract void lightJumpHurtbox(Hero curPlayer);
 
+  
+  /**
+   * sets the movement of the player during a down light attack
+   * @param curPlayer the player performing the attack
+   * @param dir the direction the attacking player is facing
+   * @param originalState the original state of the player,
+   * whether it's left/right side 
+   */
   public abstract void lightDownAttack(Hero curPlayer,  int dir,
                                        String originalState);
+
+  /**
+   * sets the movement of the player of the player that got hit
+   * during a down light attack
+   * @param other the player that was hit by the attack
+   * @param dir the direction the attacking player is facing
+   */
   public abstract void lightDownKnockback(Hero other, int dir);
+
+  /**
+   * sets the hurtbox movement for the player during a down light attack
+   * @param curPlayer the player performing the attack
+   * @param dir the direction of the player attacking
+   */
   public abstract void lightDownHurtbox(Hero curPlayer, int dir);
 
+
+  /**
+   * sets the movement of the player during a neutral air light attack
+   * @param curPlayer the player performing the attack
+   * @param dir the direction the attacking player is facing
+   * @param originalState the original state of the player,
+   * whether it's left/right side 
+   */
+  public abstract void lightNairAttack(Hero curPlayer,  int dir,
+                                       String originalState);
+
+  /**
+   * sets the movement of the player of the player that got hit
+   * during a neutral air light attack
+   * @param other the player that was hit by the attack
+   * @param dir the direction the attacking player is facing
+   */
+  public abstract void lightNairKnockback(Hero other, int dir);
+
+  /**
+   * sets the hurtbox movement for the player during a neutral air light attack
+   * @param curPlayer the player performing the attack
+   * @param dir the direction of the player attacking
+   */
+  public abstract void lightNairHurtbox(Hero curPlayer, int dir);
+  
+  
+  /**
+   * sets the movement of the player during a side air light attack
+   * @param curPlayer the player performing the attack
+   * @param dir the direction the attacking player is facing
+   * @param originalState the original state of the player,
+   * whether it's left/right side 
+   */
+  public abstract void lightSairAttack(Hero curPlayer,  int dir,
+                                       String originalState);
+
+  /**
+   * sets the movement of the player of the player that got hit
+   * during a side air light attack
+   * @param other the player that was hit by the attack
+   * @param dir the direction the attacking player is facing
+   */
+  public abstract void lightSairKnockback(Hero other, int dir);
+
+  /**
+   * sets the hurtbox movement for the player during a side air light attack
+   * @param curPlayer the player performing the attack
+   * @param dir the direction of the player attacking
+   */
+  public abstract void lightSairHurtbox(Hero curPlayer, int dir);
 }

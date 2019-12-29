@@ -16,7 +16,7 @@ public class Ash extends Hero {
              String lightAttackKey) throws IOException {
     super(x, y, width, height, hitboxRadius,
           leftKey, rightKey, jumpKey, dropKey, lightAttackKey,
-          new CloseRange("assets/config/fist-attack.txt"));
+          WeaponFactory.getWeapon("fist"));
 
     BufferedImage[] faceRight = {
       Util.urlToImage("characters/gray.jpg")
@@ -48,7 +48,11 @@ public class Ash extends Hero {
     this.addSprite("lightJump", attack);
     this.addSprite("lightDLeft", attack);
     this.addSprite("lightDRight", attack);
-    
+    this.addSprite("lightNLair", attack);
+    this.addSprite("lightNRair", attack);
+    this.addSprite("lightSLair", attack);
+    this.addSprite("lightSRair", attack);
+
     this.setState("faceRight");
   }
 }

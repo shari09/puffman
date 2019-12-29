@@ -15,7 +15,7 @@ public class World extends JPanel {
   public static final long serialVersionUID = 1L;
 
   public static final int mapWidth = Util.scaleX(3000);
-  public static final int mapHeight = Util.scaleY(1500);
+  public static final int mapHeight = Util.scaleY(1400);
 
   public static final int screenMarginX = Util.scaleX(150);
   public static final int screenMarginY = Util.scaleY(150);
@@ -211,17 +211,30 @@ public class World extends JPanel {
     if (curPlayer.isActiveAttackState()) {
       for (int i = 0; i < this.players.length; i++) { //all other players
         Hero targetPlayer = this.players[i];
+
         if (targetPlayer != curPlayer
-            && targetPlayer.damagable()
-            && Collision.isCollided(
-              (CircleCollidable)(curPlayer.getHurtbox()),
-              //casting player to circle to get hitbox
-              //hmmmm kinda sketchy heheh
-              (CircleCollidable)targetPlayer)
-            ) {
-          curPlayer.damage(targetPlayer);
-          System.out.println(targetPlayer.getDamageTaken());
+            && targetPlayer.damagable()) {
+          //for all the hurtboxes
+          
+          for (int j = 0; j < curPlayer.getNumHurtboxes(); j++) {
+            if (Collision.isCollided(
+                (CircleCollidable)(curPlayer.getHurtboxes()[j]),
+                (CircleCollidable)targetPlayer)) {
+              //collided
+              curPlayer.damage(targetPlayer);
+              // System.out.println("Player: " 
+              //                 + targetPlayer.getX() + " " 
+              //                 + targetPlayer.getY() + " "
+              //                 + targetPlayer.getRadius());
+              // System.out.println("Hurtbox: " 
+              //                 + curPlayer.getHurtboxes()[j].getX() + " "
+              //                 + curPlayer.getHurtboxes()[j].getY() + " "
+              //                 + curPlayer.getHurtboxes()[j].getRadius());
+              System.out.println(targetPlayer.getDamageTaken());
+            }
+          }
         }
+
 
       }
     }

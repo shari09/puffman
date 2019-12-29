@@ -38,6 +38,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   private final double acceleration = Util.scaleX(2.0);
   private final double jumpVel = -World.GRAVITY*30;
   private final double xMaxSpeed = Util.scaleX(5.0);
+  private final double yMaxSpeed = Util.scaleY(30);
   private final double dropVel = World.GRAVITY*3;
   
   private int dir = 1;
@@ -52,6 +53,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   //boolean flags
   private boolean inSpecialState = false;
   private boolean activeAttackState = false;
+  private boolean lightRecovery = false;
 
   private int power;
   private int nextWeapon;
@@ -64,7 +66,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   //special states count as you do something once,
   //it runs for a duration of time
   private HashMap<String, BufferedImage[]> sprites = new HashMap<>();
-  private CloseRange fist;
+  private Weapon fist;
   private Item curItem;
   private Weapon weapon;
   
@@ -73,7 +75,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   public Hero(int x, int y, int width, int height, int hitboxRadius,
               String leftKey, String rightKey,
               String jumpKey, String dropKey, 
-              String lightAttackKey, CloseRange fist){
+              String lightAttackKey, Weapon fist){
     this.x = x;
     this.y = y;
     this.width = width;
@@ -95,26 +97,41 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    */
   public void lightAttack(HashSet<String> heldKeyList,
                           HashSet<String> tappedKeys) {
-    if (this.weapon instanceof CloseRange) {
-      this.weapon = (CloseRange)this.weapon;
+    if (this.activeAttackState) {
+      return;
     }
+
     if (heldKeyList.contains(this.dropKey) && this.dir == -1) {
-      this.weapon.attack(this, "lightDLeft");
+      this.weapon.attack(this, "lightDLeft", this.dir);
     } else if (heldKeyList.contains(this.dropKey) && this.dir == 1) {
-      this.weapon.attack(this, "lightDRight");
+      this.weapon.attack(this, "lightDRight", this.dir);
     } else if (this.xVel < 0 && this.state.equals("onGround")) {
-      this.weapon.attack(this, "lightLeft");
+      this.weapon.attack(this, "lightLeft", this.dir);
     } else if (this.xVel > 0 && this.state.equals("onGround")) {
-      this.weapon.attack(this, "lightRight");
+      this.weapon.attack(this, "lightRight", this.dir);
     } else if (this.xVel == 0 && this.dir == -1
                && this.state.equals("onGround")) {
-      this.weapon.attack(this, "lightNLeft");
+      this.weapon.attack(this, "lightNLeft", this.dir);
     } else if (this.xVel == 0 && this.dir == 1
                && this.state.equals("onGround")) {
-      this.weapon.attack(this, "lightNRight");
+      this.weapon.attack(this, "lightNRight", this.dir);
     } else if (this.state.equals("inAir")
-               && tappedKeys.contains(this.jumpKey)) {
-      this.weapon.attack(this, "lightJump");
+               && tappedKeys.contains(this.jumpKey)
+               && !this.lightRecovery) {
+      this.weapon.attack(this, "lightJump", this.dir);
+      this.lightRecovery = true;
+    } else if (this.state.equals("inAir") 
+               && this.xVel == 0 && this.dir == -1) {
+      this.weapon.attack(this, "lightNLair", this.dir);
+    } else if (this.state.equals("inAir") 
+               && this.xVel == 0 && this.dir == 1) {
+      this.weapon.attack(this, "lightNRair", this.dir);
+    } else if (this.state.equals("inAir") 
+               && this.xVel < 0) {
+      this.weapon.attack(this, "lightSLair", this.dir);
+    } else if (this.state.equals("inAir") 
+               && this.xVel > 0) {
+      this.weapon.attack(this, "lightSRair", this.dir);
     }
   }
   
@@ -199,9 +216,11 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
 
   /**
    * reset the number of jumps to zero
+   * set recovery states to false
    */
   public void resetJumps() {
     this.numJumps = 0;
+    this.lightRecovery = false;
   }
 
   /**
@@ -247,7 +266,9 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    */
   public void dropDown() {
     this.setState("drop");
-    this.yVel += this.dropVel;
+    if (Math.abs(this.yVel) < this.yMaxSpeed) {
+      this.yVel += this.dropVel;
+    }
   }
 
   public void dodge() {
@@ -310,8 +331,11 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    * @param g2d the graphics manager
    */
   public void displayHurtbox(Graphics2D g2d, Hero[] players) {
-    this.weapon.updateHurtbox(this, this.state);
-    this.weapon.getHurtbox().display(g2d, players, this.activeAttackState);
+    this.weapon.updateHurtbox(this, this.state, this.dir);
+    for (int i = 0; i < this.weapon.getNumHurtboxes(); i++) {
+      this.weapon.getHurtboxes()[i]
+        .display(g2d, players, this.activeAttackState);
+    }
   }
 
 
@@ -573,10 +597,14 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
-   * @return the player's hurtbox
+   * @return the player's hurtboxes
    */
-  public Hurtbox getHurtbox() {
-    return this.weapon.getHurtbox();
+  public Hurtbox[] getHurtboxes() {
+    return this.weapon.getHurtboxes();
+  }
+
+  public int getNumHurtboxes() {
+    return this.weapon.getNumHurtboxes();
   }
 
   /**

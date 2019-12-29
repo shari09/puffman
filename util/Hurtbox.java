@@ -12,6 +12,8 @@ public class Hurtbox implements CircleCollidable {
   private int x;
   private int y;
   private int radius;
+  private int offsetX = 0;
+  private int offsetY = 0;
 
   public Hurtbox() {};
   
@@ -36,6 +38,14 @@ public class Hurtbox implements CircleCollidable {
     return this.radius;
   }
 
+  /**
+   * get the colour of the hurtbox
+   * red - active colour, where the weapon can deal damage
+   * transparent gray - inactive colour, where the weapon is
+   * either in loading or recovery state and cannot deal any damage
+   * @param active
+   * @return
+   */
   public Color getColour(boolean active) {
     if (active) {
       return Hurtbox.ACTIVE_COLOUR;
@@ -43,17 +53,68 @@ public class Hurtbox implements CircleCollidable {
     return Hurtbox.INACTIVE_COLOUR;
   }
 
+  /**
+   * sets the position for the hurtbox
+   * @param x the x-pos
+   * @param y the y-pos
+   */
   public void setPos(int x, int y) {
     this.x = x;
     this.y = y;
   }
 
+  /**
+   * sets the size for the hurtbox
+   * @param radius the radius of the hurtbox
+   */
   public void setSize(int radius) {
     this.radius = radius;
   }
 
+  /**
+   * sets the x and y offset for the hurtbox
+   * @param offsetX the x-offset
+   * @param offsetY the y-offset
+   */
+  public void setOffset(int offsetX, int offsetY) {
+    this.offsetX = offsetX;
+    this.offsetY = offsetY;
+  }
 
+  /**
+   * reset all the offsets to zero
+   */
+  public void resetOffset() {
+    this.offsetX = 0;
+    this.offsetY = 0;
+  }
+
+  /**
+   * get the current x-offset
+   * @return offsetX int
+   */
+  public int getOffsetX() {
+    return this.offsetX;
+  }
+
+  /**
+   * get the current y-offset
+   * @return offsetY int
+   */
+  public int getOffsetY() {
+    return this.offsetY;
+  }
+
+  /**
+   * display the hurtbox to the screen
+   * @param g2d the graphics class
+   * @param players the players (need their position for scaling the screen)
+   * @param active whether the hurtbox is active or not (able to deal damage)
+   */
   public void display(Graphics2D g2d, Hero[] players, boolean active) {
+    //update the hurtbox position with the offsets
+    this.x += this.offsetX;
+    this.y += this.offsetY;
     g2d.setColor(this.getColour(active));
     int[] pos = {this.getX()-this.radius, 
                  this.getY()-this.radius, 

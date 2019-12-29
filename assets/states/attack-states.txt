@@ -5,7 +5,10 @@ heavyNRight
 heavyJump
 heavyDLeft
 heavyDRight
-heavyNair
+heavyNLair
+heavyNRair
+heavySLair
+heavySRair
 lightLeft
 lightRight
 lightNLeft
@@ -13,4 +16,7 @@ lightNRight
 lightJump
 lightDLeft
 lightDRight
-lightNair
+lightNLair
+lightNRair
+lightSLair
+lightSRair
