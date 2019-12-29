@@ -4,6 +4,7 @@ import java.awt.image.*;
 import java.io.IOException;
 
 import util.*;
+import weapons.*;
 
 public class Ash extends Hero {
 
@@ -14,7 +15,8 @@ public class Ash extends Hero {
              String jumpKey, String dropKey, 
              String lightAttackKey) throws IOException {
     super(x, y, width, height, hitboxRadius,
-          leftKey, rightKey, jumpKey, dropKey, lightAttackKey);
+          leftKey, rightKey, jumpKey, dropKey, lightAttackKey,
+          new CloseRange("assets/config/fist-attack.txt"));
 
     BufferedImage[] faceRight = {
       Util.urlToImage("characters/gray.jpg")
@@ -39,7 +41,13 @@ public class Ash extends Hero {
     this.addSprite("jumpFromWall", jumpFromWall);
     this.addSprite("knockedBack", jumpFromWall);
 
-    this.addSprite("lightAttack", attack);
+    this.addSprite("lightLeft", attack);
+    this.addSprite("lightRight", attack);
+    this.addSprite("lightNLeft", attack);
+    this.addSprite("lightNRight", attack);
+    this.addSprite("lightJump", attack);
+    this.addSprite("lightDown", attack);
+
     this.setState("faceRight");
   }
 }

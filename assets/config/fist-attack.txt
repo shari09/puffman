@@ -1,13 +1,15 @@
-//state               loadTime   activeTime   recoveryTime
-lightAttackLeft         100         200           150
-lighAttackRight         100         200           150
-lightAttackNeutral      50          150           100
-lightAttackJump         60          160           100 
-lightAttackDown         30          150           100
+//state          load   active   recovery  power    size(ratio)
+//               time    time      time                    
+
+lightSide         50      150       150      5          0.5
+lightNeutral      50      150       100      3          0.5
+lightJump         60      160       100      3          0.5
+lightDown         30      150       100      3          0.5
+lightNair         30      150       100      3          0.5
 
 
-heavyAttackLeft         200         400           300 
-heavyAttackRight        200         400           300
-heavyAttackNeutral      150         300           200
-heavyAttackJump         100         400           250
-lightAttackDown         100         400           200     
+heavySide         200     400       300      10         0.75
+heavyNeutral      150     300       200      7          0.75
+heavyJump         100     400       250      8          0.75
+heavyDown         100     400       200      6          0.75
+heavyNair         100     250       100      5          0.75

@@ -1,2 +1,14 @@
-lightAttack
-heavyAttack
+heavyLeft
+heavyRight
+heavyNLeft
+heavyNRight
+heavyJump
+heavyDown
+heavyNair
+lightLeft
+lightRight
+lightNLeft
+lightNRight
+lightJump
+lightDown
+lightNair

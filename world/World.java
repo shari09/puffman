@@ -208,19 +208,18 @@ public class World extends JPanel {
    * @param curPlayer the current player being checked for
    */
   private void updateAttackCollisions(Hero curPlayer) {
-    if (curPlayer.isAttackState()) {
-      for (int i = 0; i < this.players.length; i++) {
+    if (curPlayer.isActiveAttackState()) {
+      for (int i = 0; i < this.players.length; i++) { //all other players
         Hero targetPlayer = this.players[i];
         if (targetPlayer != curPlayer
             && targetPlayer.damagable()
             && Collision.isCollided(
-              (CircleCollidable)(curPlayer.getAttackHitbox()),
+              (CircleCollidable)(curPlayer.getHurtbox()),
               //casting player to circle to get hitbox
               //hmmmm kinda sketchy heheh
               (CircleCollidable)targetPlayer)
             ) {
-          targetPlayer.takeDamage(curPlayer.getDir(), 
-                                  curPlayer.getPower());
+          curPlayer.damage(targetPlayer);
           System.out.println(targetPlayer.getDamageTaken());
         }
 
@@ -238,7 +237,6 @@ public class World extends JPanel {
       Hero curPlayer = this.players[i];
       curPlayer.updateMovement();
       curPlayer.updateSprite();
-      curPlayer.updateStateFunction();
 
       updateBlockCollisions(curPlayer);
       updateAttackCollisions(curPlayer);
@@ -311,7 +309,7 @@ public class World extends JPanel {
       this.players[i].display(this, g2d, this.players);
       this.players[i].displayHitbox(g2d, this.players);
       if (this.players[i].isAttackState()) {
-        this.players[i].displayAttackHitbox(g2d, this.players);
+        this.players[i].displayHurtbox(g2d, this.players);
       }
     }
   }

@@ -8,6 +8,15 @@ dash
 dodge
 onGround
 jumpFromWall
-lightAttack
-heavyAttack
 knockedBack
+
+
+
+
+lightLeft
+lightRight
+lightNLeft
+lightNRight
+lightJump
+lightDown
+lightNair

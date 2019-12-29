@@ -9,6 +9,7 @@ import java.awt.*;
 import items.*;
 import util.*;
 import world.*;
+import weapons.*;
 
 
 //cast to rectCollidable to get block collision box
@@ -16,7 +17,7 @@ import world.*;
 public abstract class Hero implements CircleCollidable, RectCollidable {
 
   private final Color hitboxColour = new Color(200, 0, 0, 60);
-  
+
   //controls
   private String leftKey;
   private String rightKey;
@@ -33,10 +34,10 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
 
 
   private double xVel;
-  private double xTargetVel;
+  private double xTargetSpeed;
   private final double acceleration = Util.scaleX(2.0);
   private final double jumpVel = -World.GRAVITY*30;
-  private final double xMaxVel = Util.scaleX(5.0);
+  private final double xMaxSpeed = Util.scaleX(5.0);
   private final double dropVel = World.GRAVITY*3;
   
   private int dir = 1;
@@ -50,17 +51,11 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
 
   //boolean flags
   private boolean inSpecialState = false;
+  private boolean activeAttackState = false;
 
-  private int lightAttackPower = 3;
-  private int heavyAttackPower = 5;
   private int power;
-  private int stungTime;
-  private int attackRecoveryTime;
   private int nextWeapon;
   private int damageTaken = 1;
-
-  //weapons hitbox can override the player default hitbox
-  private Hitbox attackHitbox;
 
   //states: onLeftWall, onRightWall, faceRight, faceLeft, etc
   private String state;
@@ -69,14 +64,16 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   //special states count as you do something once,
   //it runs for a duration of time
   private HashMap<String, BufferedImage[]> sprites = new HashMap<>();
+  private CloseRange fist;
   private Item curItem;
+  private Weapon weapon;
   
 
   //constructor
   public Hero(int x, int y, int width, int height, int hitboxRadius,
               String leftKey, String rightKey,
               String jumpKey, String dropKey, 
-              String lightAttackKey) {
+              String lightAttackKey, CloseRange fist){
     this.x = x;
     this.y = y;
     this.width = width;
@@ -87,37 +84,30 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     this.jumpKey = jumpKey;
     this.dropKey = dropKey;
     this.lightAttackKey = lightAttackKey;
+    this.fist = fist;
+    this.weapon = this.fist;
   }
 
 
   /**
-   * Sets the state to light attack state
-   * Creates a attack hitbox for the player
+   * Call the lightAttack method of the current weapon 
    * 
    */
   public void lightAttack() {
-    if (this.xVel != 0) {
-      this.xVel = 0;
-      this.xTargetVel = this.xMaxVel/2;
+    if (this.weapon instanceof CloseRange) {
+      this.weapon = (CloseRange)this.weapon;
     }
-    this.attackHitbox = new CircleHitbox(
-      (int)(this.getX()+this.dir*Util.scaleX(40)),
-      this.getY(),
-      Math.min(Util.scaleX(10), Util.scaleY(10)));
-    this.power = this.lightAttackPower;
-    this.setSpecialState("lightAttack", 300);
-  }
-
-  /**
-   * update the hitbox position for the light attack
-   */
-  private void updateLightAttack() {
-    int offsetX = this.dir*Util.scaleX(20);
-    int offsetY = (int)(this.yVel*Util.scaleY(5));
-    offsetY = Math.min(Util.scaleY(20), offsetY);
-    this.attackHitbox.adjustPos(
-      this.getX()+offsetX, 
-      this.getY()+offsetY);
+    if (this.xVel < 0 && this.state.equals("onGround")) {
+      this.weapon.attack(this, "lightLeft");
+    } else if (this.xVel > 0 && this.state.equals("onGround")) {
+      this.weapon.attack(this, "lightRight");
+    } else if (this.xVel == 0 && this.dir == -1
+               && this.state.equals("onGround")) {
+      this.weapon.attack(this, "lightNLeft");
+    } else if (this.xVel == 0 && this.dir == 1
+               && this.state.equals("onGround")) {
+      this.weapon.attack(this, "lightNRight");
+    }
   }
   
   /**
@@ -128,17 +118,21 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     this.resetXMovement();
   }
 
+
   /**
-   * takes the damage 
-   * @param dir the direction the attack is coming from
-   * @param damage the amount of damage dealt to this player
+   * deal damage to the other player
+   * @param other Hero, the other player
    */
-  public void takeDamage(int dir, int damage) {
+  public void damage(Hero other) {
+    this.weapon.knockBack(other, this.state);
+  }
+
+  /**
+   * adds to the player's damage
+   * @param damage int, the amount of damage
+   */
+  public void takeDamage(int damage) {
     this.damageTaken += damage;
-    this.setSpecialState("knockedBack", 300);
-    this.yVel = Util.scaleY(-1.0)*damage-(this.damageTaken/30);
-    this.dir = dir;
-    this.xTargetVel = Util.scaleX(1.0)*damage+(this.damageTaken/20);
   }
 
   /**
@@ -173,7 +167,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   public void moveLeft() {
     if (!this.state.equals("onLeftWall")) {
       this.dir = -1;
-      this.xTargetVel = this.xMaxVel;
+      this.xTargetSpeed = this.xMaxSpeed;
     }
   }
 
@@ -183,7 +177,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   public void moveRight() {
     if (!this.state.equals("onRightWall")) {
       this.dir = 1;
-      this.xTargetVel = this.xMaxVel;
+      this.xTargetSpeed = this.xMaxSpeed;
     }
   }
 
@@ -192,7 +186,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    */
   public void resetXMovement() {
     this.xVel = 0;
-    this.xTargetVel = 0;
+    this.xTargetSpeed = 0;
   }
 
   /**
@@ -223,7 +217,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    */
   //the logic is kinda messy here, come back later to fix it
   public void updateMovement() {
-    if (Math.abs(this.xVel) < this.xTargetVel) {
+    if (Math.abs(this.xVel) < this.xTargetSpeed) {
       this.xVel += this.acceleration*this.dir;
     }
 
@@ -238,15 +232,6 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
 
     this.x += this.xVel;
     this.y += this.yVel;
-  }
-
-  /**
-   * updates certain state functions when in certain states
-   */
-  public void updateStateFunction() {
-    if (this.state.equals("lightAttack")) {
-      this.updateLightAttack();
-    }
   }
 
   /**
@@ -316,8 +301,9 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    * display the hitbox for player attacks
    * @param g2d the graphics manager
    */
-  public void displayAttackHitbox(Graphics2D g2d, Hero[] players) {
-    this.attackHitbox.display(g2d, players);
+  public void displayHurtbox(Graphics2D g2d, Hero[] players) {
+    this.weapon.updateHurtbox(this, this.state);
+    this.weapon.getHurtbox().display(g2d, players, this.activeAttackState);
   }
 
 
@@ -351,43 +337,51 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   }
 
   @Override
-  /**
-   * @return int return the x
-   */
   public int getX() {
     return (int)(this.x+this.width/2);
   }
 
   @Override
-  /**
-   * @return int return the y
-   */
   public int getY() {
     return (int)(this.y+this.height/2);
   }
 
   @Override
-  /**
-   * @return int, return the radius
-   */
   public int getRadius() {
     return this.radius;
   }
 
   @Override
-  /**
-   * @return int, the width of the image
-   */
   public int getWidth() {
     return this.width;
   }
 
   @Override
-  /**
-   * @return int, the height of the image
-   */
   public int getHeight() {
     return this.height;
+  }
+
+  /**
+   * sets the targeting x-speed
+   * @param xSpeed double, the speed
+   */
+  public void setxTargetSpeed(double xSpeed) {
+    this.xTargetSpeed = xSpeed;
+  }
+
+  /**
+   * sets the y-velocity
+   * @param yVel double, the y-velocity
+   */
+  public void setYVel(double yVel) {
+    this.yVel = yVel;
+  }
+
+  /**
+   * @return this.xMaxSpeed double, the max x-speed
+   */
+  public double getxMaxSpeed() {
+    return this.xMaxSpeed;
   }
 
   /**
@@ -405,6 +399,16 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   public double getYVel() {
     return this.yVel;
   }
+
+  /**
+   * sets the direction of the player
+   * @param dir int, the direction
+   * 1 for right, -1 for left
+   */
+  public void setDir(int dir) {
+    this.dir = dir;
+  }
+
 
   /**
    * @return dir, the direction that the player is facing
@@ -517,10 +521,40 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
-   * @return boolean, whether the current state is an attack state 
+   * Sets the attack state
+   * @param state String, the attack state
+   * @param loadingTime int, the loading time for the attack
+   * @param activeTime int, the active time 
+   *                   where the attack can damage the opponent
+   * @param recoveryTime the time it takes 
+   *                     for the weapon to recover from the attack
+   */
+  public void setAttackState(String state, 
+                             int loadingTime, 
+                             int activeTime, 
+                             int recoveryTime) {
+    this.setSpecialState(state, loadingTime+activeTime+recoveryTime);
+    this.resetXMovement();
+    util.Timer.setTimeout(() -> this.activeAttackState = true, loadingTime);
+    util.Timer.setTimeout(() -> this.activeAttackState = false,
+                          loadingTime+activeTime);
+    
+  }
+
+  /**
+   * @return boolean, whether the player is in the middle of attacking
    */
   public boolean isAttackState() {
     return States.attack.contains(this.state);
+  }
+
+  /**
+   * @return boolean, whether the state is an activeAttackState,
+   * meaning the player is able to harm others (weapon not loading
+   * or recovering) 
+   */
+  public boolean isActiveAttackState() {
+    return this.activeAttackState;
   }
 
   /**
@@ -531,17 +565,18 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
-   * @return the player's attack hitbox
+   * @return the player's hurtbox
    */
-  public Hitbox getAttackHitbox() {
-    return this.attackHitbox;
+  public Hurtbox getHurtbox() {
+    return this.weapon.getHurtbox();
   }
 
   /**
    * @return whether the player is damagable at the moment
    */
   public boolean damagable() {
-    return !this.state.equals("knockedBack");
+    return !this.state.equals("knockedBack")
+            && !this.state.equals("dodge");
   }
 
 }
