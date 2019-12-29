@@ -46,8 +46,9 @@ public class Ash extends Hero {
     this.addSprite("lightNLeft", attack);
     this.addSprite("lightNRight", attack);
     this.addSprite("lightJump", attack);
-    this.addSprite("lightDown", attack);
-
+    this.addSprite("lightDLeft", attack);
+    this.addSprite("lightDRight", attack);
+    
     this.setState("faceRight");
   }
 }

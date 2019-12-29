@@ -118,13 +118,19 @@ public abstract class Weapon {
    */
   public void attack(Hero curPlayer, String state) {
     if (state.equals("lightLeft")) {
-      this.lightSideAttack(curPlayer, -1, "lightLeft");
+      this.lightSideAttack(curPlayer, -1, state);
     } else if (state.equals("lightRight")) {
-      this.lightSideAttack(curPlayer, 1, "lightRight");
+      this.lightSideAttack(curPlayer, 1, state);
     } else if (state.equals("lightNLeft")) {
-      this.lightNeutralAttack(curPlayer, -1, "lightNLeft");
+      this.lightNeutralAttack(curPlayer, -1, state);
     } else if (state.equals("lightNRight")) {
-      this.lightNeutralAttack(curPlayer, 1, "lightNRight");
+      this.lightNeutralAttack(curPlayer, 1, state);
+    } else if (state.equals("lightJump")) {
+      this.lightJumpAttack(curPlayer);
+    } else if (state.equals("lightDLeft")) {
+      this.lightDownAttack(curPlayer, -1, state);
+    } else if (state.equals("lightDRight")) {
+      this.lightDownAttack(curPlayer, 1, state);
     }
   }
 
@@ -135,15 +141,21 @@ public abstract class Weapon {
    * @param other the player being knocked back
    * @param state the state/type of the attack
    */
-  public void knockBack(Hero other, String state) {
+  public void knockBack(Hero other, String state, int dir) {
     if (state.equals("lightLeft")) {
-      this.lightSideKnockback(other, -1);
+      this.lightSideKnockback(other, dir);
     } else if (state.equals("lightRight")) {
-      this.lightSideKnockback(other, 1);
+      this.lightSideKnockback(other, dir);
     } else if (state.equals("lightNLeft")) {
-      this.lightNeutralKnockback(other, -1);
+      this.lightNeutralKnockback(other, dir);
     } else if (state.equals("lightNRight")) {
-      this.lightNeutralKnockback(other, 1);
+      this.lightNeutralKnockback(other, dir);
+    } else if (state.equals("lightJump")) {
+      this.lightJumpKnockback(other);
+    } else if (state.equals("lightDLeft")) {
+      this.lightDownKnockback(other, dir);
+    } else if (state.equals("lightDRight")) {
+      this.lightDownKnockback(other, dir);
     }
   }
 
@@ -163,6 +175,12 @@ public abstract class Weapon {
       this.lightNeutralHurtbox(curPlayer, -1);
     } else if (state.equals("lightNRight")) {
       this.lightNeutralHurtbox(curPlayer, 1);
+    } else if (state.equals("lightJump")) {
+      this.lightJumpHurtbox(curPlayer);
+    } else if (state.equals("lightDLeft")) {
+      this.lightDownHurtbox(curPlayer, -1);
+    } else if (state.equals("lightDRight")) {
+      this.lightDownHurtbox(curPlayer, 1);
     }
   }
 
@@ -201,5 +219,9 @@ public abstract class Weapon {
   public abstract void lightJumpKnockback(Hero other);
   public abstract void lightJumpHurtbox(Hero curPlayer);
 
+  public abstract void lightDownAttack(Hero curPlayer,  int dir,
+                                       String originalState);
+  public abstract void lightDownKnockback(Hero other, int dir);
+  public abstract void lightDownHurtbox(Hero curPlayer, int dir);
 
 }

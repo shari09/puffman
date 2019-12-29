@@ -3,12 +3,14 @@ heavyRight
 heavyNLeft
 heavyNRight
 heavyJump
-heavyDown
+heavyDLeft
+heavyDRight
 heavyNair
 lightLeft
 lightRight
 lightNLeft
 lightNRight
 lightJump
-lightDown
+lightDLeft
+lightDRight
 lightNair

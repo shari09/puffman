@@ -355,6 +355,14 @@ public class World extends JPanel {
   }
 
   /**
+   * get the active held keys of the world
+   * @return activeHeldKeys, the keys held
+   */
+  public HashSet<String> getActiveHeldKeys() {
+    return this.activeHeldKeys;
+  }
+
+  /**
    * remove an active key from the active key set
    * @param key the key to remove
    */

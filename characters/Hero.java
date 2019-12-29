@@ -91,13 +91,18 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
 
   /**
    * Call the lightAttack method of the current weapon 
-   * 
+   * with the current state
    */
-  public void lightAttack() {
+  public void lightAttack(HashSet<String> heldKeyList,
+                          HashSet<String> tappedKeys) {
     if (this.weapon instanceof CloseRange) {
       this.weapon = (CloseRange)this.weapon;
     }
-    if (this.xVel < 0 && this.state.equals("onGround")) {
+    if (heldKeyList.contains(this.dropKey) && this.dir == -1) {
+      this.weapon.attack(this, "lightDLeft");
+    } else if (heldKeyList.contains(this.dropKey) && this.dir == 1) {
+      this.weapon.attack(this, "lightDRight");
+    } else if (this.xVel < 0 && this.state.equals("onGround")) {
       this.weapon.attack(this, "lightLeft");
     } else if (this.xVel > 0 && this.state.equals("onGround")) {
       this.weapon.attack(this, "lightRight");
@@ -107,6 +112,9 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     } else if (this.xVel == 0 && this.dir == 1
                && this.state.equals("onGround")) {
       this.weapon.attack(this, "lightNRight");
+    } else if (this.state.equals("inAir")
+               && tappedKeys.contains(this.jumpKey)) {
+      this.weapon.attack(this, "lightJump");
     }
   }
   
@@ -124,7 +132,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    * @param other Hero, the other player
    */
   public void damage(Hero other) {
-    this.weapon.knockBack(other, this.state);
+    this.weapon.knockBack(other, this.state, this.dir);
   }
 
   /**

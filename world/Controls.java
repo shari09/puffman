@@ -33,12 +33,13 @@ public class Controls implements KeyListener {
     if (!this.heldKeyList.contains(key)
         && !this.tappedKeys.contains(key)) {
       this.tappedKeys.add(key);
+
       for (int i = 0; i < this.world.getPlayers().length; i++) {
         Hero curPlayer = this.world.getPlayers()[i];
         if (key.equals(curPlayer.getJumpKey())) {
           curPlayer.jump();
         } else if (key.equals(curPlayer.getLightAttackKey())) {
-          curPlayer.lightAttack();
+          curPlayer.lightAttack(this.world.getActiveHeldKeys(), tappedKeys);
         }
       }
     }
