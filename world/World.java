@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.awt.image.*;
+import java.awt.event.*;
 import java.io.*;
 
 import items.*;
@@ -50,7 +51,6 @@ public class World extends JPanel {
       scaledPlayerSize,
       scaledPlayerSize/2,
       "A", "D", "Space", "S", "J");
-
     this.players[1] = new Ash(
       Util.scaleX(1850),
       Util.scaleY(500),
@@ -58,6 +58,11 @@ public class World extends JPanel {
       scaledPlayerSize,
       scaledPlayerSize/2,
       "Left", "Right", "Up", "Down", "Slash");
+  }
+
+  public void reset() throws IOException {
+    this.addPlayers();
+    this.running = true;
   }
   
   /**
@@ -295,7 +300,6 @@ public class World extends JPanel {
   public void update() {
     this.updateControls();
     this.updatePlayers();
-    
   }
 
   /**
@@ -336,6 +340,7 @@ public class World extends JPanel {
     Graphics2D g2d = (Graphics2D) g;
     this.drawBackground(g2d);
     this.displayAll(g2d);
+    // System.out.println("player: " + this.players[0].getX());
     Toolkit.getDefaultToolkit().sync();
   }
 

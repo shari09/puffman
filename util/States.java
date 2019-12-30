@@ -5,7 +5,7 @@ import java.util.*;
 
 public class States {
 
-  private synchronized static HashSet<String> 
+  private static HashSet<String> 
   getStates(String filePath) throws IOException {
 
     HashSet<String> states = new HashSet<>();

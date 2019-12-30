@@ -21,6 +21,13 @@ public class Timer {
   }
 
   /**
+   * clear all tasks
+   */
+  public static void reset() {
+    tasks.clear();
+  }
+
+  /**
    * Updates the timer each millisecond
    */
   public static void update() {

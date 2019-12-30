@@ -10,7 +10,7 @@ public abstract class Weapon {
   private static final int LOADING_TIME = 0;
   private static final int ACTIVE_TIME = 1;
   private static final int RECOVERY_TIME = 2;
-  private static final int POWER = 3;
+  private static final int POWER = 3; 
   private static final int SIZE = 4;
 
   private HashMap<String, Double[]> states = new HashMap<>();

@@ -182,7 +182,7 @@ public class CloseRange extends Weapon {
     int power = this.getPower("lightNair");
     other.setSpecialState("knockedBack", power*40);
     other.takeDamage(power);
-    other.setYVel(power*2+(other.getDamageTaken()/20));
+    other.setYVel(-power*2-(other.getDamageTaken()/20));
     other.setxTargetSpeed(power*10);
     other.setDir(dir);
   }

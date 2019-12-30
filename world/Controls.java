@@ -12,7 +12,6 @@ public class Controls implements KeyListener {
   
   public Controls(World world) {
     this.world = world;
-
     this.heldKeyList.add("A");
     this.heldKeyList.add("S");
     this.heldKeyList.add("D");

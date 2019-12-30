@@ -27,9 +27,8 @@ public class Util {
     return GameWindow.height*y / DEV_HEIGHT;
   }
 
-  public synchronized static BufferedImage  
+  public static BufferedImage  
   urlToImage(String url) throws IOException {
-    // System.out.println("loading image...");
     return ImageIO.read(new File("assets/images/" + url));
   }
 }

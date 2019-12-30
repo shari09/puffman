@@ -1,4 +1,4 @@
-//state          load   active   recovery  power    size(ratio)
+//state          load   active   recovery  power    size(% of player)
 //               time    time      time                    
 
 lightSide         50      150       150      5          0.5
