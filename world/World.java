@@ -60,10 +60,10 @@ public class World extends JPanel {
       "Left", "Right", "Up", "Down", "Slash");
   }
 
-  public void reset() throws IOException {
-    this.addPlayers();
-    this.running = true;
-  }
+  // public void reset() throws IOException {
+  //   this.addPlayers();
+  //   this.running = true;
+  // }
   
   /**
    * add the necessary blocks to the world
@@ -98,9 +98,10 @@ public class World extends JPanel {
    * @throws IOException ImageIO
    */
   public World() throws IOException {
-    this.addKeyListener(new Controls(this));
+    
     this.setFocusable(true);
     this.requestFocusInWindow();
+    this.addKeyListener(new Controls(this));
     this.setPreferredSize(GameWindow.screenSize);
     this.background = Util.urlToImage("background/background.jpg");
 

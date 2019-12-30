@@ -79,6 +79,9 @@ public class Hurtbox implements CircleCollidable {
   public void setOffset(int offsetX, int offsetY) {
     this.offsetX = offsetX;
     this.offsetY = offsetY;
+    //update the hurtbox position with the offsets
+    this.x += this.offsetX;
+    this.y += this.offsetY;
   }
 
   /**
@@ -112,9 +115,6 @@ public class Hurtbox implements CircleCollidable {
    * @param active whether the hurtbox is active or not (able to deal damage)
    */
   public void display(Graphics2D g2d, Hero[] players, boolean active) {
-    //update the hurtbox position with the offsets
-    this.x += this.offsetX;
-    this.y += this.offsetY;
     g2d.setColor(this.getColour(active));
     int[] pos = {this.getX()-this.radius, 
                  this.getY()-this.radius, 

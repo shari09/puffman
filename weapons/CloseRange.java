@@ -46,8 +46,10 @@ public class CloseRange extends Weapon {
     other.setSpecialState("knockedBack", power*70);
     other.takeDamage(power);
     other.setDir(dir);
-    other.setxTargetSpeed(Util.scaleX(1.0)*power+(other.getDamageTaken()/25));
-    other.setYVel(Util.scaleY(-1.0)*power-(other.getDamageTaken()/20));
+    other.setxTargetSpeed(Util.scaleX(power)
+                          +Util.scaleX(other.getDamageTaken()/25));
+    other.setYVel(Util.scaleY(-power)
+                  -Util.scaleY(other.getDamageTaken()/20));
   }
 
 
@@ -71,8 +73,10 @@ public class CloseRange extends Weapon {
     other.setSpecialState("knockedBack", power*50);
     other.takeDamage(power);
     other.setDir(dir);
-    other.setxTargetSpeed(Util.scaleX(1.0)*power+(other.getDamageTaken()/20));
-    other.setYVel(Util.scaleY(-1.0)*power-(other.getDamageTaken()/30));
+    other.setxTargetSpeed(Util.scaleX(power)
+                          +Util.scaleX(other.getDamageTaken()/20));
+    other.setYVel(Util.scaleY(-power)
+                  -Util.scaleY(other.getDamageTaken()/30));
   }
 
   @Override
@@ -95,7 +99,7 @@ public class CloseRange extends Weapon {
                              this.getLoadingTime(state),
                              this.getActiveTime(state),
                              this.getRecoveryTime(state));
-    curPlayer.setYVel(Util.scaleY(-7));
+    curPlayer.setYVel(Util.scaleY(-10));
   }
 
   @Override
@@ -103,7 +107,8 @@ public class CloseRange extends Weapon {
     int power = this.getPower("lightNeutral");
     other.setSpecialState("knockedBack", power*30);
     other.takeDamage(power);
-    other.setYVel(Util.scaleY(-1.0)-power*2-(other.getDamageTaken()/20));
+    other.setYVel(Util.scaleY(-power*4)
+                  -Util.scaleY(other.getDamageTaken()/14));
   }
 
   @Override
@@ -137,8 +142,10 @@ public class CloseRange extends Weapon {
     int power = this.getPower("lightDown");
     other.setSpecialState("knockedBack", power*30);
     other.takeDamage(power);
-    other.setYVel(-power*1.5-(other.getDamageTaken()/20));
-    other.setxTargetSpeed(power*3-(other.getDamageTaken()/20));
+    other.setYVel(Util.scaleY(-power*2.5)
+                  -Util.scaleY(other.getDamageTaken()/25));
+    other.setxTargetSpeed(Util.scaleX(power*3)
+                          +Util.scaleX(other.getDamageTaken()/20));
     other.setDir(dir);
   }
 
@@ -182,14 +189,15 @@ public class CloseRange extends Weapon {
     int power = this.getPower("lightNair");
     other.setSpecialState("knockedBack", power*40);
     other.takeDamage(power);
-    other.setYVel(-power*2-(other.getDamageTaken()/20));
-    other.setxTargetSpeed(power*10);
+    other.setYVel(Util.scaleY(-power*3)
+                  -Util.scaleY(other.getDamageTaken()/16));
+    other.setxTargetSpeed(Util.scaleX(power*10));
     other.setDir(dir);
   }
 
   @Override
   public void lightNairHurtbox(Hero curPlayer, int dir) {
-    int dist = 18;
+    int dist = Util.scaleX(25);
     this.setNumHurtboxes(2);
 
     //goes from down to up in an arc
@@ -206,7 +214,7 @@ public class CloseRange extends Weapon {
       offsetX, offsetY
     );
 
-    dist = 12;
+    dist = Util.scaleX(16);
     x = curPlayer.getX()+dir*Util.scaleX(10);
     y = curPlayer.getY()+Util.scaleY(20);
     offsetY = this.getOffsetY(2)-1;
@@ -240,13 +248,13 @@ public class CloseRange extends Weapon {
     int power = this.getPower("lightSair");
     other.setSpecialState("knockedBack", other.getDamageTaken());
     other.takeDamage(power);
-    other.setxTargetSpeed(power*20);
+    other.setxTargetSpeed(Util.scaleX(power*40));
     other.setDir(dir);
   }
 
   @Override
   public void lightSairHurtbox(Hero curPlayer, int dir) {
-    int dist = 24;
+    int dist = Util.scaleX(34);
     this.setNumHurtboxes(2);
 
     //goes from up to down in an arc
@@ -263,7 +271,7 @@ public class CloseRange extends Weapon {
       offsetX, offsetY
     );
 
-    dist = 17;
+    dist = Util.scaleX(23);
     x = curPlayer.getX()+dir*Util.scaleX(10);
     y = curPlayer.getY()-Util.scaleY(20);
     offsetY = this.getOffsetY(2)+2;

@@ -8,40 +8,45 @@ public class GameWindow extends JFrame {
   public static final Dimension screenSize = Toolkit
                                              .getDefaultToolkit()
                                              .getScreenSize();
-  // public static final int width = (int)screenSize.getWidth();
-  // public static final int height = (int)screenSize.getHeight();
-  public static int width = 1000;
-  public static int height = 800;
-  private World world;
+  public static final int width = (int)screenSize.getWidth();
+  public static final int height = (int)screenSize.getHeight();
+  // public static int width = 1000;
+  // public static int height = 800;
+  private JPanel panel;
 
-  public GameWindow(World w) {
+  public GameWindow(JPanel panel) {
     super("Puffman");
-    this.setSize(1000, 800);
+    // this.setSize(1000, 800);
     
     // this.setSize(GameWindow.screenSize);
     // this.setUndecorated(true);
 
     this.setResizable(false);
-    this.world = w;
-    this.getContentPane().add((JPanel)w);
+    this.panel = panel;
+    this.getContentPane().add(panel);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     
-    // GraphicsEnvironment graphics = 
-    //   GraphicsEnvironment.getLocalGraphicsEnvironment();
-    // GraphicsDevice device = graphics.getDefaultScreenDevice();
-    // device.setFullScreenWindow(this);
+    GraphicsEnvironment graphics = 
+      GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice device = graphics.getDefaultScreenDevice();
+    device.setFullScreenWindow(this);
     this.setVisible(true);
   }
 
-  // public void newWorld(JPanel world) {
-  //   this.remove(this.world);
-  //   this.world = (World)world;
-  //   this.getContentPane().add((JPanel)(this.world));
-  //   this.setVisible(true);
-  // }
+  public void switchPanel(JPanel panel) {
+    this.getContentPane().remove(this.panel);
+    this.panel = panel;
+    this.getContentPane().add(panel);
+    this.setVisible(true);
+  }
 
   public void update() {
-    this.world.update();
+    if (this.panel instanceof World) {
+      ((World)(this.panel)).update();
+    } else if (this.panel instanceof GameOverScreen) {
+      ((GameOverScreen)(this.panel)).update();
+    }
+    
     repaint();
   }
 }
