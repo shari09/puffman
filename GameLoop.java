@@ -26,10 +26,21 @@ public class GameLoop {
     Scanner input = new Scanner(System.in);
 
     World world = new World();
+    StartScreen startScreen = new StartScreen();
     GameOverScreen gameOverScreen = new GameOverScreen();
-    GameWindow window = new GameWindow(world);
+    GameWindow window = new GameWindow(startScreen);
 
-    while (!quit) {
+    while (startScreen.getAction() == null) {
+      window.update();
+      timeOut();
+    }
+    if (startScreen.getAction().equals("Quit")) {
+      quit = true;
+    } else {
+      window.switchPanel(world);
+    }
+
+    while (!quit) {  
       Timer.reset();
       world.requestFocus();
       while (world.isRunning()) {

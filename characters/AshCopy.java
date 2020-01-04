@@ -6,9 +6,9 @@ import java.io.IOException;
 import util.*;
 import weapons.*;
 
-public class Ash extends Hero {
+public class AshCopy extends Hero {
 
-  public Ash(int x, int y, 
+  public AshCopy(int x, int y, 
              int width, int height, 
              int hitboxRadius,
              String leftKey, String rightKey,
@@ -20,7 +20,7 @@ public class Ash extends Hero {
           WeaponFactory.getWeapon("fist"));
 
     BufferedImage[] faceRight = {
-      Util.urlToImage("characters/gray.jpg")
+      Util.urlToImage("characters/orange.png")
     };
 
     BufferedImage test = Util.urlToImage("characters/pixelGun.png");

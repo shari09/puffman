@@ -23,6 +23,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   private String rightKey;
   private String jumpKey;
   private String lightAttackKey;
+  private String heavyAttackKey;
   private String dropKey;
 
 
@@ -36,7 +37,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   private double xVel;
   private double xTargetSpeed;
   private final double acceleration = Util.scaleX(2.0);
-  private final double jumpVel = -World.GRAVITY*30;
+  private final double jumpVel = -World.GRAVITY*40;
   private final double xMaxSpeed = Util.scaleX(5.0);
   private final double yMaxSpeed = Util.scaleY(30);
   private final double dropVel = World.GRAVITY*3;
@@ -54,6 +55,8 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   private boolean inSpecialState = false;
   private boolean activeAttackState = false;
   private boolean lightRecovery = false;
+  private boolean heavyRecovery = false;
+  private boolean gravityCancel = false;
 
   private int power;
   private int nextWeapon;
@@ -75,7 +78,8 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   public Hero(int x, int y, int width, int height, int hitboxRadius,
               String leftKey, String rightKey,
               String jumpKey, String dropKey, 
-              String lightAttackKey, Weapon fist){
+              String lightAttackKey, String heavyAttackKey,
+              Weapon fist){
     this.x = x;
     this.y = y;
     this.width = width;
@@ -86,14 +90,17 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     this.jumpKey = jumpKey;
     this.dropKey = dropKey;
     this.lightAttackKey = lightAttackKey;
+    this.heavyAttackKey = heavyAttackKey;
     this.fist = fist;
     this.weapon = this.fist;
   }
 
 
   /**
-   * Call the lightAttack method of the current weapon 
-   * with the current state
+   * calling the light attack the player performs based
+   * on their current weapon and state
+   * @param heldKeyList the list of keys held down
+   * @param tappedKeys the list of keys tapped
    */
   public void lightAttack(HashSet<String> heldKeyList,
                           HashSet<String> tappedKeys) {
@@ -132,6 +139,51 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     } else if (this.state.equals("inAir") 
                && this.xVel > 0) {
       this.weapon.attack(this, "lightSRair", this.dir);
+    }
+  }
+
+  /**
+   * calling the heavy attacks of the player
+   * based on their current weapon and state
+   * @param heldKeyList the keys held down
+   * @param tappedKeys the keys being tapped
+   */
+  public void heavyAttack(HashSet<String> heldKeyList,
+                          HashSet<String> tappedKeys) {
+    if (this.activeAttackState) {
+      return;
+    }
+
+    if (heldKeyList.contains(this.dropKey)
+        && this.state.equals("inAir")) {
+      this.weapon.attack(this, "heavyDown", this.dir);
+    } else if (this.xVel < 0 && this.state.equals("onGround")) {
+      this.weapon.attack(this, "heavyLeft", this.dir);
+    } else if (this.xVel > 0 && this.state.equals("onGround")) {
+      this.weapon.attack(this, "heavyRight", this.dir);
+    } else if (this.xVel == 0 && this.dir == -1
+               && this.state.equals("onGround")) {
+      this.weapon.attack(this, "heavyNLeft", this.dir);
+    } else if (this.xVel == 0 && this.dir == 1
+               && this.state.equals("onGround")) {
+      this.weapon.attack(this, "heavyNRight", this.dir);
+    } else if (this.state.equals("inAir")
+               && tappedKeys.contains(this.jumpKey)
+               && !this.heavyRecovery) {
+      this.weapon.attack(this, "heavyJump", this.dir);
+      this.heavyRecovery = true;
+    } else if (this.state.equals("inAir") 
+               && this.xVel == 0 && this.dir == -1) {
+      this.weapon.attack(this, "heavyNLair", this.dir);
+    } else if (this.state.equals("inAir") 
+               && this.xVel == 0 && this.dir == 1) {
+      this.weapon.attack(this, "heavyNRair", this.dir);
+    } else if (this.state.equals("inAir") 
+               && this.xVel < 0) {
+      this.weapon.attack(this, "heavySLair", this.dir);
+    } else if (this.state.equals("inAir") 
+               && this.xVel > 0) {
+      this.weapon.attack(this, "heavySRair", this.dir);
     }
   }
   
@@ -221,6 +273,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   public void resetJumps() {
     this.numJumps = 0;
     this.lightRecovery = false;
+    this.heavyRecovery = false;
   }
 
   /**
@@ -258,7 +311,18 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     }
 
     this.x += this.xVel;
-    this.y += this.yVel;
+
+    if (!this.gravityCancel) {
+      this.y += this.yVel;
+    }
+  }
+
+  public void gravityCancel(int delay) {
+    this.gravityCancel = true;
+    util.Timer.setTimeout(() -> {
+      this.gravityCancel = false;
+      this.resetYVel();
+    }, delay);
   }
 
   /**
@@ -489,7 +553,12 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     return this.lightAttackKey;
   }
 
-
+  /**
+   * @return the control fo the player to make a heavy attack
+   */
+  public String getHeavyAttackKey() {
+    return this.heavyAttackKey;
+  }
 
   /**
    * moves the x pos of the player

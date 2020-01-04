@@ -1,6 +1,6 @@
 package util;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
 
 //super sketchy wayyyyyyy
@@ -8,7 +8,8 @@ import java.util.Iterator;
 //using runnable as a key hmmmm
 //well I might change it later if I feel like it heheh
 public class Timer {
-  private static HashMap<Runnable, Integer> tasks = new HashMap<>();
+  private static ConcurrentHashMap<Runnable, Integer> 
+    tasks = new ConcurrentHashMap<>();
   private static long previousTime = System.currentTimeMillis();
 
   /**
@@ -33,12 +34,12 @@ public class Timer {
   public static void update() {
     int elapasedTime = (int)(System.currentTimeMillis() - previousTime); 
     if (elapasedTime > 0) {
-      Iterator<HashMap.Entry<Runnable, Integer>> itr = tasks
+      Iterator<ConcurrentHashMap.Entry<Runnable, Integer>> itr = tasks
                                                        .entrySet()
                                                        .iterator();
 
       while (itr.hasNext()) {
-        HashMap.Entry<Runnable, Integer> pair = itr.next();
+        ConcurrentHashMap.Entry<Runnable, Integer> pair = itr.next();
         tasks.put(pair.getKey(), pair.getValue()-elapasedTime);
         if (pair.getValue() <= 0) {
           pair.getKey().run();

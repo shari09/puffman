@@ -1,24 +1,25 @@
 package world;
 
 import javax.swing.*;
-import util.*;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-public class GameOverScreen extends JPanel {
+import util.*;
+
+public class StartScreen extends JPanel {
   private Button[] buttons = new Button[2];
   private String action = null;
   private ButtonListener buttonListener;
 
-  public GameOverScreen() {
+  public StartScreen() {
     this.setPreferredSize(GameWindow.screenSize);
     this.buttons[0] = new Button(
-      Util.scaleX(400), Util.scaleY(800),
-      Util.scaleX(300), Util.scaleY(80), "Rematch");
+      Util.scaleX(650), Util.scaleY(600),
+      Util.scaleX(500), Util.scaleY(80), "Start");
     this.buttons[1] = new Button(
-      Util.scaleX(1200), Util.scaleY(800),
-      Util.scaleX(300), Util.scaleY(80), "Quit");
+      Util.scaleX(650), Util.scaleY(750),
+      Util.scaleX(500), Util.scaleY(80), "Quit");
 
     this.setBackground(Color.BLACK);
     this.buttonListener = new ButtonListener(this.buttons);

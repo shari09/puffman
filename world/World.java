@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.awt.image.*;
-import java.awt.event.*;
 import java.io.*;
 
 import items.*;
@@ -15,8 +14,8 @@ import util.*;
 public class World extends JPanel {
   public static final long serialVersionUID = 1L;
 
-  public static final int mapWidth = Util.scaleX(3000);
-  public static final int mapHeight = Util.scaleY(1400);
+  public static final int mapWidth = Util.scaleX(4000);
+  public static final int mapHeight = Util.scaleY(2400);
 
   public static final int screenMarginX = Util.scaleX(150);
   public static final int screenMarginY = Util.scaleY(150);
@@ -43,21 +42,21 @@ public class World extends JPanel {
    */
   private void addPlayers() throws IOException {
     this.players = new Hero[2];
-    int scaledPlayerSize = Math.min(Util.scaleX(40), Util.scaleY(40));
+    int scaledPlayerSize = Math.min(Util.scaleX(80), Util.scaleY(80));
     this.players[0] = new Ash(
-      Util.scaleX(1200),
-      Util.scaleY(500),
+      World.mapWidth/2 - Util.scaleX(300),
+      (int)(World.mapHeight/2.5),
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize/2,
-      "A", "D", "Space", "S", "J");
-    this.players[1] = new Ash(
-      Util.scaleX(1850),
-      Util.scaleY(500),
+      "A", "D", "Space", "S", "J", "K");
+    this.players[1] = new AshCopy(
+      World.mapWidth/2 + Util.scaleX(300),
+      (int)(World.mapHeight/2.5),
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize/2,
-      "Left", "Right", "Up", "Down", "Slash");
+      "Left", "Right", "Up", "Down", "Period", "Slash");
   }
 
   // public void reset() throws IOException {
@@ -73,22 +72,26 @@ public class World extends JPanel {
     this.blocks = new Block[4];
     this.blocks[0] = new RectBlock(
       "blocks/test.jpg", 
-      Util.scaleX(1000), Util.scaleY(800), 
+      World.mapWidth/2 - Util.scaleX(500),
+      World.mapHeight/2,
       Util.scaleX(1000), Util.scaleY(50)
     );
     this.blocks[1] = new RectBlock(
       "blocks/test.jpg", 
-      Util.scaleX(800), Util.scaleY(400), 
+      World.mapWidth/2 - Util.scaleX(700),
+      World.mapHeight/2 - Util.scaleY(400),
       Util.scaleX(50), Util.scaleY(400)
     );
     this.blocks[2] = new RectBlock(
       "blocks/test.jpg", 
-      Util.scaleX(1400), Util.scaleY(500), 
+      World.mapWidth/2 - Util.scaleX(200),
+      World.mapHeight/2 - Util.scaleY(300),
       Util.scaleX(400), Util.scaleY(40)
     );
     this.blocks[3] = new RectBlock(
       "blocks/test.jpg", 
-      Util.scaleX(600), Util.scaleY(400), 
+      World.mapWidth/2 - Util.scaleX(900),
+      World.mapHeight/2 - Util.scaleY(400),
       Util.scaleX(220), Util.scaleY(50)
     );
   }

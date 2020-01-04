@@ -216,6 +216,18 @@ public abstract class Weapon {
       this.lightNairAttack(curPlayer, dir, state);
     } else if (state.equals("lightSLair") || state.equals("lightSRair")) {
       this.lightSairAttack(curPlayer, dir, state);
+    } else if (state.equals("heavyLeft") || state.equals("heavyRight")) {
+      this.heavySideAttack(curPlayer, dir, state);
+    } else if (state.equals("heavyNLeft") || state.equals("heavyNRight")) {
+      this.heavyNeutralAttack(curPlayer, dir, state);
+    } else if (state.equals("heavyJump")) {
+      this.heavyJumpAttack(curPlayer);
+    } else if (state.equals("heavyDown")) {
+      this.heavyDownAttack(curPlayer, dir);
+    } else if (state.equals("heavyNLair") || state.equals("heavyNRair")) {
+      this.heavyNairAttack(curPlayer, dir, state);
+    } else if (state.equals("heavySLair") || state.equals("heavySRair")) {
+      this.heavySairAttack(curPlayer, dir, state);
     }
   }
 
@@ -239,6 +251,18 @@ public abstract class Weapon {
       this.lightNairKnockback(other, dir);
     } else if (state.equals("lightSLair") || state.equals("lightSRair")) {
       this.lightSairKnockback(other, dir);
+    } else if (state.equals("heavyLeft") || state.equals("heavyRight")) {
+      this.heavySideKnockback(other, dir);
+    } else if (state.equals("heavyNLeft") || state.equals("heavyNRight")) {
+      this.heavyNeutralKnockback(other, dir);
+    } else if (state.equals("heavyJump")) {
+      this.heavyJumpKnockback(other);
+    } else if (state.equals("heavyDown")) {
+      this.heavyDownKnockback(other);
+    } else if (state.equals("heavyNLair") || state.equals("heavyNRair")) {
+      this.heavyNairKnockback(other, dir);
+    } else if (state.equals("heavySLair") || state.equals("heavySRair")) {
+      this.heavySairKnockback(other, dir);
     }
   }
 
@@ -262,6 +286,18 @@ public abstract class Weapon {
       this.lightNairHurtbox(curPlayer, dir);
     } else if (state.equals("lightSLair") || state.equals("lightSRair")) {
       this.lightSairHurtbox(curPlayer, dir);
+    } else if (state.equals("heavyLeft") || state.equals("heavyRight")) {
+      this.heavySideHurtbox(curPlayer, dir);
+    } else if (state.equals("heavyNLeft") || state.equals("heavyNRight")) {
+      this.heavyNeutralHurtbox(curPlayer, dir);
+    } else if (state.equals("heavyJump")) {
+      this.heavyJumpHurtbox(curPlayer);
+    } else if (state.equals("heavyDown")) {
+      this.heavyDownHurtbox(curPlayer, dir);
+    } else if (state.equals("heavyNLair") || state.equals("heavyNRair")) {
+      this.heavyNairHurtbox(curPlayer, dir);
+    } else if (state.equals("heavySLair") || state.equals("heavySRair")) {
+      this.heavySairHurtbox(curPlayer, dir);
     }
   }
 
@@ -419,4 +455,35 @@ public abstract class Weapon {
    * @param dir the direction of the player attacking
    */
   public abstract void lightSairHurtbox(Hero curPlayer, int dir);
+
+
+  //////////////
+
+  public abstract void heavySideAttack(Hero curPlayer, int dir,
+                                       String originalState);
+  public abstract void heavySideKnockback(Hero other, int dir);
+  public abstract void heavySideHurtbox(Hero curPlayer, int dir);
+
+  public abstract void heavyNeutralAttack(Hero curPlayer, int dir,
+                                       String originalState);
+  public abstract void heavyNeutralKnockback(Hero other, int dir);
+  public abstract void heavyNeutralHurtbox(Hero curPlayer, int dir);
+
+  public abstract void heavyJumpAttack(Hero curPlayer);
+  public abstract void heavyJumpKnockback(Hero other);
+  public abstract void heavyJumpHurtbox(Hero curPlayer);
+
+  public abstract void heavyNairAttack(Hero curPlayer, int dir,
+                                       String originalState);
+  public abstract void heavyNairKnockback(Hero other, int dir);
+  public abstract void heavyNairHurtbox(Hero curPlayer, int dir);
+
+  public abstract void heavySairAttack(Hero curPlayer, int dir,
+                                       String originalState);
+  public abstract void heavySairKnockback(Hero other, int dir);
+  public abstract void heavySairHurtbox(Hero curPlayer, int dir);
+
+  public abstract void heavyDownAttack(Hero curPlayer, int dir);
+  public abstract void heavyDownKnockback(Hero other);
+  public abstract void heavyDownHurtbox(Hero curPlayer, int dir);
 }

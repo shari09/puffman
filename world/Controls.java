@@ -39,6 +39,8 @@ public class Controls implements KeyListener {
           curPlayer.jump();
         } else if (key.equals(curPlayer.getLightAttackKey())) {
           curPlayer.lightAttack(this.world.getActiveHeldKeys(), tappedKeys);
+        } else if (key.equals(curPlayer.getHeavyAttackKey())) {
+          curPlayer.heavyAttack(this.world.getActiveHeldKeys(), tappedKeys);
         }
       }
     }

@@ -17,8 +17,7 @@ heavyRight
 heavyNLeft
 heavyNRight
 heavyJump
-heavyDLeft
-heavyDRight
+heavyDown
 heavyNLair
 heavyNRair
 heavySLair

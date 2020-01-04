@@ -15,3 +15,5 @@ heavyJump         100     400       250      8          0.9
 heavyDown         100     400       200      6          0.75
 heavyNair         100     250       200      5          0.75
 heavySair         200     300       180      6          0.8
+
+//change the number values later, this was copied from fist

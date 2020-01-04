@@ -9,9 +9,9 @@ lightNair         40      250       150      3          0.5
 lightSair         60      150       120      5          0.5
 
 
-heavySide         200     400       300      10         0.75
-heavyNeutral      150     300       200      7          0.75
-heavyJump         100     400       250      8          0.9
-heavyDown         100     400       200      6          0.75
-heavyNair         100     250       200      5          0.75
-heavySair         200     300       180      6          0.8
+heavySide         300     200       400      10         0.75
+heavyNeutral      250     300       300      7          0.75
+heavyJump         200     400       350      8          0.9
+heavyDown         200     400       300      6          0.75
+heavyNair         200     250       300      5          0.75
+heavySair         300     300       280      6          0.8

@@ -1,12 +1,11 @@
-package world;
+package util;
 
-import java.awt.event.*;
-import javax.swing.JPanel;
-
-import util.Button;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ButtonListener extends MouseAdapter {
   private Button[] buttons;
+
   public ButtonListener(Button[] buttons) {
     this.buttons = buttons;
   }

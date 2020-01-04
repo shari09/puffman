@@ -23,6 +23,12 @@ public class Button {
     this.text = text;
   }
 
+  /**
+   * check if the passed in coordinates is inside the button
+   * @param x the xpos
+   * @param y the ypos
+   * @return boolean, whether the pos is inside the button
+   */
   public boolean inButton(int x, int y) {
     if (this.x < x
         && x < this.x+this.width
@@ -33,22 +39,41 @@ public class Button {
     return false;
   }
 
+  /**
+   * set the hover state of the button
+   * @param hover the hover state (true/false)
+   */
   public void setHover(boolean hover) {
     this.hover = hover;
   }
 
+  /**
+   * 'click' the button - set buttonClicked equal to true
+   */
   public void click() {
     this.clicked = true;
   }
 
+  /**
+   * check to see whether the button is clicked
+   * @return clicked boolean, whether it's clicked
+   */
   public boolean isClicked() {
     return this.clicked;
   }
 
+  /**
+   * get the action that this button is supposed to perform
+   * @return action String, the action of this button
+   */
   public String getAction() {
     return this.text;
   }
 
+  /**
+   * display the button on the panel/screen
+   * @param g2d the graphics class
+   */
   public void display(Graphics2D g2d) {
     if (this.hover) {
       g2d.setColor(Button.BLUE);
