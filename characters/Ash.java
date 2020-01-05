@@ -13,10 +13,11 @@ public class Ash extends Hero {
              int hitboxRadius,
              String leftKey, String rightKey,
              String jumpKey, String dropKey, 
-             String lightAttackKey, String heavyAttackKey) throws IOException {
+             String lightAttackKey, String heavyAttackKey,
+             String pickupKey) throws IOException {
     super(x, y, width, height, hitboxRadius,
           leftKey, rightKey, jumpKey, dropKey, lightAttackKey,
-          heavyAttackKey,
+          heavyAttackKey, pickupKey,
           WeaponFactory.getWeapon("fist"));
 
     BufferedImage[] faceRight = {

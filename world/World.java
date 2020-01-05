@@ -2,14 +2,16 @@ package world;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.HashSet;
 import java.awt.image.*;
 import java.io.*;
+import java.util.Iterator;
 
 import items.*;
 import characters.*;
 import blocks.*;
 import util.*;
+import maps.Map;
 
 public class World extends JPanel {
   public static final long serialVersionUID = 1L;
@@ -24,8 +26,7 @@ public class World extends JPanel {
   
   private BufferedImage background;
 
-  private HashSet<Item> damagableItems = new HashSet<>();
-  private HashSet<Item> pickUpableItems = new HashSet<>();
+  private HashSet<Item> items = new HashSet<>();
   private Hero[] players;
   private Block[] blocks;
   private boolean running = true;
@@ -35,6 +36,8 @@ public class World extends JPanel {
   //need constant update on keys
   private HashSet<String> activeHeldKeys = new HashSet<>();
 
+
+  private ItemFactory itemFactory;
 
   /**
    * add the players to the world
@@ -49,14 +52,14 @@ public class World extends JPanel {
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize/2,
-      "A", "D", "Space", "S", "J", "K");
-    this.players[1] = new AshCopy(
+      "A", "D", "Space", "S", "J", "K", "H");
+    this.players[1] = new Ash(
       World.mapWidth/2 + Util.scaleX(300),
       (int)(World.mapHeight/2.5),
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize/2,
-      "Left", "Right", "Up", "Down", "Period", "Slash");
+      "Left", "Right", "Up", "Down", "Comma", "Period", "Slash");
   }
 
   // public void reset() throws IOException {
@@ -69,31 +72,7 @@ public class World extends JPanel {
    * @throws IOException ImageIO
    */
   private void addBlocks() throws IOException {
-    this.blocks = new Block[4];
-    this.blocks[0] = new RectBlock(
-      "blocks/test.jpg", 
-      World.mapWidth/2 - Util.scaleX(500),
-      World.mapHeight/2,
-      Util.scaleX(1000), Util.scaleY(50)
-    );
-    this.blocks[1] = new RectBlock(
-      "blocks/test.jpg", 
-      World.mapWidth/2 - Util.scaleX(700),
-      World.mapHeight/2 - Util.scaleY(400),
-      Util.scaleX(50), Util.scaleY(400)
-    );
-    this.blocks[2] = new RectBlock(
-      "blocks/test.jpg", 
-      World.mapWidth/2 - Util.scaleX(200),
-      World.mapHeight/2 - Util.scaleY(300),
-      Util.scaleX(400), Util.scaleY(40)
-    );
-    this.blocks[3] = new RectBlock(
-      "blocks/test.jpg", 
-      World.mapWidth/2 - Util.scaleX(900),
-      World.mapHeight/2 - Util.scaleY(400),
-      Util.scaleX(220), Util.scaleY(50)
-    );
+    this.blocks = Map.getMap(1);
   }
 
   /**
@@ -104,12 +83,14 @@ public class World extends JPanel {
     
     this.setFocusable(true);
     this.requestFocusInWindow();
-    this.addKeyListener(new Controls(this));
     this.setPreferredSize(GameWindow.screenSize);
     this.background = Util.urlToImage("background/background.jpg");
 
     this.addPlayers();
+    this.addKeyListener(new Controls(this));
     this.addBlocks();
+    this.itemFactory = new ItemFactory((RectBlock[])(this.blocks));
+    this.items.add(this.itemFactory.getItem(3));
   };
 
   /**
@@ -133,16 +114,10 @@ public class World extends JPanel {
         double xVel = curPlayer.getXVel();
         double yVel = curPlayer.getYVel();
 
-        //for push back calculations
-        boolean biggerX = false;
-        if (Math.abs(xVel) > Math.abs(yVel)) {
-          biggerX = true;
-        }
-
         //move the player back until they no longer collide
         while (Collision.isCollided((RectCollidable)curPlayer, 
                                     (RectCollidable)curBlock)) {
-          if (biggerX) {
+          if (Math.abs(xVel) > Math.abs(yVel)) {
             curPlayer.moveX(-xVel/Math.abs(xVel));
             curPlayer.moveY(-yVel/Math.abs(xVel));
           } else {
@@ -231,20 +206,32 @@ public class World extends JPanel {
                 (CircleCollidable)targetPlayer)) {
               //collided
               curPlayer.damage(targetPlayer);
-              // System.out.println("Player: " 
-              //                 + targetPlayer.getX() + " " 
-              //                 + targetPlayer.getY() + " "
-              //                 + targetPlayer.getRadius());
-              // System.out.println("Hurtbox: " 
-              //                 + curPlayer.getHurtboxes()[j].getX() + " "
-              //                 + curPlayer.getHurtboxes()[j].getY() + " "
-              //                 + curPlayer.getHurtboxes()[j].getRadius());
               System.out.println(targetPlayer.getDamageTaken());
             }
           }
         }
 
 
+      }
+    }
+  }
+
+  /**
+   * check to see if the player can pick up anything
+   * @param player the player to check for
+   */
+  public void checkPickUp(Hero player) {
+    Iterator<Item> itr = this.items.iterator();
+    Item item;
+    while (itr.hasNext()) {
+      item = itr.next();
+      if ((item.getState() == Item.SPAWNED
+          || item.getState() == Item.DISAPPEARING)
+          && Collision.isCollided((CircleCollidable)player,
+             (RectCollidable)item)) {
+        player.pickUp(item);
+        item.setState(Item.ON_PLAYER);
+        return;
       }
     }
   }
@@ -298,12 +285,72 @@ public class World extends JPanel {
     }
   }
 
+
+  /**
+   * update all items
+   * - get rid of items that already disappeared
+   * - move the throwing items
+   * - check throwing item collision with both player and block
+   */
+  private void updateItems() {
+    
+    Iterator<Item> itr = this.items.iterator();
+    Item curItem;
+    Block curBlock;
+    while (itr.hasNext()) {
+      curItem = itr.next();
+      //remove items
+      if (!curItem.isAlive()) {
+        itr.remove();
+      } else if (curItem.getState() == Item.THROWING) {
+        //update movement
+        curItem.moveX((int)(curItem.getXVel()));
+        curItem.setYVel(curItem.getYVel()+World.GRAVITY/2);
+        curItem.moveY((int)(curItem.getYVel()));
+
+        //block-item collision
+        for (int i = 0; i < this.blocks.length; i++) {
+          curBlock = this.blocks[i];
+          if (Collision.isCollided((RectCollidable)curItem, 
+                                   (RectCollidable)curBlock)) {
+            double xVel = curItem.getXVel();
+            double yVel = curItem.getYVel();
+
+            //move the item back until they no longer collide
+            while (Collision.isCollided((RectCollidable)curItem, 
+                                        (RectCollidable)curBlock)) {
+              if (Math.abs(xVel) > Math.abs(yVel)) {
+                curItem.moveX(-xVel/Math.abs(xVel));
+                curItem.moveY(-yVel/Math.abs(xVel));
+              } else {
+                curItem.moveX(-xVel/Math.abs(yVel));
+                curItem.moveY(-yVel/Math.abs(yVel));
+              } 
+            }
+
+            String side = Collision.getTouchingSide((RectCollidable)curItem, 
+                                                    (RectCollidable)curBlock);
+            if (side.equals("bottom")) {
+              curItem.hitGround();
+            } else {
+              curItem.hitWall();
+            }
+          }
+        }
+
+
+      }
+    }
+
+  }
+
   /**
    * updates the world
    */
   public void update() {
     this.updateControls();
     this.updatePlayers();
+    this.updateItems();
   }
 
   /**
@@ -323,9 +370,23 @@ public class World extends JPanel {
    * @param g2d the Graphics2D to draw on
    */
   private void displayAll(Graphics2D g2d) {
+    //display blocks
     for (int i = 0; i < this.blocks.length; i++) {
       this.blocks[i].display(this, g2d, this.players);
     }
+
+    //display items
+    Iterator<Item> itemItr = this.items.iterator();
+    Item item;
+    while (itemItr.hasNext()) {
+      item = itemItr.next();
+      if (item.getState() != Item.ON_PLAYER) {
+        item.display(this, g2d, this.players);
+      }
+      
+    }
+
+    //displaying player related things
     for (int i = 0; i < this.players.length; i++) {
       this.players[i].display(this, g2d, this.players);
       this.players[i].displayHitbox(g2d, this.players);
@@ -359,6 +420,14 @@ public class World extends JPanel {
    */
   public Hero[] getPlayers() {
     return this.players;
+  }
+
+  /**
+   * get the blocks/map of the current world
+   * @return Block[], the blocks
+   */
+  public Block[] getBlocks() {
+    return this.blocks;
   }
 
   /**

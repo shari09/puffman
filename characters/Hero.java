@@ -25,6 +25,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   private String lightAttackKey;
   private String heavyAttackKey;
   private String dropKey;
+  private String pickUpKey;
 
 
   private double x;
@@ -37,7 +38,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   private double xVel;
   private double xTargetSpeed;
   private final double acceleration = Util.scaleX(2.0);
-  private final double jumpVel = -World.GRAVITY*40;
+  private final double jumpVel = -World.GRAVITY*32;
   private final double xMaxSpeed = Util.scaleX(5.0);
   private final double yMaxSpeed = Util.scaleY(30);
   private final double dropVel = World.GRAVITY*3;
@@ -58,8 +59,6 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   private boolean heavyRecovery = false;
   private boolean gravityCancel = false;
 
-  private int power;
-  private int nextWeapon;
   private int damageTaken = 1;
 
   //states: onLeftWall, onRightWall, faceRight, faceLeft, etc
@@ -79,6 +78,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
               String leftKey, String rightKey,
               String jumpKey, String dropKey, 
               String lightAttackKey, String heavyAttackKey,
+              String pickUpKey,
               Weapon fist){
     this.x = x;
     this.y = y;
@@ -91,6 +91,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     this.dropKey = dropKey;
     this.lightAttackKey = lightAttackKey;
     this.heavyAttackKey = heavyAttackKey;
+    this.pickUpKey = pickUpKey;
     this.fist = fist;
     this.weapon = this.fist;
   }
@@ -340,11 +341,16 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   }
 
   public void throwItem() {
-
+    this.curItem.setState(Item.THROWING);
+    this.curItem.setX((int)(this.x));
+    this.curItem.setY((int)(this.y));
+    this.curItem.setXVel(Item.X_SPEED*this.dir);
+    this.curItem = null;
   }
 
-  public void pickUp(Item[] items) {
-
+  public void pickUp(Item item) {
+    this.curItem = item;
+    this.curItem.setNonDamagablePlayer(this);
   }
 
   /**
@@ -422,14 +428,6 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    */
   public int getDamageTaken() {
     return this.damageTaken;
-  }
-
-
-  /**
-   * @return power int, how much damage the player deals
-   */
-  public int getPower() {
-    return this.power;
   }
 
   @Override
@@ -561,6 +559,16 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
+   * @return the control for the player to pickUp/throw an item
+   */
+  public String getPickUpKey() {
+    return this.pickUpKey;
+  }
+
+
+
+
+  /**
    * moves the x pos of the player
    * @param x double, the x change
    */
@@ -672,8 +680,20 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     return this.weapon.getHurtboxes();
   }
 
+  /**
+   * get the number of hurtboxes
+   * @return int, the number of hurtboxes
+   */
   public int getNumHurtboxes() {
     return this.weapon.getNumHurtboxes();
+  }
+
+  /**
+   * @return boolean, whether or not the player 
+   * currently have an item (weapon counts)
+   */
+  public boolean hasItem() {
+    return (this.curItem != null);
   }
 
   /**

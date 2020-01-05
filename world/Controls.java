@@ -12,12 +12,12 @@ public class Controls implements KeyListener {
   
   public Controls(World world) {
     this.world = world;
-    this.heldKeyList.add("A");
-    this.heldKeyList.add("S");
-    this.heldKeyList.add("D");
-    this.heldKeyList.add("Left");
-    this.heldKeyList.add("Down");
-    this.heldKeyList.add("Right");
+    for (int i = 0; i < this.world.getPlayers().length; i++) {
+      Hero curPlayer = this.world.getPlayers()[i];
+      this.heldKeyList.add(curPlayer.getDropKey());
+      this.heldKeyList.add(curPlayer.getLeftKey());
+      this.heldKeyList.add(curPlayer.getRightKey());
+    }
   }
 
   //all keys are hardcoded rn but it'll be an easy change
@@ -41,6 +41,13 @@ public class Controls implements KeyListener {
           curPlayer.lightAttack(this.world.getActiveHeldKeys(), tappedKeys);
         } else if (key.equals(curPlayer.getHeavyAttackKey())) {
           curPlayer.heavyAttack(this.world.getActiveHeldKeys(), tappedKeys);
+        } else if (key.equals(curPlayer.getPickUpKey())) {
+          if (curPlayer.hasItem()) {
+            curPlayer.throwItem();
+          } else {
+            this.world.checkPickUp(curPlayer);
+          }
+          
         }
       }
     }
