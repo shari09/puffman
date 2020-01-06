@@ -28,6 +28,8 @@ public class Ash extends Hero {
     BufferedImage[] attack = {test, test, test};
     BufferedImage test2 = Util.urlToImage("characters/gray.jpg");
     BufferedImage[] jumpFromWall = {test2};
+    BufferedImage mrorange = Util.urlToImage("characters/mrorange.jpg");
+    BufferedImage[] knockback = {mrorange};
     BufferedImage[] idk = {test2, test};
 
     //the faceDir states are broken
@@ -41,7 +43,7 @@ public class Ash extends Hero {
     this.addSprite("onGround", faceRight);
     this.addSprite("drop", faceRight);
     this.addSprite("jumpFromWall", jumpFromWall);
-    this.addSprite("knockedBack", jumpFromWall);
+    this.addSprite("knockedBack", knockback);
 
     this.addSprite("lightLeft", attack);
     this.addSprite("lightRight", attack);

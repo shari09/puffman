@@ -8,10 +8,10 @@ public class GameWindow extends JFrame {
   public static final Dimension screenSize = Toolkit
                                              .getDefaultToolkit()
                                              .getScreenSize();
-  // public static final int width = (int)screenSize.getWidth();
-  // public static final int height = (int)screenSize.getHeight();
-  public static int width = 1000;
-  public static int height = 800;
+  public static final int width = (int)screenSize.getWidth();
+  public static final int height = (int)screenSize.getHeight();
+  // public static int width = 1000;
+  // public static int height = 800;
   private JPanel panel;
 
   public GameWindow(JPanel panel) {
@@ -26,10 +26,10 @@ public class GameWindow extends JFrame {
     this.getContentPane().add(panel);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     
-    // GraphicsEnvironment graphics = 
-    //   GraphicsEnvironment.getLocalGraphicsEnvironment();
-    // GraphicsDevice device = graphics.getDefaultScreenDevice();
-    // device.setFullScreenWindow(this);
+    GraphicsEnvironment graphics = 
+      GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice device = graphics.getDefaultScreenDevice();
+    device.setFullScreenWindow(this);
   
     this.setVisible(true);
   }

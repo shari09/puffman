@@ -12,7 +12,7 @@ public class SpikeBall extends Item {
     super(pos[0], pos[1],
           SpikeBall.WIDTH, SpikeBall.HEIGHT,
           Util.urlToImage("gadgets/spikeBall.png"),
-          500);
+          2000);
   }
 
   @Override

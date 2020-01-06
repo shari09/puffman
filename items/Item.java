@@ -30,6 +30,13 @@ public abstract class Item implements RectCollidable {
   private boolean alive = true;
   private Hero nonDamagablePlayer;
 
+  private int thrownDamage = 5;
+  private int thrownDelay = 600;
+  private int thrownKnockbackX = Util.scaleX(10);
+  private int thrownKnockbackY = Util.scaleY(-5);
+
+  private String disappearingID;
+
   private double yVel;
   private double xVel;
 
@@ -62,8 +69,13 @@ public abstract class Item implements RectCollidable {
     this.xVel = -this.xVel;
   }
 
-  public void hitPlayer() {
-    this.xVel = -this.xVel;
+  public void hitPlayer(Hero player) {
+    player.takeDamage(this.thrownDamage);
+    player.setDir((int)(this.xVel/Math.abs(this.xVel)));
+    player.setSpecialState("knockedBack", this.thrownDelay);
+    player.setxTargetSpeed(this.thrownKnockbackX);
+    player.setYVel(this.thrownKnockbackY);
+    this.xVel = -this.xVel/2;
   }
 
   public abstract void use();
@@ -78,9 +90,19 @@ public abstract class Item implements RectCollidable {
   public void setState(int state) {
     this.state = state;
     if (this.state == Item.DISAPPEARING) {
-      Timer.setTimeout(() -> this.alive = false, 
-                       this.disappearingTime);
+      this.disappearingID = Timer.setTimeout(() -> this.alive = false, 
+                                             this.disappearingTime);
     }
+  }
+
+  public void reset() {
+    if (this.disappearingID != null) {
+      Timer.clearTimeout(this.disappearingID);
+      this.disappearingID = null;
+      this.xVel = 0;
+      this.yVel = 0;
+    }
+    
   }
 
 

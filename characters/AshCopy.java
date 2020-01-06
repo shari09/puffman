@@ -13,10 +13,11 @@ public class AshCopy extends Hero {
              int hitboxRadius,
              String leftKey, String rightKey,
              String jumpKey, String dropKey, 
-             String lightAttackKey, String heavyAttackKey) throws IOException {
+             String lightAttackKey, String heavyAttackKey,
+             String pickupKey) throws IOException {
     super(x, y, width, height, hitboxRadius,
           leftKey, rightKey, jumpKey, dropKey, lightAttackKey,
-          heavyAttackKey,
+          heavyAttackKey, pickupKey,
           WeaponFactory.getWeapon("fist"));
 
     BufferedImage[] faceRight = {
@@ -25,7 +26,9 @@ public class AshCopy extends Hero {
 
     BufferedImage test = Util.urlToImage("characters/pixelGun.png");
     BufferedImage[] attack = {test, test, test};
-    BufferedImage test2 = Util.urlToImage("characters/gray.jpg");
+    BufferedImage test2 = Util.urlToImage("characters/orange.png");
+    BufferedImage mrorange = Util.urlToImage("characters/mrorange.jpg");
+    BufferedImage[] knockback = {mrorange};
     BufferedImage[] jumpFromWall = {test2};
     BufferedImage[] idk = {test2, test};
 
@@ -40,7 +43,7 @@ public class AshCopy extends Hero {
     this.addSprite("onGround", faceRight);
     this.addSprite("drop", faceRight);
     this.addSprite("jumpFromWall", jumpFromWall);
-    this.addSprite("knockedBack", jumpFromWall);
+    this.addSprite("knockedBack", knockback);
 
     this.addSprite("lightLeft", attack);
     this.addSprite("lightRight", attack);

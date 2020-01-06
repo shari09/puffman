@@ -53,7 +53,7 @@ public class World extends JPanel {
       scaledPlayerSize,
       scaledPlayerSize/2,
       "A", "D", "Space", "S", "J", "K", "H");
-    this.players[1] = new Ash(
+    this.players[1] = new AshCopy(
       World.mapWidth/2 + Util.scaleX(300),
       (int)(World.mapHeight/2.5),
       scaledPlayerSize,
@@ -101,7 +101,7 @@ public class World extends JPanel {
    * @param curPlayer the player that's checked for collision
    * @param curBlock the block that's being checked for collision
    */
-  private void updateBlockCollisions(Hero curPlayer) {
+  private void checkPlayerBlockCollisions(Hero curPlayer) {
 
     boolean inAir = true;
 
@@ -231,6 +231,7 @@ public class World extends JPanel {
              (RectCollidable)item)) {
         player.pickUp(item);
         item.setState(Item.ON_PLAYER);
+        item.reset();
         return;
       }
     }
@@ -247,7 +248,7 @@ public class World extends JPanel {
       curPlayer.updateMovement();
       curPlayer.updateSprite();
 
-      updateBlockCollisions(curPlayer);
+      checkPlayerBlockCollisions(curPlayer);
       updateAttackCollisions(curPlayer);
 
       if (curPlayer.isDead()) {
@@ -285,6 +286,61 @@ public class World extends JPanel {
     }
   }
 
+  /**
+   * checks for item and block collisions
+   * @param curItem the current item to check for
+   */
+  private void checkItemBlockCollision(Item curItem) {
+    //block-item collision
+    Block curBlock;
+    for (int i = 0; i < this.blocks.length; i++) {
+      curBlock = this.blocks[i];
+      if (Collision.isCollided((RectCollidable)curItem, 
+                               (RectCollidable)curBlock)) {
+        double xVel = curItem.getXVel();
+        double yVel = curItem.getYVel();
+
+        //move the item back until they no longer collide
+        while (Collision.isCollided((RectCollidable)curItem, 
+                                    (RectCollidable)curBlock)) {
+          if (Math.abs(xVel) > Math.abs(yVel)) {
+            curItem.moveX(-xVel/Math.abs(xVel));
+            curItem.moveY(-yVel/Math.abs(xVel));
+          } else {
+            curItem.moveX(-xVel/Math.abs(yVel));
+            curItem.moveY(-yVel/Math.abs(yVel));
+          } 
+        }
+
+        String side = Collision.getTouchingSide((RectCollidable)curItem, 
+                                                (RectCollidable)curBlock);
+        if (side.equals("bottom")) {
+          curItem.hitGround();
+        } else {
+          curItem.hitWall();
+        }
+      }
+    }
+  }
+
+  /**
+   * checks collision between the thrown items and players
+   * sees if the item damages the player 
+   * @param curItem the current item that's being checked for
+   */
+  private void checkItemPlayerCollision(Item curItem) {
+    Hero curPlayer;
+    for (int i = 0; i < this.players.length; i++) {
+      curPlayer = this.players[i];
+      if (curPlayer != curItem.getNonDamagablePlayer()
+          && Collision.isCollided((RectCollidable)curItem, 
+                                  (RectCollidable)curPlayer)) {
+        
+        curItem.hitPlayer(curPlayer);
+        
+      }
+    }
+  }
 
   /**
    * update all items
@@ -296,7 +352,6 @@ public class World extends JPanel {
     
     Iterator<Item> itr = this.items.iterator();
     Item curItem;
-    Block curBlock;
     while (itr.hasNext()) {
       curItem = itr.next();
       //remove items
@@ -308,37 +363,9 @@ public class World extends JPanel {
         curItem.setYVel(curItem.getYVel()+World.GRAVITY/2);
         curItem.moveY((int)(curItem.getYVel()));
 
-        //block-item collision
-        for (int i = 0; i < this.blocks.length; i++) {
-          curBlock = this.blocks[i];
-          if (Collision.isCollided((RectCollidable)curItem, 
-                                   (RectCollidable)curBlock)) {
-            double xVel = curItem.getXVel();
-            double yVel = curItem.getYVel();
-
-            //move the item back until they no longer collide
-            while (Collision.isCollided((RectCollidable)curItem, 
-                                        (RectCollidable)curBlock)) {
-              if (Math.abs(xVel) > Math.abs(yVel)) {
-                curItem.moveX(-xVel/Math.abs(xVel));
-                curItem.moveY(-yVel/Math.abs(xVel));
-              } else {
-                curItem.moveX(-xVel/Math.abs(yVel));
-                curItem.moveY(-yVel/Math.abs(yVel));
-              } 
-            }
-
-            String side = Collision.getTouchingSide((RectCollidable)curItem, 
-                                                    (RectCollidable)curBlock);
-            if (side.equals("bottom")) {
-              curItem.hitGround();
-            } else {
-              curItem.hitWall();
-            }
-          }
-        }
-
-
+        this.checkItemBlockCollision(curItem);
+        this.checkItemPlayerCollision(curItem);
+  
       }
     }
 

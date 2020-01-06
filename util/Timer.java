@@ -1,24 +1,40 @@
 package util;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.UUID;
 
-//super sketchy wayyyyyyy
-//casting function to runnable
-//using runnable as a key hmmmm
-//well I might change it later if I feel like it heheh
+
+
 public class Timer {
-  private static ConcurrentHashMap<Runnable, Integer> 
-    tasks = new ConcurrentHashMap<>();
+  private static ConcurrentHashMap<String, Integer> 
+    timer = new ConcurrentHashMap<>();
+  private static HashMap<String, Runnable> 
+    tasks = new HashMap<>();
   private static long previousTime = System.currentTimeMillis();
 
   /**
-   * Adds a task to the timer
+   * Generate a random id for each timeout event
+   * add the time and tasks to the Timer
    * @param runnable the runnable task/function
    * @param delay the delay in milliseconds
+   * @return id, the unique id
    */
-  public static void setTimeout(Runnable runnable, int delay) {
-    tasks.put(runnable, delay);
+  public static String setTimeout(Runnable runnable, int delay) {
+    String id = UUID.randomUUID().toString(); 
+    tasks.put(id, runnable);
+    timer.put(id, delay);
+    return id;
+  }
+
+  /**
+   * cancel the timeout event
+   * @param id
+   */
+  public static void clearTimeout(String id) {
+    tasks.remove(id);
+    timer.remove(id);
   }
 
   /**
@@ -26,6 +42,7 @@ public class Timer {
    */
   public static void reset() {
     tasks.clear();
+    timer.clear();
   }
 
   /**
@@ -34,15 +51,16 @@ public class Timer {
   public static void update() {
     int elapasedTime = (int)(System.currentTimeMillis() - previousTime); 
     if (elapasedTime > 0) {
-      Iterator<ConcurrentHashMap.Entry<Runnable, Integer>> itr = tasks
+      Iterator<ConcurrentHashMap.Entry<String, Integer>> itr = timer
                                                        .entrySet()
                                                        .iterator();
 
       while (itr.hasNext()) {
-        ConcurrentHashMap.Entry<Runnable, Integer> pair = itr.next();
-        tasks.put(pair.getKey(), pair.getValue()-elapasedTime);
+        ConcurrentHashMap.Entry<String, Integer> pair = itr.next();
+        timer.put(pair.getKey(), pair.getValue()-elapasedTime);
         if (pair.getValue() <= 0) {
-          pair.getKey().run();
+          tasks.get(pair.getKey()).run();
+          tasks.remove(pair.getKey());
           itr.remove();
         }
       }

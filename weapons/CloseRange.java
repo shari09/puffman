@@ -30,10 +30,16 @@ public class CloseRange extends Weapon {
 
   @Override
   public void lightSideHurtbox(Hero curPlayer, int dir) {
-    this.setNumHurtboxes(1);
+    this.setNumHurtboxes(2);
     this.setHurtboxPos(
       1, 
-      curPlayer.getX() + Util.scaleX((int)(curPlayer.getWidth()*1.3))*dir,
+      curPlayer.getX() + Util.scaleX((int)(curPlayer.getWidth()*1.4))*dir,
+      curPlayer.getY(),
+      (int)(curPlayer.getRadius()*this.getSize("lightSide"))
+    );
+    this.setHurtboxPos(
+      2, 
+      curPlayer.getX() + Util.scaleX((int)(curPlayer.getWidth()))*dir,
       curPlayer.getY(),
       (int)(curPlayer.getRadius()*this.getSize("lightSide"))
     );
@@ -331,7 +337,7 @@ public class CloseRange extends Weapon {
                              this.getLoadingTime(state), 
                              this.getActiveTime(state), 
                              this.getRecoveryTime(state));
-    curPlayer.setxTargetSpeed(Util.scaleX(3));
+    // curPlayer.setxTargetSpeed(Util.scaleX(3));
   }
   
   @Override

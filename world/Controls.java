@@ -37,7 +37,9 @@ public class Controls implements KeyListener {
         Hero curPlayer = this.world.getPlayers()[i];
         if (key.equals(curPlayer.getJumpKey())) {
           curPlayer.jump();
-        } else if (key.equals(curPlayer.getLightAttackKey())) {
+        }
+        
+        else if (key.equals(curPlayer.getLightAttackKey())) {
           curPlayer.lightAttack(this.world.getActiveHeldKeys(), tappedKeys);
         } else if (key.equals(curPlayer.getHeavyAttackKey())) {
           curPlayer.heavyAttack(this.world.getActiveHeldKeys(), tappedKeys);

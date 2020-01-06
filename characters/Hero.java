@@ -318,6 +318,10 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     }
   }
 
+  /**
+   * creates a gravity cancel for a period of time
+   * @param delay the time of the gravity cancel
+   */
   public void gravityCancel(int delay) {
     this.gravityCancel = true;
     util.Timer.setTimeout(() -> {
@@ -340,6 +344,9 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
 
   }
 
+  /**
+   * throws the current item (gadget/weapon) the player has
+   */
   public void throwItem() {
     this.curItem.setState(Item.THROWING);
     this.curItem.setX((int)(this.x));
@@ -348,6 +355,10 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     this.curItem = null;
   }
 
+  /**
+   * picks up an item
+   * @param item the item to pick up
+   */
   public void pickUp(Item item) {
     this.curItem = item;
     this.curItem.setNonDamagablePlayer(this);

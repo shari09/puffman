@@ -1,17 +1,17 @@
 //state          load   active   recovery  power    size(% of player)
 //               time    time      time                    
 
-lightSide         50      150       150      5          0.5
-lightNeutral      50      150       100      3          0.5
-lightJump         60      160       100      3          0.5
-lightDown         30      150       200      3          0.5
-lightNair         40      250       150      3          0.5
-lightSair         60      150       120      5          0.5
+lightSide         75      125       150      3          0.30
+lightNeutral      50       50        75      3          0.50
+lightJump         60      160       100      3          0.75
+lightDown         30      150       200      4          0.50
+lightNair         40      200       100      3          0.50
+lightSair         60      125       100      5          0.50
 
 
-heavySide         300     200       400      10         0.75
-heavyNeutral      250     300       300      7          0.75
-heavyJump         200     400       350      8          0.9
-heavyDown         200     400       300      6          0.75
-heavyNair         200     250       300      5          0.75
-heavySair         300     300       280      6          0.8
+heavySide         300     350       400      7          0.75
+heavyNeutral      200     500       100      9          0.75
+heavyJump         200     400       350      8          0.90
+heavyDown         200     400       300      6          0.75 
+heavyNair         150     200       250      5          0.60
+heavySair         200     300       280      6          0.80
