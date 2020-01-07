@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import util.Util;
 
-public class SpikeBall extends Item {
+public class SpikeBall extends Gadget {
   public static final int WIDTH = Util.scaleX(50);
   public static final int HEIGHT = SpikeBall.WIDTH;
 
@@ -17,6 +17,6 @@ public class SpikeBall extends Item {
 
   @Override
   public void use() {
-
+    System.out.println("useItem");
   }
 }

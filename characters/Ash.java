@@ -24,7 +24,7 @@ public class Ash extends Hero {
       Util.urlToImage("characters/gray.jpg")
     };
 
-    BufferedImage test = Util.urlToImage("characters/pixelGun.png");
+    BufferedImage test = Util.urlToImage("characters/attack.webp");
     BufferedImage[] attack = {test, test, test};
     BufferedImage test2 = Util.urlToImage("characters/gray.jpg");
     BufferedImage[] jumpFromWall = {test2};

@@ -352,7 +352,17 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     this.curItem.setX((int)(this.x));
     this.curItem.setY((int)(this.y));
     this.curItem.setXVel(Item.X_SPEED*this.dir);
+    if (this.curItem instanceof PickupableWeaponHolder) {
+      this.weapon = this.fist;
+    }
     this.curItem = null;
+  }
+
+  /**
+   * use the current item
+   */
+  public void useGadget() {
+    ((Gadget)(this.curItem)).use();
   }
 
   /**
@@ -362,6 +372,12 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   public void pickUp(Item item) {
     this.curItem = item;
     this.curItem.setNonDamagablePlayer(this);
+    if (item instanceof PickupableWeaponHolder) {
+      this.weapon = ((PickupableWeaponHolder)(item)).getWeapon();
+      if (item instanceof Hammer) {
+        System.out.println("picked up hammer");
+      }
+    }
   }
 
   /**
@@ -705,6 +721,14 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
    */
   public boolean hasItem() {
     return (this.curItem != null);
+  }
+
+  /**
+   * @return boolean, whether or not the player
+   * currently possesses a gadget
+   */
+  public boolean hasGadget() {
+    return (this.curItem instanceof Gadget);
   }
 
   /**

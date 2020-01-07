@@ -78,8 +78,6 @@ public abstract class Item implements RectCollidable {
     this.xVel = -this.xVel/2;
   }
 
-  public abstract void use();
-
 
   ///getters/setters
 

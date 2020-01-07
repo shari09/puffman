@@ -29,6 +29,8 @@ public class States {
       all = getStates("assets/states/valid-states.txt");
       attack = getStates("assets/states/attack-states.txt");
       special = getStates("assets/states/special-states.txt");
+      special.addAll(attack);
+      all.addAll(special);
     } catch (IOException e) {
       //not handled
       System.err.println(e);

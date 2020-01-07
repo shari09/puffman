@@ -90,7 +90,7 @@ public class World extends JPanel {
     this.addKeyListener(new Controls(this));
     this.addBlocks();
     this.itemFactory = new ItemFactory((RectBlock[])(this.blocks));
-    this.items.add(this.itemFactory.getItem(3));
+    this.items.add(this.itemFactory.getItem(4));
   };
 
   /**

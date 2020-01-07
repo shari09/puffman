@@ -3,13 +3,11 @@ package weapons;
 import java.io.IOException;
 
 public class WeaponFactory {
-  public synchronized static Weapon getWeapon(String weapon) throws IOException {
-    if (weapon.equals("fist")) {
-      return new CloseRange("assets/config/fist.txt");
-    } else if (weapon.equals("hammer")) {
-      return new CloseRange("assets/config/hammer.txt");
-    }
+  public static Weapon getWeapon(String weapon) throws IOException {
 
+    if (weapon.equals("fist") || weapon.equals("hammer")) {
+      return new CloseRange("assets/config/weapons/" + weapon + ".txt");
+    }
     return null;
   }
 }

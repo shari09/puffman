@@ -37,19 +37,25 @@ public class Controls implements KeyListener {
         Hero curPlayer = this.world.getPlayers()[i];
         if (key.equals(curPlayer.getJumpKey())) {
           curPlayer.jump();
-        }
-        
-        else if (key.equals(curPlayer.getLightAttackKey())) {
-          curPlayer.lightAttack(this.world.getActiveHeldKeys(), tappedKeys);
+          //light attack key
+        } else if (key.equals(curPlayer.getLightAttackKey())) {
+          if (curPlayer.hasGadget()) {
+            curPlayer.useGadget();
+          } else {
+            curPlayer.lightAttack(this.world.getActiveHeldKeys(), tappedKeys);
+          }
+          //heavy attack key
         } else if (key.equals(curPlayer.getHeavyAttackKey())) {
-          curPlayer.heavyAttack(this.world.getActiveHeldKeys(), tappedKeys);
+          if (!curPlayer.hasGadget()) {
+            curPlayer.heavyAttack(this.world.getActiveHeldKeys(), tappedKeys);
+          }
+          //pick up/throw key
         } else if (key.equals(curPlayer.getPickUpKey())) {
           if (curPlayer.hasItem()) {
             curPlayer.throwItem();
           } else {
             this.world.checkPickUp(curPlayer);
           }
-          
         }
       }
     }

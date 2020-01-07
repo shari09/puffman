@@ -17,7 +17,8 @@ public abstract class Weapon {
   private Hurtbox[] hurtboxes = new Hurtbox[10];
   private int numHurtboxes = 1;
 
-  public Weapon(String filePath)  throws IOException {
+
+  public Weapon(String filePath) throws IOException {
     this.getStates(filePath);
     for (int i = 0; i < this.hurtboxes.length; i++) {
       this.hurtboxes[i] = new Hurtbox();
