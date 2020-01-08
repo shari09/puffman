@@ -12,7 +12,7 @@ public abstract class PickupableWeaponHolder extends Item {
   public PickupableWeaponHolder(int x, int y, int width, int height, 
                                 BufferedImage sprite, 
                                 String weaponName) throws IOException {
-    super(x, y, width, height, sprite, 3000);
+    super(x, y, width, height, sprite, 1500);
     this.weapon = WeaponFactory.getWeapon(weaponName);
   }
 

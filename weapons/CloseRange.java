@@ -89,7 +89,7 @@ public class CloseRange extends Weapon {
     this.setNumHurtboxes(1);
     this.setHurtboxPos(
       1,
-      curPlayer.getX() + Util.scaleX((int)(curPlayer.getWidth()))*dir,
+      curPlayer.getX() + Util.scaleX((int)(curPlayer.getRadius()))*dir,
       curPlayer.getY(),
       (int)(curPlayer.getRadius()*this.getSize("lightNeutral"))
     );

@@ -2,6 +2,7 @@ package world;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class GameWindow extends JFrame {
   public static final long serialVersionUID = 1L;
@@ -48,7 +49,7 @@ public class GameWindow extends JFrame {
   /**
    * call the update methods of the panels currently on the frame
    */
-  public void update() {
+  public void update() throws IOException {
     if (this.panel instanceof World) {
       ((World)(this.panel)).update();
     } else if (this.panel instanceof GameOverScreen) {

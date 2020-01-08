@@ -51,11 +51,15 @@ public class World extends JPanel {
       (int)(World.mapHeight/2.5),
       scaledPlayerSize,
       scaledPlayerSize,
+      scaledPlayerSize,
+      scaledPlayerSize,
       scaledPlayerSize/2,
       "A", "D", "Space", "S", "J", "K", "H");
     this.players[1] = new AshCopy(
       World.mapWidth/2 + Util.scaleX(300),
       (int)(World.mapHeight/2.5),
+      scaledPlayerSize,
+      scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize/2,
@@ -90,7 +94,6 @@ public class World extends JPanel {
     this.addKeyListener(new Controls(this));
     this.addBlocks();
     this.itemFactory = new ItemFactory((RectBlock[])(this.blocks));
-    this.items.add(this.itemFactory.getItem(4));
   };
 
   /**
@@ -262,7 +265,7 @@ public class World extends JPanel {
   /**
    * update the held-key controls for the players
    */
-  private void updateControls() {
+  private synchronized void updateControls() {
     Iterator<String> itr = this.activeHeldKeys.iterator();
 
     while (itr.hasNext()) {
@@ -343,12 +346,22 @@ public class World extends JPanel {
   }
 
   /**
+   * have a 0.1% chance of randomly spawning the items based on the current
+   * number of items in the world
+   */
+  private void spawnItem() throws IOException {
+    if (this.items.size() < 4 && Math.random() < 0.001) {
+      this.items.add(this.itemFactory.getRandomItem());
+    }
+  }
+
+  /**
    * update all items
    * - get rid of items that already disappeared
    * - move the throwing items
    * - check throwing item collision with both player and block
    */
-  private void updateItems() {
+  private void updateItems() throws IOException {
     
     Iterator<Item> itr = this.items.iterator();
     Item curItem;
@@ -369,12 +382,14 @@ public class World extends JPanel {
       }
     }
 
+    this.spawnItem();
+
   }
 
   /**
    * updates the world
    */
-  public void update() {
+  public void update() throws IOException {
     this.updateControls();
     this.updatePlayers();
     this.updateItems();

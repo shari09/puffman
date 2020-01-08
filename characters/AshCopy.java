@@ -11,11 +11,12 @@ public class AshCopy extends Hero {
   public AshCopy(int x, int y, 
              int width, int height, 
              int hitboxRadius,
+             int imageWidth, int imageHeight,
              String leftKey, String rightKey,
              String jumpKey, String dropKey, 
              String lightAttackKey, String heavyAttackKey,
              String pickupKey) throws IOException {
-    super(x, y, width, height, hitboxRadius,
+    super(x, y, width, height, hitboxRadius, imageWidth, imageHeight,
           leftKey, rightKey, jumpKey, dropKey, lightAttackKey,
           heavyAttackKey, pickupKey,
           WeaponFactory.getWeapon("fist"));

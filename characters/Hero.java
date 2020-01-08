@@ -34,6 +34,9 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   private int height;
   private int radius;
 
+  private int imageWidth;
+  private int imageHeight;
+
 
   private double xVel;
   private double xTargetSpeed;
@@ -74,7 +77,9 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   
 
   //constructor
-  public Hero(int x, int y, int width, int height, int hitboxRadius,
+  public Hero(int x, int y, int width, int height,
+              int imageWidth, int imageHeight,
+              int hitboxRadius,
               String leftKey, String rightKey,
               String jumpKey, String dropKey, 
               String lightAttackKey, String heavyAttackKey,
@@ -84,6 +89,8 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     this.y = y;
     this.width = width;
     this.height = height;
+    this.imageWidth = imageWidth;
+    this.imageHeight = imageHeight;
     this.radius = hitboxRadius;
     this.leftKey = leftKey;
     this.rightKey = rightKey;
@@ -393,16 +400,15 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     return false;
   }
 
-  //testing for now
-  //dunno how im gonna do the animation 
-  //but that's for later :D
+
   /**
    * display the character to the panel
    * @param panel the JPanel to display to
    * @param g2d the graphics manager
    */
   public void display(JPanel panel, Graphics2D g2d, Hero[] players) {
-    int[] pos = {(int)(this.x), (int)(this.y), this.width, this.height};
+    int[] pos = {(int)(this.x), (int)(this.y), 
+                 this.imageWidth, this.imageHeight};
     int[] newPos = Zoom.getDisplayPos(g2d, players, pos);
     g2d.drawImage(this.sprites.get(this.state)[this.spriteNum],
                   newPos[0], newPos[1], newPos[2], newPos[3],

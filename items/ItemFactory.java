@@ -29,7 +29,6 @@ public class ItemFactory {
     int[] pos = {randX, this.blocks[blockNum].getY()
                         -height
                         -this.blocks[blockNum].getHeight()/2};
-    System.out.println(randX + " " + blockNum);
     return pos;
   }
 
@@ -51,6 +50,6 @@ public class ItemFactory {
   }
 
   public Item getRandomItem() throws IOException {
-    return this.getItem((int)(Math.random()*5));
+    return this.getItem((int)(Math.random()*2)+3);
   }
 }
