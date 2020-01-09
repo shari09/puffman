@@ -72,7 +72,8 @@ public abstract class Item implements RectCollidable {
   public void hitPlayer(Hero player) {
     player.takeDamage(this.thrownDamage);
     player.setDir((int)(this.xVel/Math.abs(this.xVel)));
-    player.setSpecialState("knockedBack", this.thrownDelay);
+    player.setSpecialState("knockedBack", 
+                           this.thrownDelay*player.getDamageTaken()/10);
     player.setxTargetSpeed(this.thrownKnockbackX);
     player.setYVel(this.thrownKnockbackY);
     this.xVel = -this.xVel/2;

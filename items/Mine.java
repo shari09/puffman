@@ -1,6 +1,6 @@
 package items;
 
 
-public class Mine extends Item implements Spawnable {
+public class Mine extends Gadget {
 
 }

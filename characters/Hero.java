@@ -1,8 +1,11 @@
 package characters;
 
 import java.util.*;
-import javax.swing.*;
-import java.awt.image.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.swing.JPanel;
+import java.awt.image.BufferedImage;
 import java.awt.geom.*;
 import java.awt.*;
 
@@ -14,7 +17,7 @@ import weapons.*;
 
 //cast to rectCollidable to get block collision box
 //cast to circleCollidable to get hit box
-public abstract class Hero implements CircleCollidable, RectCollidable {
+public class Hero implements CircleCollidable, RectCollidable {
 
   private final Color hitboxColour = new Color(200, 0, 0, 60);
 
@@ -52,7 +55,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
 
   //counters
   private int spriteNum;
-  private final int framesPerSprite = 10;
+  private final int framesPerSprite = 3;
   private int curSpriteFrame;
 
   //boolean flags
@@ -75,6 +78,23 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
   private Item curItem;
   private Weapon weapon;
   
+  private void addAllSprites(String heroName) throws IOException {
+    BufferedReader reader = new BufferedReader(
+      new FileReader("assets/config/characters/"+heroName+"Sprites.txt")
+    );
+    String line = reader.readLine();
+    String[] data;
+    BufferedImage[] sprites;
+    while (line != null) {
+      data = line.split("\\s+");
+      sprites = new BufferedImage[data.length-1];
+      for (int i = 1; i < data.length; i++) {
+        sprites[i-1] = Util.urlToImage("characters/"+heroName+"/"+data[i]);
+      }
+      this.sprites.put(data[0], sprites);
+    }
+    reader.close();
+  }
 
   //constructor
   public Hero(int x, int y, int width, int height,
@@ -84,7 +104,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
               String jumpKey, String dropKey, 
               String lightAttackKey, String heavyAttackKey,
               String pickUpKey,
-              Weapon fist){
+              Weapon fist, String heroName) throws IOException {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -101,6 +121,7 @@ public abstract class Hero implements CircleCollidable, RectCollidable {
     this.pickUpKey = pickUpKey;
     this.fist = fist;
     this.weapon = this.fist;
+    this.addAllSprites(heroName);
   }
 
 

@@ -33,14 +33,13 @@ public class ItemFactory {
   }
 
   public Item getItem(int num) throws IOException {
-    // if (num == ItemFactory.BOMB) {
-    //   return new Bomb();
+    if (num == ItemFactory.BOMB) {
+      return new Bomb(this.randomPos(Bomb.WIDTH, Bomb.HEIGHT));
     // } else if (num == ItemFactory.HORN) {
     //   return new Horn();
     // } else if (num == ItemFactory.MINE) {
     //   return new Mine();
-    // } else
-     if (num == ItemFactory.SPIKE_BALL) {
+    } else if (num == ItemFactory.SPIKE_BALL) {
       return new SpikeBall(this.randomPos(SpikeBall.WIDTH, 
                                           SpikeBall.HEIGHT));
     } else if (num == ItemFactory.HAMMER) {

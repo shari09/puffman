@@ -11,6 +11,7 @@ import items.*;
 import characters.*;
 import blocks.*;
 import util.*;
+import weapons.CloseRange;
 import maps.Map;
 
 public class World extends JPanel {
@@ -46,7 +47,7 @@ public class World extends JPanel {
   private void addPlayers() throws IOException {
     this.players = new Hero[2];
     int scaledPlayerSize = Math.min(Util.scaleX(80), Util.scaleY(80));
-    this.players[0] = new Ash(
+    this.players[0] = new Hero(
       World.mapWidth/2 - Util.scaleX(300),
       (int)(World.mapHeight/2.5),
       scaledPlayerSize,
@@ -54,8 +55,9 @@ public class World extends JPanel {
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize/2,
-      "A", "D", "Space", "S", "J", "K", "H");
-    this.players[1] = new AshCopy(
+      "A", "D", "Space", "S", "J", "K", "H",
+      new CloseRange("assets/config/weapons/fist.txt"), "ash");
+    this.players[1] = new Hero(
       World.mapWidth/2 + Util.scaleX(300),
       (int)(World.mapHeight/2.5),
       scaledPlayerSize,
@@ -63,7 +65,8 @@ public class World extends JPanel {
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize/2,
-      "Left", "Right", "Up", "Down", "Comma", "Period", "Slash");
+      "Left", "Right", "Up", "Down", "Comma", "Period", "Slash",
+      new CloseRange("assets/config/weapons/fist.txt"), "ashCopy");
   }
 
   // public void reset() throws IOException {

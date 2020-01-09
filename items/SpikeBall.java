@@ -17,6 +17,7 @@ public class SpikeBall extends Gadget {
 
   @Override
   public void use() {
-    System.out.println("useItem");
+    
   }
+
 }

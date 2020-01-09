@@ -1,6 +1,22 @@
 package items;
 
+import java.io.IOException;
 
-public class Bomb extends Item implements Spawnable {
+import util.Util;
 
+public class Bomb extends Gadget {
+  public static final int WIDTH = Util.scaleX(60);
+  public static final int HEIGHT = Bomb.WIDTH;
+
+  public Bomb(int[] pos) throws IOException {
+    super(pos[0], pos[1],
+          Bomb.WIDTH, Bomb.HEIGHT,
+          Util.urlToImage("gadgets/bomb.png"),
+          2000);
+  }
+
+  @Override
+  public void use() {
+    System.out.println("useItem");
+  }
 }

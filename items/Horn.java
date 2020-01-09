@@ -1,6 +1,6 @@
 package items;
 
 
-public class Horn extends Item implements Spawnable {
+public class Horn extends Gadget {
 
 }

@@ -39,10 +39,10 @@ public class Controls implements KeyListener {
           curPlayer.jump();
           //light attack key
         } else if (key.equals(curPlayer.getLightAttackKey())) {
-          if (curPlayer.hasGadget()) {
-            curPlayer.useGadget();
-          } else {
+          if (!curPlayer.hasGadget()) {
             curPlayer.lightAttack(this.world.getActiveHeldKeys(), tappedKeys);
+          } else if (curPlayer.getItem() instanceof Horn) {
+            
           }
           //heavy attack key
         } else if (key.equals(curPlayer.getHeavyAttackKey())) {
