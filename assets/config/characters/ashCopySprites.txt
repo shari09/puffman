@@ -2,7 +2,7 @@ faceRight     gray.png
 faceLeft      gray.png
 onLeftWall    gray.png
 onRightWall   gray.png
-inAir         gray.png    blue.jpg
+inAir         gray.png    
 onGround      gray.png
 drop          gray.png
 jumpFromWall  gray.png
@@ -12,7 +12,7 @@ lightLeft     attack.webp
 lightRight    attack.webp
 lightNLeft    attack.webp
 lightNRight   attack.webp
-lightJump     attack.webp
+lightJump     attack.webp 
 lightDLeft    attack.webp
 lightDRight   attack.webp
 lightNLair    attack.webp

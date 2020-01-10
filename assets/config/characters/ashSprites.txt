@@ -2,7 +2,7 @@ faceRight     orange.png
 faceLeft      orange.png
 onLeftWall    orange.png
 onRightWall   orange.png
-inAir         orange.png    blue.jpg
+inAir         orange.png    
 onGround      orange.png
 drop          orange.png
 jumpFromWall  orange.png
@@ -12,9 +12,9 @@ lightLeft     attack.webp
 lightRight    attack.webp
 lightNLeft    attack.webp
 lightNRight   attack.webp
-lightJump     attack.webp
+lightJump     attack.webp  
 lightDLeft    attack.webp
-lightDRight   attack.webp
+lightDRight   attack.webp    
 lightNLair    attack.webp
 lightNRair    attack.webp
 lightSLair    attack.webp

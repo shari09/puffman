@@ -1,0 +1,36 @@
+Type 'jall Gameloop.java' in the terminal to compile and run
+
+- this game is like super smash, there are
+no hp bars
+- instead, the more damage you have, the more knockback
+you take
+- knockback also depend on the specific attack (each direction
+have a different attack)
+
+
+there are currently no sprites
+
+
+player 1
+
+a - move left
+d - move right
+s - down drop
+space - jump
+
+j - light attack
+k - heavy attack
+h - throw/pick up item
+
+
+
+player 2
+
+arrow left/right - move left/right
+arrow up - jump
+arrow down - down drop
+
+, - light attack
+. - heavy attack
+/ - pickup/throw item
+

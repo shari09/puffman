@@ -35,6 +35,7 @@ public abstract class Weapon {
     File file = new File(filePath);
 
     Scanner fin = new Scanner(file);
+    // BufferedReader reader = new BufferedReader(new FileReader(filePath));
     String line;
     String[] data;
     Double[] configNum;

@@ -68,7 +68,7 @@ public class Hero implements CircleCollidable, RectCollidable {
   private int damageTaken = 1;
 
   //states: onLeftWall, onRightWall, faceRight, faceLeft, etc
-  private String state;
+  private String state = "onGround";
 
 
   //special states count as you do something once,
@@ -89,9 +89,12 @@ public class Hero implements CircleCollidable, RectCollidable {
       data = line.split("\\s+");
       sprites = new BufferedImage[data.length-1];
       for (int i = 1; i < data.length; i++) {
+        // System.out.println("characters/"+heroName+"/"+data[i]);
         sprites[i-1] = Util.urlToImage("characters/"+heroName+"/"+data[i]);
+        
       }
       this.sprites.put(data[0], sprites);
+      line = reader.readLine();
     }
     reader.close();
   }
