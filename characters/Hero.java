@@ -391,9 +391,17 @@ public class Hero implements CircleCollidable, RectCollidable {
 
   /**
    * use the current item
+   * @return DamagableItemSpawns, a series of hurtboxes based on the item
+   *                              being used
    */
-  public void useGadget() {
-    ((Gadget)(this.curItem)).use();
+  public DamagableItemSpawns getGadgetAction() {
+
+    DamagableItemSpawns itemSpawns = ((Gadget)(this.curItem)).use(
+      (int)(this.x), 
+      (int)(this.y), 
+      this.dir);
+    this.curItem = null;
+    return itemSpawns;
   }
 
   /**
@@ -405,9 +413,6 @@ public class Hero implements CircleCollidable, RectCollidable {
     this.curItem.setNonDamagablePlayer(this);
     if (item instanceof PickupableWeaponHolder) {
       this.weapon = ((PickupableWeaponHolder)(item)).getWeapon();
-      if (item instanceof Hammer) {
-        System.out.println("picked up hammer");
-      }
     }
   }
 
@@ -466,15 +471,15 @@ public class Hero implements CircleCollidable, RectCollidable {
   }
 
 
-  /**
-   * throws runtime exception if the state is an invalid state
-   * @param state the state to check for
-   */
-  private void checkValidState(String state) {
-    if (!States.all.contains(state)) {
-      throw new RuntimeException(state + " is not a valid state");
-    }
-  }
+  // /**
+  //  * throws runtime exception if the state is an invalid state
+  //  * @param state the state to check for
+  //  */
+  // private void checkValidState(String state) {
+  //   if (!States.all.contains(state)) {
+  //     throw new RuntimeException(state + " is not a valid state");
+  //   }
+  // }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //setters and getters
@@ -647,7 +652,7 @@ public class Hero implements CircleCollidable, RectCollidable {
    * @param images the sprites
    */
   public void addSprite(String state, BufferedImage[] images) {
-    checkValidState(state);
+    // checkValidState(state);
     this.sprites.put(state, images);
   }
 
@@ -657,7 +662,7 @@ public class Hero implements CircleCollidable, RectCollidable {
    * @param state the state to set the player tospecialStateOver
    */
   public void setState(String state) {
-    checkValidState(state);
+    // checkValidState(state);
     if ((!States.special.contains(this.state)
         || !this.inSpecialState)
         && this.state != state) {

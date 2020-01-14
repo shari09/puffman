@@ -6,6 +6,8 @@ import java.io.*;
 import characters.*;
 import util.*;
 
+//weapons control the movement of the players
+
 public abstract class Weapon {
   private static final int LOADING_TIME = 0;
   private static final int ACTIVE_TIME = 1;

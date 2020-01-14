@@ -28,6 +28,7 @@ public class World extends JPanel {
   private BufferedImage background;
 
   private HashSet<Item> items = new HashSet<>();
+  private HashSet<DamagableItemSpawns> damagableItemSpawns = new HashSet<>();
   private Hero[] players;
   private Block[] blocks;
   private boolean running = true;
@@ -389,6 +390,21 @@ public class World extends JPanel {
 
   }
 
+  public void useGadget(Hero player) {
+    this.damagableItemSpawns.add(player.getGadgetAction());
+  }
+
+  private synchronized void updateGadgetAction() {
+    Iterator<DamagableItemSpawns> itr = this.damagableItemSpawns.iterator();
+    DamagableItemSpawns item;
+    while (itr.hasNext()) {
+      item = itr.next();
+      if (item.isOver()) {
+        itr.remove();
+      }
+    }
+  }
+
   /**
    * updates the world
    */
@@ -396,6 +412,7 @@ public class World extends JPanel {
     this.updateControls();
     this.updatePlayers();
     this.updateItems();
+    this.updateGadgetAction();
   }
 
   /**
@@ -428,7 +445,12 @@ public class World extends JPanel {
       if (item.getState() != Item.ON_PLAYER) {
         item.display(this, g2d, this.players);
       }
-      
+    }
+
+    //displaying item spawned things
+    Iterator<DamagableItemSpawns> itemSpawnItr = this.damagableItemSpawns.iterator();
+    while (itemSpawnItr.hasNext()) {
+      itemSpawnItr.next().display(g2d, this.players);
     }
 
     //displaying player related things
@@ -450,7 +472,6 @@ public class World extends JPanel {
     Graphics2D g2d = (Graphics2D) g;
     this.drawBackground(g2d);
     this.displayAll(g2d);
-    // System.out.println("player: " + this.players[0].getX());
     Toolkit.getDefaultToolkit().sync();
   }
 

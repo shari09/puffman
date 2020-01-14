@@ -40,7 +40,7 @@ public class Controls implements KeyListener {
           //light attack key
         } else if (key.equals(curPlayer.getLightAttackKey())) {
           if (curPlayer.hasGadget()) {
-            curPlayer.useGadget();
+            this.world.useGadget(curPlayer);
           } else {
             curPlayer.lightAttack(this.world.getActiveHeldKeys(), tappedKeys);
           }

@@ -51,6 +51,12 @@ public abstract class Item implements RectCollidable {
     this.disappearingTime = disappearingTime;
   }
 
+  /**
+   * displays the item
+   * @param panel the JPanel for displaying everything
+   * @param g2d the graphics2d manager
+   * @param players the players used for scaling purposes
+   */
   public void display(JPanel panel, Graphics2D g2d, Hero[] players) {
     int[] pos = {(int)(this.x), 
                  (int)(this.y), 
@@ -61,19 +67,32 @@ public abstract class Item implements RectCollidable {
                   panel);
   }
 
+  /**
+   * if the item hits the ground after being thrown,
+   * it's set to the countdown to disappear state 
+   */
   public void hitGround() {
     this.setState(Item.DISAPPEARING);
   }
 
+  /**
+   * if the item hits a wall, the x velocity is reversed, meaning
+   * it bounces off the wall and goes the other way
+   */
   public void hitWall() {
     this.xVel = -this.xVel;
   }
 
+  /**
+   * if the item hits the player, it deals damage and knockback to the player
+   * the item also bounces off the player at half the speed
+   * @param player the player that was hit
+   */
   public void hitPlayer(Hero player) {
     player.takeDamage(this.thrownDamage);
     player.setDir((int)(this.xVel/Math.abs(this.xVel)));
     player.setSpecialState("knockedBack", 
-                           this.thrownDelay*player.getDamageTaken()/10);
+                           this.thrownDelay+player.getDamageTaken()/10);
     player.setxTargetSpeed(this.thrownKnockbackX);
     player.setYVel(this.thrownKnockbackY);
     this.xVel = -this.xVel/2;
@@ -82,10 +101,18 @@ public abstract class Item implements RectCollidable {
 
   ///getters/setters
 
+  /**
+   * get the current state of the item
+   * @return state int, the current state of the item
+   */
   public int getState() {
     return this.state;
   }
 
+  /**
+   * sets the state of the item
+   * @param state the state to set this item to
+   */
   public void setState(int state) {
     this.state = state;
     if (this.state == Item.DISAPPEARING) {
@@ -94,6 +121,9 @@ public abstract class Item implements RectCollidable {
     }
   }
 
+  /**
+   * resets the item once the player picks it back up again
+   */
   public void reset() {
     if (this.disappearingID != null) {
       Timer.clearTimeout(this.disappearingID);
@@ -104,7 +134,9 @@ public abstract class Item implements RectCollidable {
     
   }
 
-
+  /**
+   * @return boolean, whether or not the item is "alive" (not disappeared)
+   */
   public boolean isAlive() {
     if (this.x < 0 || this.x > World.mapWidth
         || this.y < 0 || this.y > World.mapHeight) {
@@ -113,18 +145,34 @@ public abstract class Item implements RectCollidable {
     return this.alive;
   }
 
+  /**
+   * sets the x-pos of the item
+   * @param x the x-pos to set to
+   */
   public void setX(double x) {
     this.x = x-this.width/2;
   }
 
+  /**
+   * sets the y-pos of the item
+   * @param y the y-pos to set to
+   */
   public void setY(double y) {
     this.y = y-this.height/2;
   }
 
+  /**
+   * move the x-pos of the item
+   * @param x the x pixels to increase
+   */
   public void moveX(double x) {
     this.x += x;
   }
 
+  /**
+   * move the y-pos of the item
+   * @param y the y pixels to increase
+   */
   public void moveY(double y) {
     this.y += y;
   }
@@ -149,26 +197,51 @@ public abstract class Item implements RectCollidable {
     return this.height;
   }
 
+  /**
+   * set the non damagable player, 
+   * the player who cannot be damaged by this item (player who threw it)
+   * @param player the non damagable player
+   */
   public void setNonDamagablePlayer(Hero player) {
     this.nonDamagablePlayer = player;
   }
 
+  /**
+   * get the non damagable player (the player who threw it)
+   * @return the non damagable player
+   */
   public Hero getNonDamagablePlayer() {
     return this.nonDamagablePlayer;
   }
 
+  /**
+   * sets the y velocity of the item
+   * @param yVel the y velocity to set to
+   */
   public void setYVel(double yVel) {
     this.yVel = yVel;
   }
 
+  /**
+   * get the y velocity of the item
+   * @return yVel double, the y velocity of the item
+   */
   public double getYVel() {
     return this.yVel;
   }
 
+  /**
+   * sets the x velocity for the item
+   * @param xVel the x velocity to set to
+   */
   public void setXVel(double xVel) {
     this.xVel = xVel;
   }
 
+  /**
+   * get the x velocity of the item
+   * @return xVel double, the x velocity of the item
+   */
   public double getXVel() {
     return this.xVel;
   }

@@ -1,15 +1,32 @@
+INSTRUCTIONS PLEASE READ
+
 Type 'jall Gameloop.java' in the terminal to compile and run
 
 - this game is like super smash, there are
 no hp bars
 - instead, the more damage you have, the more knockback
-you take
+you take, the goal of the game is to knock the player out of the map
 - knockback also depend on the specific attack (each direction
 have a different attack)
 
+- your damage is currently being printed in the 
+terminal for now
 
-there are currently no sprites
 
+once you press an attack key, circular hurtboxes will pop out
+there is first a loading time, indicated by a gray circle,
+where the weapon can't deal damage. Following that is a red circle,
+where the weapon can deal damage. Then it's another gray circle for
+recovery time.
+
+you get three jumps, one light up recovery, and one heavy recovery
+you can jump off walls (jumps reset)
+
+
+
+there are currently no sprites/animation
+
+CONTROLS
 
 player 1
 

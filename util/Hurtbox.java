@@ -46,7 +46,7 @@ public class Hurtbox implements CircleCollidable {
    * @param active
    * @return
    */
-  public Color getColour(boolean active) {
+  private Color getColour(boolean active) {
     if (active) {
       return Hurtbox.ACTIVE_COLOUR;
     }
