@@ -1,11 +1,13 @@
 package characters;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.awt.geom.*;
 import java.awt.*;
 
@@ -29,6 +31,7 @@ public class Hero implements CircleCollidable, RectCollidable {
   private String heavyAttackKey;
   private String dropKey;
   private String pickUpKey;
+  private String dodgeKey;
 
 
   private double x;
@@ -64,6 +67,7 @@ public class Hero implements CircleCollidable, RectCollidable {
   private boolean lightRecovery = false;
   private boolean heavyRecovery = false;
   private boolean gravityCancel = false;
+  private boolean dodgeCoolDown = false;
 
   private int damageTaken = 1;
 
@@ -106,7 +110,7 @@ public class Hero implements CircleCollidable, RectCollidable {
               String leftKey, String rightKey,
               String jumpKey, String dropKey, 
               String lightAttackKey, String heavyAttackKey,
-              String pickUpKey,
+              String pickUpKey, String dodgeKey,
               Weapon fist, String heroName) throws IOException {
     this.x = x;
     this.y = y;
@@ -122,6 +126,7 @@ public class Hero implements CircleCollidable, RectCollidable {
     this.lightAttackKey = lightAttackKey;
     this.heavyAttackKey = heavyAttackKey;
     this.pickUpKey = pickUpKey;
+    this.dodgeKey = dodgeKey;
     this.fist = fist;
     this.weapon = this.fist;
     this.addAllSprites(heroName);
@@ -355,7 +360,7 @@ public class Hero implements CircleCollidable, RectCollidable {
    */
   public void gravityCancel(int delay) {
     this.gravityCancel = true;
-    util.Timer.setTimeout(() -> {
+    Timer.setTimeout(() -> {
       this.gravityCancel = false;
       this.resetYVel();
     }, delay);
@@ -371,8 +376,16 @@ public class Hero implements CircleCollidable, RectCollidable {
     }
   }
 
+  /**
+   * allows the player to be in dodge state
+   * the player cannot move but the player is immune to all attacking
+   * for one second
+   * the player has a 3 seconds cool down before it can dodge again
+   */
   public void dodge() {
-
+    this.dodgeCoolDown = true;
+    this.setSpecialState("dodge", 1000); //1sec dodge
+    Timer.setTimeout(() -> this.dodgeCoolDown = false, 4000); //3sec cool down
   }
 
   /**
@@ -397,7 +410,7 @@ public class Hero implements CircleCollidable, RectCollidable {
   public DamagableItemSpawns getGadgetAction() {
 
     DamagableItemSpawns itemSpawns = ((Gadget)(this.curItem)).use(
-      (int)(this.x), 
+      (int)(this.x+this.width*this.dir), 
       (int)(this.y), 
       this.dir);
     this.curItem = null;
@@ -439,9 +452,18 @@ public class Hero implements CircleCollidable, RectCollidable {
     int[] pos = {(int)(this.x), (int)(this.y), 
                  this.imageWidth, this.imageHeight};
     int[] newPos = Zoom.getDisplayPos(g2d, players, pos);
+    float opacity;
+    if (this.state.equals("dodge")) {
+      opacity = 0.5f;
+    } else {
+      opacity = 1f;
+    }
+
+    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+                                                opacity));
     g2d.drawImage(this.sprites.get(this.state)[this.spriteNum],
-                  newPos[0], newPos[1], newPos[2], newPos[3],
-                  panel);
+                    newPos[0], newPos[1], newPos[2], newPos[3],
+                    panel);
   }
 
   /**
@@ -627,7 +649,12 @@ public class Hero implements CircleCollidable, RectCollidable {
     return this.pickUpKey;
   }
 
-
+  /**
+   * @return the control for the player to dodge/dash
+   */
+  public String getDodgeKey() {
+    return this.dodgeKey;
+  }
 
 
   /**
@@ -680,14 +707,12 @@ public class Hero implements CircleCollidable, RectCollidable {
    * @param delay the delay time until the player can move it again
    */
   public void setSpecialState(String state, int delay) {
-    if (!States.special.contains(this.state)
-        && States.special.contains(state)
-        && !this.inSpecialState) {
+    if (!this.inSpecialState) {
       this.spriteNum = 0;
       this.curSpriteFrame = 0;
       this.state = state;
       this.inSpecialState = true;
-      util.Timer.setTimeout(this::breakSpecialState, delay);
+      Timer.setTimeout(this::breakSpecialState, delay);
     }
   }
 
@@ -706,8 +731,8 @@ public class Hero implements CircleCollidable, RectCollidable {
                              int recoveryTime) {
     this.setSpecialState(state, loadingTime+activeTime+recoveryTime);
     this.resetXMovement();
-    util.Timer.setTimeout(() -> this.activeAttackState = true, loadingTime);
-    util.Timer.setTimeout(() -> this.activeAttackState = false,
+    Timer.setTimeout(() -> this.activeAttackState = true, loadingTime);
+    Timer.setTimeout(() -> this.activeAttackState = false,
                           loadingTime+activeTime);
     
   }
@@ -772,6 +797,14 @@ public class Hero implements CircleCollidable, RectCollidable {
   public boolean damagable() {
     return !this.state.equals("knockedBack")
             && !this.state.equals("dodge");
+  }
+
+  /**
+   * @return boolean, whether the player's dodge ability is in the 
+   *                  cooldown state or not
+   */
+  public boolean inDodgeCoolDown() {
+    return this.dodgeCoolDown;
   }
 
 }

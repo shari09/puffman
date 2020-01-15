@@ -30,3 +30,5 @@ heavyNLair    attack.webp
 heavyNRair    attack.webp
 heavySLair    attack.webp
 heavySRair    attack.webp
+
+dodge         orange.png

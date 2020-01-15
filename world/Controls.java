@@ -20,8 +20,6 @@ public class Controls implements KeyListener {
     }
   }
 
-  //all keys are hardcoded rn but it'll be an easy change
-  //if I wanna change them
 
   //key listeners
   @Override
@@ -35,28 +33,37 @@ public class Controls implements KeyListener {
 
       for (int i = 0; i < this.world.getPlayers().length; i++) {
         Hero curPlayer = this.world.getPlayers()[i];
-        if (key.equals(curPlayer.getJumpKey())) {
-          curPlayer.jump();
-          //light attack key
-        } else if (key.equals(curPlayer.getLightAttackKey())) {
-          if (curPlayer.hasGadget()) {
-            this.world.useGadget(curPlayer);
-          } else {
-            curPlayer.lightAttack(this.world.getActiveHeldKeys(), tappedKeys);
-          }
-          //heavy attack key
-        } else if (key.equals(curPlayer.getHeavyAttackKey())) {
-          if (!curPlayer.hasGadget()) {
-            curPlayer.heavyAttack(this.world.getActiveHeldKeys(), tappedKeys);
-          }
-          //pick up/throw key
-        } else if (key.equals(curPlayer.getPickUpKey())) {
-          if (curPlayer.hasItem()) {
-            curPlayer.throwItem();
-          } else {
-            this.world.checkPickUp(curPlayer);
+        
+        if (!curPlayer.inSpecialState()) {
+          //jump key
+          if (key.equals(curPlayer.getJumpKey())) {
+            curPlayer.jump();
+            //light attack key
+          } else if (key.equals(curPlayer.getLightAttackKey())) {
+            if (curPlayer.hasGadget()) {
+              this.world.useGadget(curPlayer);
+            } else {
+              curPlayer.lightAttack(this.world.getActiveHeldKeys(), tappedKeys);
+            }
+            //heavy attack key
+          } else if (key.equals(curPlayer.getHeavyAttackKey())) {
+            if (!curPlayer.hasGadget()) {
+              curPlayer.heavyAttack(this.world.getActiveHeldKeys(), tappedKeys);
+            }
+            //pick up/throw key
+          } else if (key.equals(curPlayer.getPickUpKey())) {
+            if (curPlayer.hasItem()) {
+              curPlayer.throwItem();
+            } else {
+              this.world.checkPickUp(curPlayer);
+            }
+            //dodge key
+          } else if (key.equals(curPlayer.getDodgeKey()) 
+                     && !curPlayer.inDodgeCoolDown()) {
+            curPlayer.dodge();
           }
         }
+        
       }
     }
     

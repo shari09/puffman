@@ -56,7 +56,7 @@ public class World extends JPanel {
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize/2,
-      "A", "D", "Space", "S", "J", "K", "H",
+      "A", "D", "Space", "S", "J", "K", "H", "U",
       new CloseRange("assets/config/weapons/fist.txt"), "ash");
     this.players[1] = new Hero(
       World.mapWidth/2 + Util.scaleX(300),
@@ -66,7 +66,7 @@ public class World extends JPanel {
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize/2,
-      "Left", "Right", "Up", "Down", "Comma", "Period", "Slash",
+      "Left", "Right", "Up", "Down", "Comma", "Period", "Slash", "L",
       new CloseRange("assets/config/weapons/fist.txt"), "ashCopy");
   }
 
@@ -98,6 +98,7 @@ public class World extends JPanel {
     this.addKeyListener(new Controls(this));
     this.addBlocks();
     this.itemFactory = new ItemFactory((RectBlock[])(this.blocks));
+    this.items.add(this.itemFactory.getItem(1));
   };
 
   /**
@@ -340,11 +341,14 @@ public class World extends JPanel {
     for (int i = 0; i < this.players.length; i++) {
       curPlayer = this.players[i];
       if (curPlayer != curItem.getNonDamagablePlayer()
+          && curPlayer.damagable()
           && Collision.isCollided((RectCollidable)curItem, 
                                   (RectCollidable)curPlayer)) {
         
         curItem.hitPlayer(curPlayer);
-        
+        if (curItem instanceof Bomb) {
+          System.out.println("play exploding animation");
+        }
       }
     }
   }
@@ -390,17 +394,47 @@ public class World extends JPanel {
 
   }
 
+  /**
+   * tell the player to use the gadget
+   * stores the items spawned with the gadget in the world
+   * @param player the player using the gadget
+   */
   public void useGadget(Hero player) {
     this.damagableItemSpawns.add(player.getGadgetAction());
   }
 
+  /**
+   * check collision between item spawns (spikes, explosion, etc)
+   * and all players (the player who used the gadget can also be damaged)
+   * @param curItemSpawns the item spawn
+   */
+  private void checkItemSpawnsPlayerCollision(DamagableItemSpawns curItemSpawns) {
+    Hero curPlayer;
+    for (int i = 0; i < this.players.length; i++) {
+      curPlayer = this.players[i];
+      if (curPlayer.damagable()) {
+        for (int j = 0; j < curItemSpawns.getHurtboxes().length; j++) {
+          if (Collision.isCollided(
+                (CircleCollidable)curItemSpawns.getHurtboxes()[j], 
+                (CircleCollidable)curPlayer)) {
+            curItemSpawns.hitPlayer(curPlayer);
+          }
+        }
+      }
+      
+    }
+  }
+
   private synchronized void updateGadgetAction() {
     Iterator<DamagableItemSpawns> itr = this.damagableItemSpawns.iterator();
-    DamagableItemSpawns item;
+    DamagableItemSpawns curItemSpawns;
     while (itr.hasNext()) {
-      item = itr.next();
-      if (item.isOver()) {
+      curItemSpawns = itr.next();
+      if (curItemSpawns.isOver()) {
         itr.remove();
+      } else if (curItemSpawns.isActive()) {
+        this.checkItemSpawnsPlayerCollision(curItemSpawns);
+        curItemSpawns.update();
       }
     }
   }
@@ -526,13 +560,10 @@ public class World extends JPanel {
   public void removeActiveHeldKey(String key) {
     this.activeHeldKeys.remove(key);
 
-    //if the player is in a special state,
-    //no keys should work
     for (int i = 0; i < this.players.length; i++) {
       Hero curPlayer = this.players[i];
-      if (!curPlayer.inSpecialState()
-          && (key.equals(curPlayer.getLeftKey())
-              || key.equals(curPlayer.getRightKey()))) {
+      if (key.equals(curPlayer.getLeftKey())
+          || key.equals(curPlayer.getRightKey())) {
         curPlayer.resetXMovement();
       }
     }

@@ -16,7 +16,7 @@ public class Bomb extends Gadget {
   }
 
   @Override
-  public void use() {
-    System.out.println("useItem");
+  public DamagableItemSpawns use(int x, int y, int dir) {
+    return new BombSpawns(x, y, dir);
   }
 }

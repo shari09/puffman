@@ -9,9 +9,8 @@ import weapons.Hammer;
 public class ItemFactory {
   private static final int BOMB = 0;
   private static final int HORN = 1;
-  private static final int MINE = 2;
-  private static final int SPIKE_BALL = 3;
-  private static final int HAMMER = 4;
+  private static final int SPIKE_BALL = 2;
+  private static final int HAMMER = 3;
   private RectBlock[] blocks;
   
 
@@ -19,6 +18,13 @@ public class ItemFactory {
     this.blocks = blocks;
   }
 
+  /**
+   * determines a random available position for item to spawn on
+   * given the location of the blocks in the world
+   * @param width the width of the item
+   * @param height the height of the item
+   * @return pos int[], random [x, y] pos
+   */
   private int[] randomPos(int width, int height) {
     int blockNum = (int)(Math.random()*this.blocks.length);
     int randX = (int)(Math.random()*
@@ -32,11 +38,17 @@ public class ItemFactory {
     return pos;
   }
 
+  /**
+   * gets an item to spawn at a random position
+   * @param num the item id
+   * @return Item, the item generated
+   * @throws IOException
+   */
   public Item getItem(int num) throws IOException {
     if (num == ItemFactory.BOMB) {
       return new Bomb(this.randomPos(Bomb.WIDTH, Bomb.HEIGHT));
-    // } else if (num == ItemFactory.HORN) {
-    //   return new Horn();
+    } else if (num == ItemFactory.HORN) {
+      return new Horn(this.randomPos(Horn.WIDTH, Horn.HEIGHT));
     // } else if (num == ItemFactory.MINE) {
     //   return new Mine();
     } else if (num == ItemFactory.SPIKE_BALL) {
@@ -48,7 +60,12 @@ public class ItemFactory {
     return null;
   }
 
+  /**
+   * get a random item
+   * @return Item, the new random item
+   * @throws IOException
+   */
   public Item getRandomItem() throws IOException {
-    return this.getItem((int)(Math.random()*2)+3);
+    return this.getItem((int)(Math.random()*2)+2);
   }
 }

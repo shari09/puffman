@@ -3,7 +3,6 @@ package items;
 import java.io.IOException;
 
 import util.Util;
-import world.World;
 
 public class SpikeBall extends Gadget {
   public static final int WIDTH = Util.scaleX(50);

@@ -1,2 +1,4 @@
 jumpFromWall
 knockedBack
+dodge
+dash

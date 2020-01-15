@@ -6,6 +6,10 @@ import characters.Hero;
 
 import java.awt.Graphics2D;
 
+/**
+ * everyone can get damaged by the item spawns
+ */
+
 public abstract class DamagableItemSpawns {
   private Hurtbox[] hurtboxes;
   private boolean over;
@@ -89,6 +93,21 @@ public abstract class DamagableItemSpawns {
   public void setActive(boolean active) {
     this.isActive = active;
   }
+
+  /**
+   * whether or not the spawned item is in the "loading stage"
+   * or if they can damage players
+   * @return
+   */
+  public boolean isActive() {
+    return this.isActive;
+  }
+
+  /**
+   * decides what happens if the item spawn hits a player
+   * @param player
+   */
+  public abstract void hitPlayer(Hero player);
 
 
 }
