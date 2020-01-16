@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.FileWriter;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -36,6 +38,7 @@ public class World extends JPanel {
 
   public static final double GRAVITY = Util.scaleY(0.25);
   
+  private String mapName;
   private BufferedImage background;
 
   private HashSet<Item> items = new HashSet<>();
@@ -116,6 +119,7 @@ public class World extends JPanel {
     this.setPreferredSize(GameWindow.screenSize);
     
     Map map = MapFactory.getMap(mapName);
+    this.mapName = mapName;
     this.blocks = map.getBlocks();
     this.background = map.getBackground();
     this.addPlayers();
@@ -268,8 +272,9 @@ public class World extends JPanel {
 
   /**
    * handle player related updates (ex. movements, collisions)
+   * output score to score.txt if a player has won
    */
-  private void updatePlayers() {
+  private void updatePlayers() throws IOException {
 
     //for each player
     for (int i = 0; i < this.players.length; i++) {
@@ -282,6 +287,11 @@ public class World extends JPanel {
 
       if (curPlayer.isDead()) {
         this.running = false;
+        PrintWriter scoreOut = new PrintWriter(
+          new FileWriter("text-file-output/score.txt", true)
+        );
+        scoreOut.println  ("Player"+(i+1)+" lost: "+this.mapName+" map");
+        scoreOut.close();
         return;
       }
 
