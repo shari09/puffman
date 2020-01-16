@@ -74,6 +74,13 @@ public class Button {
   }
 
   /**
+   * resets the button
+   */
+  public void reset() {
+    this.clicked = false;
+  }
+
+  /**
    * display the button on the panel/screen
    * @param g2d the graphics class
    */

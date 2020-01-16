@@ -11,7 +11,7 @@ lightSair         60      125       100      7          0.70
 
 heavySide         400     550       400      10          0.95
 heavyNeutral      300     700       300      13          0.95
-heavyJump         300     600       250      10          1.10
+heavyJump         300     600       250      5          1.10
 heavyDown         200     600       300      10          0.95 
 heavyNair         250     400       350      7           0.80
 heavySair         300     500       380      9           1.00

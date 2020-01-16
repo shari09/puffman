@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.*;
 
 public class GameWindow extends JFrame {
   public static final Dimension screenSize = Toolkit
@@ -29,10 +30,7 @@ public class GameWindow extends JFrame {
     this.getContentPane().add(panel);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     
-    // GraphicsEnvironment graphics = 
-    //   GraphicsEnvironment.getLocalGraphicsEnvironment();
-    // GraphicsDevice device = graphics.getDefaultScreenDevice();
-    // device.setFullScreenWindow(this);
+    // GraphicsEnvironment graphics =is);
   
     this.setVisible(true);
   }
@@ -42,10 +40,18 @@ public class GameWindow extends JFrame {
    * @param panel the panel to switch to
    */
   public void switchPanel(JPanel panel) {
+    if (this.panel instanceof Menu) {
+      ((Menu)(this.panel)).reset();
+    }
     this.getContentPane().remove(this.panel);
     this.panel = panel;
     this.getContentPane().add(panel);
+    this.panel.requestFocus();
     this.setVisible(true);
+  }
+
+  public JPanel getCurPanel() {
+    return this.panel;
   }
 
   /**

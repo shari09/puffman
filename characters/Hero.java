@@ -510,6 +510,9 @@ public class Hero implements CircleCollidable, RectCollidable {
    * @param players the players data used for scaling
    */
   public void displayDamageIndicator(Graphics2D g2d) {
+    //so the damage indicator won't turn translucent
+    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+                                                1f));
     this.damageIndicator.display(g2d, this.damageTaken);
   }
 

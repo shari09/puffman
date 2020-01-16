@@ -12,7 +12,7 @@ import util.Util;
 
 public class Menu extends JPanel {
   private Button[] buttons;
-  private String action;
+  private String action = "";
   private ButtonListener buttonListener;
 
   private BufferedImage background;
@@ -55,6 +55,16 @@ public class Menu extends JPanel {
   }
 
   /**
+   * reset the menu buttons to not clicked
+   */
+  public void reset() {
+    for (int i = 0; i < this.buttons.length; i++) {
+      this.buttons[i].reset();
+    }
+    this.action = "";
+  }
+
+  /**
    * draws the background
    * @param g2d Graphics2D, the graphics control of this component
    */
@@ -70,6 +80,7 @@ public class Menu extends JPanel {
    * decides what is painted
    * @param Graphics g, the graphics manager
    */
+  @Override
   public void paintComponent(Graphics g) {
     Graphics2D g2d = (Graphics2D)g;
     this.drawBackground(g2d);
@@ -85,7 +96,7 @@ public class Menu extends JPanel {
   public void update() {
     for (int i = 0; i < this.buttons.length; i++) {
       if (this.buttons[i].isClicked()
-          && this.action == null) {
+          && this.action.equals("")) {
         this.action = this.buttons[i].getAction();
       }
     }
