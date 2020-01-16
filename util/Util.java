@@ -1,10 +1,12 @@
 package util;
 
-import world.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-import java.awt.image.*;
-import java.io.*;
-import javax.imageio.*;
+import javax.imageio.ImageIO;
+
+import world.GameWindow;
 
 public class Util {
   private static int DEV_WIDTH = 1920;

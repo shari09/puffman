@@ -1,20 +1,32 @@
 package characters;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import javax.swing.JPanel;
-import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
-import java.awt.geom.*;
-import java.awt.*;
+import java.util.HashMap;
+import java.util.HashSet;
 
-import items.*;
-import util.*;
-import world.*;
-import weapons.*;
+import javax.swing.JPanel;
+
+import items.DamagableItemSpawns;
+import items.Gadget;
+import items.Item;
+import util.CircleCollidable;
+import util.DamageIndicator;
+import util.Hurtbox;
+import util.RectCollidable;
+import util.States;
+import util.Timer;
+import util.Util;
+import util.Zoom;
+import weapons.PickupableWeaponHolder;
+import weapons.Weapon;
+import world.World;
 
 
 //cast to rectCollidable to get block collision box
@@ -81,6 +93,7 @@ public class Hero implements CircleCollidable, RectCollidable {
   private Weapon fist;
   private Item curItem;
   private Weapon weapon;
+  private DamageIndicator damageIndicator;
   
   private void addAllSprites(String heroName) throws IOException {
     BufferedReader reader = new BufferedReader(
@@ -93,7 +106,6 @@ public class Hero implements CircleCollidable, RectCollidable {
       data = line.split("\\s+");
       sprites = new BufferedImage[data.length-1];
       for (int i = 1; i < data.length; i++) {
-        // System.out.println("characters/"+heroName+"/"+data[i]);
         sprites[i-1] = Util.urlToImage("characters/"+heroName+"/"+data[i]);
         
       }
@@ -492,6 +504,15 @@ public class Hero implements CircleCollidable, RectCollidable {
     }
   }
 
+  /**
+   * displays the damage indicator for
+   * @param g2d the graphics manager
+   * @param players the players data used for scaling
+   */
+  public void displayDamageIndicator(Graphics2D g2d) {
+    this.damageIndicator.display(g2d, this.damageTaken);
+  }
+
 
   // /**
   //  * throws runtime exception if the state is an invalid state
@@ -805,6 +826,12 @@ public class Hero implements CircleCollidable, RectCollidable {
    */
   public boolean inDodgeCoolDown() {
     return this.dodgeCoolDown;
+  }
+
+  public void setDamageIndicatorPos(int x) {
+    this.damageIndicator = new DamageIndicator(
+      x, 
+      DamageIndicator.RADIUS*2);
   }
 
 }

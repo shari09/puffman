@@ -1,9 +1,9 @@
 package util;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 
@@ -19,7 +19,7 @@ public class Timer {
    * add the time and tasks to the Timer
    * @param runnable the runnable task/function
    * @param delay the delay in milliseconds
-   * @return id, the unique id
+   * @return id String, the unique id
    */
   public static String setTimeout(Runnable runnable, int delay) {
     String id = UUID.randomUUID().toString(); 

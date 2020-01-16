@@ -1,6 +1,5 @@
 package items;
 
-
 import java.io.IOException;
 
 import blocks.RectBlock;
@@ -66,6 +65,6 @@ public class ItemFactory {
    * @throws IOException
    */
   public Item getRandomItem() throws IOException {
-    return this.getItem((int)(Math.random()*2)+2);
+    return this.getItem((int)(Math.random()*4));
   }
 }

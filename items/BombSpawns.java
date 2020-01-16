@@ -1,8 +1,8 @@
 package items;
 
-import util.Util;
-import util.Timer;
 import characters.Hero;
+import util.Timer;
+import util.Util;
 
 public class BombSpawns extends DamagableItemSpawns {
   private static final int NUM_EXPLOSIONS = 8;
@@ -51,6 +51,5 @@ public class BombSpawns extends DamagableItemSpawns {
     } else {
       player.setDir(1);
     }
-    System.out.println("oww");
   }
 }

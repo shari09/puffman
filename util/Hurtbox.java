@@ -1,7 +1,8 @@
 package util;
 
-import java.awt.*;
-import java.awt.geom.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
 
 import characters.Hero;
 
@@ -44,7 +45,7 @@ public class Hurtbox implements CircleCollidable {
    * transparent gray - inactive colour, where the weapon is
    * either in loading or recovery state and cannot deal any damage
    * @param active
-   * @return
+   * @return Color, the colour for the hurtbox
    */
   private Color getColour(boolean active) {
     if (active) {

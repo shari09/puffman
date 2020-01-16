@@ -1,18 +1,29 @@
 package world;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.HashSet;
-import java.awt.image.*;
-import java.io.*;
 import java.util.Iterator;
 
-import items.*;
-import characters.*;
-import blocks.*;
-import util.*;
-import weapons.CloseRange;
+import javax.swing.JPanel;
+
+import blocks.Block;
+import blocks.RectBlock;
+import characters.Hero;
+import items.Bomb;
+import items.DamagableItemSpawns;
+import items.Item;
+import items.ItemFactory;
 import maps.Map;
+import util.CircleCollidable;
+import util.Collision;
+import util.DamageIndicator;
+import util.RectCollidable;
+import util.Util;
+import weapons.CloseRange;
 
 public class World extends JPanel {
   public static final long serialVersionUID = 1L;
@@ -68,6 +79,17 @@ public class World extends JPanel {
       scaledPlayerSize/2,
       "Left", "Right", "Up", "Down", "Comma", "Period", "Slash", "L",
       new CloseRange("assets/config/weapons/fist.txt"), "ashCopy");
+
+    int gap = Util.scaleX(30);
+    for (int i = 0; i < this.players.length; i++) {
+      this.players[i].setDamageIndicatorPos(
+        GameWindow.width
+        -this.players.length*(DamageIndicator.RADIUS*2)
+        -gap*(this.players.length-i)
+        +i*DamageIndicator.RADIUS*2
+        +gap
+      );
+    }
   }
 
   // public void reset() throws IOException {
@@ -98,7 +120,6 @@ public class World extends JPanel {
     this.addKeyListener(new Controls(this));
     this.addBlocks();
     this.itemFactory = new ItemFactory((RectBlock[])(this.blocks));
-    this.items.add(this.itemFactory.getItem(1));
   };
 
   /**
@@ -214,7 +235,6 @@ public class World extends JPanel {
                 (CircleCollidable)targetPlayer)) {
               //collided
               curPlayer.damage(targetPlayer);
-              System.out.println(targetPlayer.getDamageTaken());
             }
           }
         }
@@ -491,6 +511,7 @@ public class World extends JPanel {
     for (int i = 0; i < this.players.length; i++) {
       this.players[i].display(this, g2d, this.players);
       this.players[i].displayHitbox(g2d, this.players);
+      this.players[i].displayDamageIndicator(g2d);
       if (this.players[i].isAttackState()) {
         this.players[i].displayHurtbox(g2d, this.players);
       }

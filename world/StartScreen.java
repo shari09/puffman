@@ -1,18 +1,24 @@
 package world;
 
-import javax.swing.*;
 import java.awt.Graphics;
-import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
-import util.*;
+import javax.swing.JPanel;
+
+import util.Button;
+import util.ButtonListener;
+import util.Util;
 
 public class StartScreen extends JPanel {
   private Button[] buttons = new Button[2];
   private String action = null;
   private ButtonListener buttonListener;
 
-  public StartScreen() {
+  private BufferedImage background;
+
+  public StartScreen() throws IOException {
     this.setPreferredSize(GameWindow.screenSize);
     this.buttons[0] = new Button(
       Util.scaleX(650), Util.scaleY(600),
@@ -21,10 +27,10 @@ public class StartScreen extends JPanel {
       Util.scaleX(650), Util.scaleY(750),
       Util.scaleX(500), Util.scaleY(80), "Quit");
 
-    this.setBackground(Color.BLACK);
     this.buttonListener = new ButtonListener(this.buttons);
     this.addMouseListener(this.buttonListener);
     this.addMouseMotionListener(this.buttonListener);
+    this.background = Util.urlToImage("background/background3.png");
   }
 
   /**
@@ -38,15 +44,24 @@ public class StartScreen extends JPanel {
     return this.action;
   }
 
-  // public void reset() {
-  //   this.action = null;
-  // }
+  /**
+   * draws the background
+   * @param g2d Graphics2D, the graphics control of this component
+   */
+  private void drawBackground(Graphics2D g2d) {
+    g2d.drawImage(this.background, 
+                  0, 0,
+                  GameWindow.width,
+                  GameWindow.height,
+                  this);
+  }
 
   @Override
   public void paintComponent(Graphics g) {
-    super.paintComponent(g);
+    Graphics2D g2d = (Graphics2D)g;
+    this.drawBackground(g2d);
     for (int i = 0; i < this.buttons.length; i++) {
-      this.buttons[i].display((Graphics2D)g);
+      this.buttons[i].display(g2d);
     }
   }
 

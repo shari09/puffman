@@ -2,8 +2,9 @@ package weapons;
 
 import java.io.IOException;
 
-import characters.*;
-import util.*;
+import characters.Hero;
+import util.Timer;
+import util.Util;
 
 
 public class CloseRange extends Weapon {

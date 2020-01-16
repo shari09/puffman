@@ -1,8 +1,8 @@
 package items;
 
-import util.Util;
-import util.Timer;
 import characters.Hero;
+import util.Timer;
+import util.Util;
 
 public class HornSpawns extends DamagableItemSpawns {
   private static final int RADIUS = Util.scaleX(40);

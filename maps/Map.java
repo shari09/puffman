@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import blocks.Block;
 import blocks.RectBlock;
-import world.World;
 import util.Util;
+import world.World;
 
 public class Map {
   public static Block[] getMap(int num) throws IOException {

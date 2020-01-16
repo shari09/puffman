@@ -1,9 +1,10 @@
 package util;
 
-import characters.Hero;
-import world.*;
+import java.awt.Graphics2D;
 
-import java.awt.*;
+import characters.Hero;
+import world.GameWindow;
+import world.World;
 
 //me is dumb with basic math and spent forever on this :// 
 public class Zoom {

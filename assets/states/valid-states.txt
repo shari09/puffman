@@ -1,9 +1,0 @@
-faceLeft
-faceRight
-onLeftWall
-onRightWall
-inAir
-drop
-dash
-dodge
-onGround

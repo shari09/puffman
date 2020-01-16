@@ -1,8 +1,11 @@
 package world;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.IOException;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class GameWindow extends JFrame {
   public static final long serialVersionUID = 1L;

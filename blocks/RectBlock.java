@@ -1,11 +1,13 @@
 package blocks;
 
-import java.io.*;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.io.IOException;
 
-import util.*;
-import characters.*;
+import javax.swing.JPanel;
+
+import characters.Hero;
+import util.RectCollidable;
+import util.Zoom;
 
 public class RectBlock extends Block implements RectCollidable {
   private int x;

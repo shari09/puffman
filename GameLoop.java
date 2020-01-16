@@ -1,9 +1,12 @@
+import java.awt.event.WindowEvent;
 import java.io.IOException;
-
-import world.*;
-import java.awt.event.*;
 import java.util.Scanner;
+
 import util.Timer;
+import world.GameOverScreen;
+import world.GameWindow;
+import world.StartScreen;
+import world.World;
 
 public class GameLoop {
 

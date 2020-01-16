@@ -1,13 +1,13 @@
 package blocks;
 
-import java.awt.image.*;
-import javax.swing.*;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
-import util.*;
-import characters.*;
+import javax.swing.JPanel;
 
-import java.awt.*;
-import java.io.*;
+import characters.Hero;
+import util.Util;
 
 public abstract class Block {
   private BufferedImage sprite;

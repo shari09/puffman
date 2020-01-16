@@ -38,6 +38,7 @@ space - jump
 j - light attack
 k - heavy attack
 h - throw/pick up item
+u - dodge
 
 
 
@@ -50,4 +51,5 @@ arrow down - down drop
 , - light attack
 . - heavy attack
 / - pickup/throw item
+l - dodge
 

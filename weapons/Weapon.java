@@ -1,10 +1,12 @@
 package weapons;
 
-import java.util.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Scanner;
 
-import characters.*;
-import util.*;
+import characters.Hero;
+import util.Hurtbox;
 
 //weapons control the movement of the players
 
@@ -174,21 +176,6 @@ public abstract class Weapon {
   public double getSize(String state) {
     return this.states.get(state)[Weapon.SIZE];
   }
-
-  // private void displayAllData() {
-  //   Iterator<HashMap.Entry<String, Double[]>> itr = this
-  //                                                   .states
-  //                                                   .entrySet()
-  //                                                   .iterator();
-  //   while (itr.hasNext()) {
-  //     HashMap.Entry<String, Double[]> pair = itr.next();
-  //     System.out.printf("%-20s", pair.getKey());
-  //     for (int i = 0; i < pair.getValue().length; i++) {
-  //       System.out.printf("%10.2f", pair.getValue()[i]);
-  //     }
-  //     System.out.println();
-  //   }
-  // }
 
   /**
    * reset the offsets of the hurtboxes to zero

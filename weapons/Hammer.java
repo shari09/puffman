@@ -12,7 +12,7 @@ public class Hammer extends PickupableWeaponHolder {
   public Hammer(int[] pos) throws IOException {
     super(pos[0], pos[1], 
           Hammer.WIDTH, Hammer.HEIGHT, 
-          Util.urlToImage("weapons/weapon.png"),
+          Util.urlToImage("weapons/hammer.png"),
           "hammer");
   }
 

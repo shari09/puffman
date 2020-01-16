@@ -1,10 +1,10 @@
 package items;
 
+import java.awt.Graphics2D;
+
+import characters.Hero;
 import util.Hurtbox;
 import util.Timer;
-import characters.Hero;
-
-import java.awt.Graphics2D;
 
 /**
  * everyone can get damaged by the item spawns
