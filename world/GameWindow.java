@@ -8,7 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GameWindow extends JFrame {
-  public static final long serialVersionUID = 1L;
   public static final Dimension screenSize = Toolkit
                                              .getDefaultToolkit()
                                              .getScreenSize();
@@ -55,10 +54,8 @@ public class GameWindow extends JFrame {
   public void update() throws IOException {
     if (this.panel instanceof World) {
       ((World)(this.panel)).update();
-    } else if (this.panel instanceof GameOverScreen) {
-      ((GameOverScreen)(this.panel)).update();
-    } else if (this.panel instanceof StartScreen) {
-      ((StartScreen)(this.panel)).update();
+    } else if (this.panel instanceof Menu) {
+      ((Menu)(this.panel)).update();
     }
     
     repaint();

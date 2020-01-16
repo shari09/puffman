@@ -84,10 +84,10 @@ public class Button {
     } else {
       g2d.setColor(Button.TAN);
     }
-    Font font = new Font("Helvetica", Font.PLAIN, this.width/6);
+    Font font = new Font("Helvetica", Font.PLAIN, this.width/10);
     g2d.setFont(font);
     FontMetrics metrics = g2d.getFontMetrics(font);
-    int x = this.x+(int)((this.width-metrics.stringWidth(this.text))/2.5);
+    int x = this.x+(int)((this.width-metrics.stringWidth(this.text))/2);
     int y = this.y+(this.height-metrics.getHeight())/2+metrics.getAscent();
     g2d.drawString(this.text.toUpperCase(), x, y);
   }

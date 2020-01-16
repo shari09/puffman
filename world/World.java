@@ -18,6 +18,7 @@ import items.DamagableItemSpawns;
 import items.Item;
 import items.ItemFactory;
 import maps.Map;
+import maps.MapFactory;
 import util.CircleCollidable;
 import util.Collision;
 import util.DamageIndicator;
@@ -26,7 +27,6 @@ import util.Util;
 import weapons.CloseRange;
 
 public class World extends JPanel {
-  public static final long serialVersionUID = 1L;
 
   public static final int mapWidth = Util.scaleX(4000);
   public static final int mapHeight = Util.scaleY(2400);
@@ -49,7 +49,6 @@ public class World extends JPanel {
   //need constant update on keys
   private HashSet<String> activeHeldKeys = new HashSet<>();
 
-
   private ItemFactory itemFactory;
 
   /**
@@ -61,7 +60,7 @@ public class World extends JPanel {
     int scaledPlayerSize = Math.min(Util.scaleX(80), Util.scaleY(80));
     this.players[0] = new Hero(
       World.mapWidth/2 - Util.scaleX(300),
-      (int)(World.mapHeight/2.5),
+      (int)(World.mapHeight/2.2),
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize,
@@ -71,7 +70,7 @@ public class World extends JPanel {
       new CloseRange("assets/config/weapons/fist.txt"), "ash");
     this.players[1] = new Hero(
       World.mapWidth/2 + Util.scaleX(300),
-      (int)(World.mapHeight/2.5),
+      (int)(World.mapHeight/2.2),
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize,
@@ -92,33 +91,35 @@ public class World extends JPanel {
     }
   }
 
-  // public void reset() throws IOException {
-  //   this.addPlayers();
-  //   this.running = true;
-  // }
-  
-  /**
-   * add the necessary blocks to the world
-   * @throws IOException ImageIO
-   */
-  private void addBlocks() throws IOException {
-    this.blocks = Map.getMap(1);
+  public void reset() throws IOException {
+    this.addPlayers();
+    this.activeHeldKeys.clear();
+    this.running = true;
   }
+  
+  // /**
+  //  * add the necessary blocks to the world
+  //  * @throws IOException ImageIO
+  //  */
+  // private void addBlocks() throws IOException {
+    
+  // }
 
   /**
    * constructor
    * @throws IOException ImageIO
    */
-  public World() throws IOException {
+  public World(String mapName) throws IOException {
     
     this.setFocusable(true);
     this.requestFocusInWindow();
     this.setPreferredSize(GameWindow.screenSize);
-    this.background = Util.urlToImage("background/background.jpg");
-
+    
+    Map map = MapFactory.getMap(mapName);
+    this.blocks = map.getBlocks();
+    this.background = map.getBackground();
     this.addPlayers();
     this.addKeyListener(new Controls(this));
-    this.addBlocks();
     this.itemFactory = new ItemFactory((RectBlock[])(this.blocks));
   };
 

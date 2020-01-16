@@ -1,36 +1,29 @@
 package world;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
+import java.awt.*;
 import java.io.IOException;
 
 import javax.swing.JPanel;
+import java.awt.image.*;
 
 import util.Button;
 import util.ButtonListener;
 import util.Util;
 
-public class StartScreen extends JPanel {
-  private Button[] buttons = new Button[2];
-  private String action = null;
+public class Menu extends JPanel {
+  private Button[] buttons;
+  private String action;
   private ButtonListener buttonListener;
 
   private BufferedImage background;
 
-  public StartScreen() throws IOException {
+  public Menu(int numButtons, String imagePath) throws IOException {
     this.setPreferredSize(GameWindow.screenSize);
-    this.buttons[0] = new Button(
-      Util.scaleX(650), Util.scaleY(600),
-      Util.scaleX(500), Util.scaleY(80), "Start");
-    this.buttons[1] = new Button(
-      Util.scaleX(650), Util.scaleY(750),
-      Util.scaleX(500), Util.scaleY(80), "Quit");
-
+    this.buttons = new Button[numButtons];
     this.buttonListener = new ButtonListener(this.buttons);
     this.addMouseListener(this.buttonListener);
     this.addMouseMotionListener(this.buttonListener);
-    this.background = Util.urlToImage("background/background3.png");
+    this.background = Util.urlToImage(imagePath);
   }
 
   /**
@@ -45,6 +38,23 @@ public class StartScreen extends JPanel {
   }
 
   /**
+   * make a new button and set the button properties
+   * @param index the index of the button that is trying to be set
+   * @param x the xpos
+   * @param y the ypos
+   * @param width the width
+   * @param height the height
+   * @param action the action performed by the button 
+   *               and text that will show up on the button
+   */
+  public void setButton(int index, 
+                        int x, int y, 
+                        int width, int height, 
+                        String action) {
+    this.buttons[index] = new Button(x, y, width, height, action);
+  }
+
+  /**
    * draws the background
    * @param g2d Graphics2D, the graphics control of this component
    */
@@ -56,7 +66,10 @@ public class StartScreen extends JPanel {
                   this);
   }
 
-  @Override
+  /**
+   * decides what is painted
+   * @param Graphics g, the graphics manager
+   */
   public void paintComponent(Graphics g) {
     Graphics2D g2d = (Graphics2D)g;
     this.drawBackground(g2d);
@@ -64,6 +77,7 @@ public class StartScreen extends JPanel {
       this.buttons[i].display(g2d);
     }
   }
+
 
   /**
    * update the button onClick checking
@@ -76,5 +90,4 @@ public class StartScreen extends JPanel {
       }
     }
   }
-
 }
