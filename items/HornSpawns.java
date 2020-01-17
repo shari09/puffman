@@ -22,18 +22,18 @@ public class HornSpawns extends DamagableItemSpawns {
     
   }
 
-  private void updateTimerTasks() {
-    if (TimerTasks.validTask(this)) {
-      String action = TimerTasks.getTask().getAction();
-      if (action.equals("setActive")) {
-        this.setActive(true);
-      }
-    }
-  }
+  // private void updateTimerTasks() {
+  //   if (TimerTasks.validTask(this)) {
+  //     String action = TimerTasks.getTask().getAction();
+  //     if (action.equals("setActive")) {
+  //       this.setActive(true);
+  //     }
+  //   }
+  // }
 
   @Override
   public void update() {
-    this.updateTimerTasks();
+    // this.updateTimerTasks();
     this.moveHurtbox(0, 3*this.dir, 0);
   }
 

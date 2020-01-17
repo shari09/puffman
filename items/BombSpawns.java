@@ -15,12 +15,14 @@ public class BombSpawns extends DamagableItemSpawns {
 
   private int x;
   private int y;
+  private int dir;
 
   public BombSpawns(int x, int y, int dir) {
     super(1, (BombSpawns.ATTACK_TIME+BombSpawns.LOADING_TIME)
              *BombSpawns.NUM_EXPLOSIONS);
     this.x = x;
     this.y = y;
+    this.dir = dir;
 
     int totalTime = BombSpawns.LOADING_TIME+BombSpawns.ATTACK_TIME;
     this.setHurtboxSize(0, BombSpawns.RADIUS);
@@ -40,8 +42,8 @@ public class BombSpawns extends DamagableItemSpawns {
       String action = TimerTasks.getTask().getAction();
       if (action.equals("setHurtboxPos")) {
         this.setHurtboxPos(0, 
-          this.x+Util.scaleX(250+(int)(Math.random()*400)), 
-          this.y+Util.scaleX((int)(Math.random()*400-200))
+          this.x+this.dir*Util.scaleX(250+(int)(Math.random()*400)), 
+          this.y+this.dir*Util.scaleX((int)(Math.random()*400-200))
         );
       } else if (action.equals("setActive")) {
         this.setActive(true);

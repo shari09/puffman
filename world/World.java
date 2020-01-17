@@ -125,6 +125,8 @@ public class World extends JPanel {
     this.addPlayers();
     this.addKeyListener(new Controls(this));
     this.itemFactory = new ItemFactory((RectBlock[])(this.blocks));
+    this.items.add(this.itemFactory.getItem(2));
+    this.items.add(this.itemFactory.getItem(2));
   };
 
   /**
@@ -407,6 +409,7 @@ public class World extends JPanel {
     Item curItem;
     while (itr.hasNext()) {
       curItem = itr.next();
+      curItem.updateTimerTasks();
       //remove items
       if (!curItem.isAlive()) {
         itr.remove();
@@ -468,7 +471,6 @@ public class World extends JPanel {
       } else if (curItemSpawns.isActive()) {
         this.checkItemSpawnsPlayerCollision(curItemSpawns);
       }
-      
     }
   }
 
@@ -516,6 +518,7 @@ public class World extends JPanel {
 
     //displaying item spawned things
     Iterator<DamagableItemSpawns> itemSpawnItr = this.damagableItemSpawns.iterator();
+    
     while (itemSpawnItr.hasNext()) {
       itemSpawnItr.next().display(g2d, this.players);
     }

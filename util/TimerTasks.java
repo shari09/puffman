@@ -16,6 +16,15 @@ public class TimerTasks {
     return false;
   }
 
+  public static boolean validTask(Object o, HashSet<String> respondingTasks) {
+    if (TimerTasks.timer.size() > 0) {
+      return TimerTasks.timer.peek().getTargetSource() == o
+             && respondingTasks.contains(TimerTasks.timer.peek().getAction())
+             && TimerTasks.timer.peek().isOver();
+    }
+    return false;
+  }
+
   public static Timer getTask() {
     return TimerTasks.timer.poll();
   }

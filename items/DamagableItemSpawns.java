@@ -1,6 +1,7 @@
 package items;
 
 import java.awt.Graphics2D;
+import java.util.HashSet;
 
 import characters.Hero;
 import util.Hurtbox;
@@ -14,6 +15,12 @@ public abstract class DamagableItemSpawns {
   private Hurtbox[] hurtboxes;
   private boolean over;
   private boolean isActive;
+  private final static HashSet<String> RESPONDING_TASKS = new HashSet<String>();
+
+  static {
+    RESPONDING_TASKS.add("over");
+    RESPONDING_TASKS.add("setActive");
+  }
 
   public DamagableItemSpawns(int num, int attackTime) {
     this.hurtboxes = new Hurtbox[num];
@@ -24,11 +31,12 @@ public abstract class DamagableItemSpawns {
   }
 
   private void updateTimerTasks() {
-    System.out.println("hello");
-    if (TimerTasks.validTask(this)) {
+    if (TimerTasks.validTask(this, DamagableItemSpawns.RESPONDING_TASKS)) {
       String action = TimerTasks.getTask().getAction();
       if (action.equals("over")) {
         this.over = true;
+      } else if (action.equals("setActive")) {
+        this.isActive = true;
       }
     }
   }

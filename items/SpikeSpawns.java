@@ -20,24 +20,16 @@ public class SpikeSpawns extends DamagableItemSpawns {
                                  SpikeSpawns.LOADING_TIME));
     for (int i = 0; i < SpikeSpawns.NUM_SPIKES; i++) {
       this.setHurtboxPos(i, 
-        (x+SpikeSpawns.RADIUS+i*SpikeSpawns.RADIUS*2)*dir,
+        x+(SpikeSpawns.RADIUS+i*SpikeSpawns.RADIUS*2)*dir,
         y);
       this.setHurtboxSize(i, SpikeSpawns.RADIUS);
     }
   }
 
-  private void updateTimerTasks() {
-    if (TimerTasks.validTask(this)) {
-      String action = TimerTasks.getTask().getAction();
-      if (action.equals("setActive")) {
-        this.setActive(true);
-      }
-    }
-  }
 
   @Override
   public void update() {
-    this.updateTimerTasks();
+    // this.updateTimerTasks();
   }
 
   @Override
