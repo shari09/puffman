@@ -9,7 +9,7 @@ import characters.Hero;
 import util.RectCollidable;
 import util.Timer;
 import util.Util;
-import util.Zoom;
+import util.*;
 import world.World;
 
 public abstract class Item implements RectCollidable {
@@ -36,7 +36,7 @@ public abstract class Item implements RectCollidable {
   private int thrownKnockbackX = Util.scaleX(10);
   private int thrownKnockbackY = Util.scaleY(-5);
 
-  private String disappearingID;
+  private Timer disappearingTask;
 
   private double yVel;
   private double xVel;
@@ -117,8 +117,9 @@ public abstract class Item implements RectCollidable {
   public void setState(int state) {
     this.state = state;
     if (this.state == Item.DISAPPEARING) {
-      this.disappearingID = Timer.setTimeout(() -> this.alive = false, 
-                                             this.disappearingTime);
+      this.disappearingTask = new Timer(this, "disappear",
+                                        this.disappearingTime);
+      TimerTasks.addTask(this.disappearingTask);
     }
   }
 
@@ -126,13 +127,22 @@ public abstract class Item implements RectCollidable {
    * resets the item once the player picks it back up again
    */
   public void reset() {
-    if (this.disappearingID != null) {
-      Timer.clearTimeout(this.disappearingID);
-      this.disappearingID = null;
+    if (this.disappearingTask != null) {
+      TimerTasks.removeTask(this.disappearingTask);
+      this.disappearingTask = null;
       this.xVel = 0;
       this.yVel = 0;
     }
     
+  }
+
+  public void updateTimerTasks() {
+    if (TimerTasks.validTask(this)) {
+      String action = TimerTasks.getTask().getAction();
+      if (action.equals("disappear")) {
+        this.alive = false;
+      }
+    }
   }
 
   /**

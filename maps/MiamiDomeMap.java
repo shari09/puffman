@@ -8,7 +8,6 @@ import util.Util;
 import world.World;
 
 public class MiamiDomeMap implements Map {
-  public MiamiDomeMap() {};
 
   @Override
   public BufferedImage getBackground() throws IOException {

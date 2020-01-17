@@ -2,7 +2,7 @@ package items;
 
 import characters.Hero;
 import util.Timer;
-import util.Util;
+import util.*;
 
 public class HornSpawns extends DamagableItemSpawns {
   private static final int RADIUS = Util.scaleX(40);
@@ -14,16 +14,26 @@ public class HornSpawns extends DamagableItemSpawns {
   private int dir;
   public HornSpawns(int x, int y, int dir) {
     super(1, HornSpawns.ATTACK_TIME+HornSpawns.LOADING_TIME);
-    Timer.setTimeout(() -> this.setActive(true),
-                     HornSpawns.LOADING_TIME);
+    TimerTasks.addTask(new Timer(this, "setActive", 
+                                 HornSpawns.LOADING_TIME));
     this.setHurtboxPos(0, x, y-HornSpawns.RADIUS*4);
     this.setHurtboxSize(0, HornSpawns.RADIUS);
     this.dir = dir;
     
   }
 
+  private void updateTimerTasks() {
+    if (TimerTasks.validTask(this)) {
+      String action = TimerTasks.getTask().getAction();
+      if (action.equals("setActive")) {
+        this.setActive(true);
+      }
+    }
+  }
+
   @Override
   public void update() {
+    this.updateTimerTasks();
     this.moveHurtbox(0, 3*this.dir, 0);
   }
 

@@ -2,6 +2,7 @@ package items;
 
 import characters.Hero;
 import util.Timer;
+import util.TimerTasks;
 import util.Util;
 
 public class BombSpawns extends DamagableItemSpawns {
@@ -12,31 +13,47 @@ public class BombSpawns extends DamagableItemSpawns {
 
   private static final int DAMAGE = 10;
 
+  private int x;
+  private int y;
 
   public BombSpawns(int x, int y, int dir) {
     super(1, (BombSpawns.ATTACK_TIME+BombSpawns.LOADING_TIME)
              *BombSpawns.NUM_EXPLOSIONS);
+    this.x = x;
+    this.y = y;
+
     int totalTime = BombSpawns.LOADING_TIME+BombSpawns.ATTACK_TIME;
     this.setHurtboxSize(0, BombSpawns.RADIUS);
-
+    
     //update the hurtboxes
     for (int i = 0; i < BombSpawns.NUM_EXPLOSIONS; i++) {
       //update the position
-      Timer.setTimeout(() -> {
+      TimerTasks.addTask(new Timer(this, "setHurtboxPos", i*totalTime));
+      TimerTasks.addTask(new Timer(this, "setActive", 
+                         i*totalTime+BombSpawns.LOADING_TIME));
+      TimerTasks.addTask(new Timer(this, "setActiveOver", i*totalTime));
+    }
+  }
+
+  private void updateTimerTasks() {
+    if (TimerTasks.validTask(this)) {
+      String action = TimerTasks.getTask().getAction();
+      if (action.equals("setHurtboxPos")) {
         this.setHurtboxPos(0, 
-                           x+Util.scaleX(250+(int)(Math.random()*400)), 
-                           y+Util.scaleX((int)(Math.random()*400-200)));
-      }, i*totalTime);
-      Timer.setTimeout(() -> this.setActive(true), 
-                       i*totalTime+BombSpawns.LOADING_TIME);
-      Timer.setTimeout(() -> this.setActive(false),
-                       i*totalTime);
+          this.x+Util.scaleX(250+(int)(Math.random()*400)), 
+          this.y+Util.scaleX((int)(Math.random()*400-200))
+        );
+      } else if (action.equals("setActive")) {
+        this.setActive(true);
+      } else if (action.equals("setActiveOver")) {
+        this.setActive(false);
+      }
     }
   }
 
   @Override
   public void update() {
-
+    this.updateTimerTasks();
   }
 
   @Override

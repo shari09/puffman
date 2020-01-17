@@ -2,7 +2,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import javax.swing.*;
 
-import util.Timer;
+import util.*;
 import world.GameWindow;
 import world.*;
 import world.Menu;
@@ -60,11 +60,9 @@ public class GameLoop {
 
         //world main loop
       } else if (curPanel == world) {
-        if (world.isRunning()) {
-          Timer.update();
-        } else {
+        if (!world.isRunning()) {
           window.switchPanel(gameOverMenu);
-          Timer.reset();
+          TimerTasks.reset();
         }
 
         //game over menu

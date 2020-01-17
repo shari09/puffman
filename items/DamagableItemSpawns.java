@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 
 import characters.Hero;
 import util.Hurtbox;
-import util.Timer;
+import util.*;
 
 /**
  * everyone can get damaged by the item spawns
@@ -20,7 +20,22 @@ public abstract class DamagableItemSpawns {
     for (int i = 0; i < num; i++) {
       this.hurtboxes[i] = new Hurtbox();
     }
-    Timer.setTimeout(() -> this.over = true, attackTime);
+    TimerTasks.addTask(new Timer(this, "over", attackTime));
+  }
+
+  private void updateTimerTasks() {
+    System.out.println("hello");
+    if (TimerTasks.validTask(this)) {
+      String action = TimerTasks.getTask().getAction();
+      if (action.equals("over")) {
+        this.over = true;
+      }
+    }
+  }
+
+  public void updateAll() {
+    this.updateTimerTasks();
+    this.update();
   }
 
   //in case if I want to animate the spikes 

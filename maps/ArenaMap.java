@@ -8,7 +8,6 @@ import util.Util;
 import world.World;
 
 public class ArenaMap implements Map {
-  public ArenaMap() {};
 
   @Override
   public BufferedImage getBackground() throws IOException {

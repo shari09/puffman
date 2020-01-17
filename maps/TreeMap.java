@@ -8,7 +8,6 @@ import util.Util;
 import world.World;
 
 public class TreeMap implements Map {
-  public TreeMap() {};
 
   @Override
   public BufferedImage getBackground() throws IOException {

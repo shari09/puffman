@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import characters.Hero;
 import util.Timer;
+import util.TimerTasks;
 import util.Util;
 
 
@@ -303,12 +304,11 @@ public class CloseRange extends Weapon {
                              this.getLoadingTime(state),
                              this.getActiveTime(state),
                              this.getRecoveryTime(state));
-    Timer.setTimeout(() -> curPlayer.setxTargetSpeed(Util.scaleX(25)),
-                     this.getLoadingTime(state));
-    Timer.setTimeout(() -> curPlayer.resetXMovement(),
-                     this.getActiveTime(state) 
-                     + this.getLoadingTime(state));
-
+    TimerTasks.addTask(new Timer(curPlayer, "heavySideSpeedUp",
+                                this.getLoadingTime(state)));
+    TimerTasks.addTask(new Timer(curPlayer, "resetXMovement",
+                                this.getLoadingTime(state)
+                                + this.getActiveTime(state)));
   }
 
   @Override

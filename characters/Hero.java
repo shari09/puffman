@@ -23,7 +23,7 @@ import util.RectCollidable;
 import util.States;
 import util.Timer;
 import util.Util;
-import util.Zoom;
+import util.*;
 import weapons.PickupableWeaponHolder;
 import weapons.Weapon;
 import world.World;
@@ -89,7 +89,8 @@ public class Hero implements CircleCollidable, RectCollidable {
 
   //special states count as you do something once,
   //it runs for a duration of time
-  private HashMap<String, BufferedImage[]> sprites = new HashMap<>();
+  private HashMap<String, BufferedImage[]> sprites = 
+    new HashMap<String, BufferedImage[]>();
   private Weapon fist;
   private Item curItem;
   private Weapon weapon;
@@ -325,6 +326,28 @@ public class Hero implements CircleCollidable, RectCollidable {
     this.heavyRecovery = false;
   }
 
+  public void updateTimerTasks() {
+    if (TimerTasks.validTask(this)) {
+      String action = TimerTasks.getTask().getAction();
+      if (action.equals("gravityCancelOver")) {
+        this.gravityCancel = false;
+        this.yVel = 0;
+      } else if (action.equals("dodgeCoolDownOver")) {
+        this.dodgeCoolDown = false;
+      } else if (action.equals("breakSpecialState")) {
+        this.breakSpecialState();
+      } else if (action.equals("activeAttackState")) {
+        this.activeAttackState = true;
+      } else if (action.equals("activeAttackStateOver")) {
+        this.activeAttackState = false;
+      } else if (action.equals("heavySideSpeedUp")) {
+        this.setxTargetSpeed(Util.scaleX(25));
+      } else if (action.equals("resetXMovement")) {
+        this.resetXMovement();
+      }
+    } 
+  }
+
   /**
    * updates sprite animation
    */
@@ -372,10 +395,7 @@ public class Hero implements CircleCollidable, RectCollidable {
    */
   public void gravityCancel(int delay) {
     this.gravityCancel = true;
-    Timer.setTimeout(() -> {
-      this.gravityCancel = false;
-      this.resetYVel();
-    }, delay);
+    TimerTasks.addTask(new Timer(this, "gravityCancelOver", delay));
   }
 
   /**
@@ -397,7 +417,7 @@ public class Hero implements CircleCollidable, RectCollidable {
   public void dodge() {
     this.dodgeCoolDown = true;
     this.setSpecialState("dodge", 1000); //1sec dodge
-    Timer.setTimeout(() -> this.dodgeCoolDown = false, 4000); //3sec cool down
+    TimerTasks.addTask(new Timer(this, "dodgeCoolDownOver", 4000));
   }
 
   /**
@@ -736,7 +756,7 @@ public class Hero implements CircleCollidable, RectCollidable {
       this.curSpriteFrame = 0;
       this.state = state;
       this.inSpecialState = true;
-      Timer.setTimeout(this::breakSpecialState, delay);
+      TimerTasks.addTask(new Timer(this, "breakSpecialState", delay));
     }
   }
 
@@ -755,9 +775,9 @@ public class Hero implements CircleCollidable, RectCollidable {
                              int recoveryTime) {
     this.setSpecialState(state, loadingTime+activeTime+recoveryTime);
     this.resetXMovement();
-    Timer.setTimeout(() -> this.activeAttackState = true, loadingTime);
-    Timer.setTimeout(() -> this.activeAttackState = false,
-                          loadingTime+activeTime);
+    TimerTasks.addTask(new Timer(this, "activeAttackState", loadingTime));
+    TimerTasks.addTask(new Timer(this, "activeAttackStateOver", 
+                                 loadingTime+activeTime));
     
   }
 

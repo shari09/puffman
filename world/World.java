@@ -25,7 +25,7 @@ import util.CircleCollidable;
 import util.Collision;
 import util.DamageIndicator;
 import util.RectCollidable;
-import util.Util;
+import util.*;
 import weapons.CloseRange;
 
 public class World extends JPanel {
@@ -281,6 +281,7 @@ public class World extends JPanel {
       Hero curPlayer = this.players[i];
       curPlayer.updateMovement();
       curPlayer.updateSprite();
+      curPlayer.updateTimerTasks();
 
       checkPlayerBlockCollisions(curPlayer);
       updateAttackCollisions(curPlayer);
@@ -461,12 +462,13 @@ public class World extends JPanel {
     DamagableItemSpawns curItemSpawns;
     while (itr.hasNext()) {
       curItemSpawns = itr.next();
+      curItemSpawns.updateAll();
       if (curItemSpawns.isOver()) {
         itr.remove();
       } else if (curItemSpawns.isActive()) {
         this.checkItemSpawnsPlayerCollision(curItemSpawns);
-        curItemSpawns.update();
       }
+      
     }
   }
 
