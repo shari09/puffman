@@ -8,9 +8,9 @@ import characters.Hero;
 
 public class Controls implements KeyListener {
   private World world;
-  private HashSet<String> tappedKeys = new HashSet<>();  
+  private HashSet<String> tappedKeys = new HashSet<String>();  
 
-  private HashSet<String> heldKeyList = new HashSet<>();
+  private HashSet<String> heldKeyList = new HashSet<String>();
   
   public Controls(World world) {
     this.world = world;

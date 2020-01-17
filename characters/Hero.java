@@ -89,7 +89,8 @@ public class Hero implements CircleCollidable, RectCollidable {
 
   //special states count as you do something once,
   //it runs for a duration of time
-  private HashMap<String, BufferedImage[]> sprites = new HashMap<>();
+  private HashMap<String, BufferedImage[]> sprites = 
+    new HashMap<String, BufferedImage[]>();
   private Weapon fist;
   private Item curItem;
   private Weapon weapon;

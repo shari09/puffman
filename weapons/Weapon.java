@@ -17,7 +17,7 @@ public abstract class Weapon {
   private static final int POWER = 3; 
   private static final int SIZE = 4;
 
-  private HashMap<String, Double[]> states = new HashMap<>();
+  private HashMap<String, Double[]> states = new HashMap<String, Double[]>();
   private Hurtbox[] hurtboxes = new Hurtbox[10];
   private int numHurtboxes = 1;
 
@@ -39,7 +39,6 @@ public abstract class Weapon {
     File file = new File(filePath);
 
     Scanner fin = new Scanner(file);
-    // BufferedReader reader = new BufferedReader(new FileReader(filePath));
     String line;
     String[] data;
     Double[] configNum;

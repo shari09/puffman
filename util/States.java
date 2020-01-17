@@ -10,7 +10,7 @@ public class States {
   private static HashSet<String> 
   getStates(String filePath) throws IOException {
 
-    HashSet<String> states = new HashSet<>();
+    HashSet<String> states = new HashSet<String>();
     File file = new File(filePath);
 
     Scanner fin = new Scanner(file);

@@ -6,7 +6,7 @@ import util.*;
 
 public class MenuFactory {
   public static Menu getStartMenu() throws IOException {
-    Menu menu = new Menu(3, "background/startMenu.png");
+    Menu menu = new Menu(3, "background/startMenu.jpg");
     int width = 800;
     menu.setButton(0,
       GameWindow.width/2-Util.scaleX(width/2), Util.scaleY(550),
@@ -35,7 +35,7 @@ public class MenuFactory {
   }
 
   public static Menu getChooseMapMenu() throws IOException {
-    Menu menu = new Menu(3, "background/chooseMapMenu.jpg");
+    Menu menu = new Menu(4, "background/chooseMapMenu.jpg");
     menu.setButton(0,
       Util.scaleX(450), Util.scaleY(300),
       Util.scaleX(300), Util.scaleY(300), "Arena");
@@ -45,13 +45,16 @@ public class MenuFactory {
     menu.setButton(2,
       Util.scaleX(1250), Util.scaleY(300),
       Util.scaleX(300), Util.scaleY(300), "Miami");
+    menu.setButton(3,
+      Util.scaleX(1600), Util.scaleY(900),
+      Util.scaleX(200), Util.scaleY(80), "Back");
     return menu;
   }
 
   public static Menu getInstructionMenu() throws IOException {
-    Menu menu = new Menu(1, "background/chooseMapMenu.jpg");
+    Menu menu = new Menu(1, "background/instruction.png");
     menu.setButton(0,
-      Util.scaleX(1600), Util.scaleY(800),
+      Util.scaleX(1600), Util.scaleY(900),
       Util.scaleX(200), Util.scaleY(80), "Back");
     return menu;
   }

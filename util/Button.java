@@ -78,6 +78,7 @@ public class Button {
    */
   public void reset() {
     this.clicked = false;
+    this.hover = false;
   }
 
   /**
@@ -94,7 +95,8 @@ public class Button {
     Font font = new Font("Helvetica", Font.PLAIN, this.width/10);
     g2d.setFont(font);
     FontMetrics metrics = g2d.getFontMetrics(font);
-    int x = this.x+(int)((this.width-metrics.stringWidth(this.text))/2);
+    int x = this.x+(int)(
+      (this.width-metrics.stringWidth(this.text.toUpperCase()))/2);
     int y = this.y+(this.height-metrics.getHeight())/2+metrics.getAscent();
     g2d.drawString(this.text.toUpperCase(), x, y);
   }

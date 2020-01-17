@@ -9,9 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Timer {
   private static ConcurrentHashMap<String, Integer> 
-    timer = new ConcurrentHashMap<>();
+    timer = new ConcurrentHashMap<String, Integer>();
   private static HashMap<String, Runnable> 
-    tasks = new HashMap<>();
+    tasks = new HashMap<String, Runnable>();
   private static long previousTime = System.currentTimeMillis();
 
   /**

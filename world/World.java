@@ -41,8 +41,9 @@ public class World extends JPanel {
   private String mapName;
   private BufferedImage background;
 
-  private HashSet<Item> items = new HashSet<>();
-  private HashSet<DamagableItemSpawns> damagableItemSpawns = new HashSet<>();
+  private HashSet<Item> items = new HashSet<Item>();
+  private HashSet<DamagableItemSpawns> damagableItemSpawns = 
+    new HashSet<DamagableItemSpawns>();
   private Hero[] players;
   private Block[] blocks;
   private boolean running = true;
@@ -50,7 +51,7 @@ public class World extends JPanel {
 
   //key listeners doesn't work all the time
   //need constant update on keys
-  private HashSet<String> activeHeldKeys = new HashSet<>();
+  private HashSet<String> activeHeldKeys = new HashSet<String>();
 
   private ItemFactory itemFactory;
 
