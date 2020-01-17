@@ -30,7 +30,10 @@ public class GameWindow extends JFrame {
     this.getContentPane().add(panel);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     
-    // GraphicsEnvironment graphics =is);
+    // GraphicsEnvironment graphics = 
+    //   GraphicsEnvironment.getLocalGraphicsEnvironment();
+    // GraphicsDevice device = graphics.getDefaultScreenDevice();
+    // device.setFullScreenWindow(this);
   
     this.setVisible(true);
   }

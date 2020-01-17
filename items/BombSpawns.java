@@ -1,9 +1,19 @@
 package items;
 
 import characters.Hero;
-import util.Timer;
-import util.TimerTasks;
+import util.TimedTask;
+import util.TimedEventQueue;
 import util.Util;
+
+/**
+ * BombSpawns.java
+ * This is the effects of using the bomb gadget. A number of explosions
+ * will pop up in random places at a certain area/range.
+ * 
+ * Jan 17, 2020
+ * @author Shari Sun
+ * @version 0.0.2 
+ */
 
 public class BombSpawns extends DamagableItemSpawns {
   private static final int NUM_EXPLOSIONS = 8;
@@ -17,6 +27,12 @@ public class BombSpawns extends DamagableItemSpawns {
   private int y;
   private int dir;
 
+  /**
+   * Constructor.
+   * @param x the player's x position.
+   * @param y the player's y position.
+   * @param dir the direction the player is facing.
+   */
   public BombSpawns(int x, int y, int dir) {
     super(1, (BombSpawns.ATTACK_TIME+BombSpawns.LOADING_TIME)
              *BombSpawns.NUM_EXPLOSIONS);
@@ -30,23 +46,26 @@ public class BombSpawns extends DamagableItemSpawns {
     //update the hurtboxes
     for (int i = 0; i < BombSpawns.NUM_EXPLOSIONS; i++) {
       //update the position
-      TimerTasks.addTask(new Timer(this, "setHurtboxPos", i*totalTime));
-      TimerTasks.addTask(new Timer(this, "setActive", 
+      //spawns explosions at a certain area with random fluctuations
+      TimedEventQueue.addTask(new TimedTask(this, "setHurtboxPos", i*totalTime));
+      TimedEventQueue.addTask(new TimedTask(this, "setActive", 
                          i*totalTime+BombSpawns.LOADING_TIME));
-      TimerTasks.addTask(new Timer(this, "setActiveOver", i*totalTime));
+      //reset it to be inactive so it'll have some loading time again
+      TimedEventQueue.addTask(new TimedTask(this, "setActiveOver", i*totalTime));
     }
   }
 
-  private void updateTimerTasks() {
-    if (TimerTasks.validTask(this)) {
-      String action = TimerTasks.getTask().getAction();
+  /**
+   * Update all the related timed tasks/events.
+   */
+  private void updateTimedTasks() {
+    if (TimedEventQueue.validTask(this)) {
+      String action = TimedEventQueue.getTask().getAction();
       if (action.equals("setHurtboxPos")) {
         this.setHurtboxPos(0, 
           this.x+this.dir*Util.scaleX(250+(int)(Math.random()*400)), 
           this.y+this.dir*Util.scaleX((int)(Math.random()*400-200))
         );
-      } else if (action.equals("setActive")) {
-        this.setActive(true);
       } else if (action.equals("setActiveOver")) {
         this.setActive(false);
       }
@@ -55,7 +74,7 @@ public class BombSpawns extends DamagableItemSpawns {
 
   @Override
   public void update() {
-    this.updateTimerTasks();
+    this.updateTimedTasks();
   }
 
   @Override

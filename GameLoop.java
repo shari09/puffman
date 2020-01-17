@@ -50,10 +50,18 @@ public class GameLoop {
         } else if (action.equals("Quit")) {
           quit = true;
         }
+        
+      //instruction panel
+      } else if (curPanel == instructionMenu) {
+        if (action.equals("Back")) {
+          window.switchPanel(startMenu);
+        }
 
         //map selection
       } else if (curPanel == choosemapMenu) {
-        if (!action.equals("")) {
+        if (action.equals("Back")) {
+          window.switchPanel(startMenu);
+        } else if (!action.equals("")) {
           world = new World(action);
           window.switchPanel(world);
         }
@@ -62,7 +70,7 @@ public class GameLoop {
       } else if (curPanel == world) {
         if (!world.isRunning()) {
           window.switchPanel(gameOverMenu);
-          TimerTasks.reset();
+          TimedEventQueue.reset();
         }
 
         //game over menu

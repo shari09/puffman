@@ -1,7 +1,7 @@
 package items;
 
 import characters.Hero;
-import util.Timer;
+import util.TimedTask;
 import util.*;
 
 public class HornSpawns extends DamagableItemSpawns {
@@ -14,7 +14,7 @@ public class HornSpawns extends DamagableItemSpawns {
   private int dir;
   public HornSpawns(int x, int y, int dir) {
     super(1, HornSpawns.ATTACK_TIME+HornSpawns.LOADING_TIME);
-    TimerTasks.addTask(new Timer(this, "setActive", 
+    TimedEventQueue.addTask(new TimedTask(this, "setActive", 
                                  HornSpawns.LOADING_TIME));
     this.setHurtboxPos(0, x, y-HornSpawns.RADIUS*4);
     this.setHurtboxSize(0, HornSpawns.RADIUS);
@@ -22,7 +22,7 @@ public class HornSpawns extends DamagableItemSpawns {
     
   }
 
-  // private void updateTimerTasks() {
+  // private void updateTimedTasks() {
   //   if (TimerTasks.validTask(this)) {
   //     String action = TimerTasks.getTask().getAction();
   //     if (action.equals("setActive")) {
@@ -33,7 +33,7 @@ public class HornSpawns extends DamagableItemSpawns {
 
   @Override
   public void update() {
-    // this.updateTimerTasks();
+    // this.updateTimedTasks();
     this.moveHurtbox(0, 3*this.dir, 0);
   }
 

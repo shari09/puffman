@@ -9,16 +9,34 @@ import characters.Hero;
 import util.RectCollidable;
 import util.Zoom;
 
+/**
+ * RectBlock.java
+ * The most basic rectangular blocks
+ * 
+ * Jan 17, 2020
+ * @author Shari Sun
+ * @version 0.0.1
+ */
+
 public class RectBlock extends Block implements RectCollidable {
   private int x;
   private int y;
   private int width;
   private int height;
 
-  public RectBlock(String filePath, 
+  /**
+   * Constructor.
+   * @param imagePath the imagePath where the sprite is located.
+   * @param x the x position of where the block should be on the map.
+   * @param y the y position of where the block should be on the map.
+   * @param width the width of the block.
+   * @param height the height of the block.
+   * @throws IOException
+   */
+  public RectBlock(String imagePath, 
                    int x, int y, 
                    int width, int height) throws IOException {
-    super(filePath);
+    super(imagePath);
     this.x = x;
     this.y = y;
     this.width = width;

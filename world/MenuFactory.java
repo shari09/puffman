@@ -70,9 +70,9 @@ public class MenuFactory {
   }
 
   public static Menu getInstructionMenu() throws IOException {
-    Menu menu = new Menu(1, "background/chooseMapMenu.jpg");
+    Menu menu = new Menu(1, "background/instruction.png");
     menu.setButton(0,
-      Util.scaleX(1600), Util.scaleY(800),
+      Util.scaleX(1600), Util.scaleY(900),
       Util.scaleX(200), Util.scaleY(80), "Back");
     return menu;
   }

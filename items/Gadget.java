@@ -3,6 +3,10 @@ package items;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * Gadget.java
+ * 
+ */
 public abstract class Gadget extends Item {
 
   public Gadget(int x, int y, int width, int height, 

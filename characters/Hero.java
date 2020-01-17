@@ -21,18 +21,27 @@ import util.DamageIndicator;
 import util.Hurtbox;
 import util.RectCollidable;
 import util.States;
-import util.Timer;
+import util.TimedTask;
 import util.Util;
 import util.*;
 import weapons.PickupableWeaponHolder;
 import weapons.Weapon;
 import world.World;
 
+/**
+ * Hero.java
+ * Creates a player controlled Hero (character).
+ * 
+ * Jan 17, 2020
+ * @author Shari Sun
+ * @version 0.0.4
+ */
 
-//cast to rectCollidable to get block collision box
-//cast to circleCollidable to get hit box
+//cast to RectCollidable to get block collision box
+//cast to CircleCollidable to get hitbox
 public class Hero implements CircleCollidable, RectCollidable {
 
+  //hitbox of the player is displayed in red
   private final Color hitboxColour = new Color(200, 0, 0, 60);
 
   //controls
@@ -46,29 +55,33 @@ public class Hero implements CircleCollidable, RectCollidable {
   private String dodgeKey;
 
 
+  //dimensions of the player for collisions
   private double x;
   private double y;
   private int width;
   private int height;
   private int radius;
 
+  //image widtd/height might not match actual collision parts of the player
+  //Ex. when the player is clinging onto the wall, 
+  //the image actually goes on the wall
   private int imageWidth;
   private int imageHeight;
 
-
+  //speed/velocity
   private double xVel;
   private double xTargetSpeed;
   private final double acceleration = Util.scaleX(2.0);
   private final double jumpVel = -World.GRAVITY*32;
-  private final double xMaxSpeed = Util.scaleX(5.0);
-  private final double yMaxSpeed = Util.scaleY(30);
+  private final double X_MAX_SPEED = Util.scaleX(5.0);
+  private final double Y_MAX_SPEED = Util.scaleY(30);
   private final double dropVel = World.GRAVITY*3;
   
   private int dir = 1;
   private double yVel;
   private int numJumps;
 
-  //counters
+  //counters for animation (though there are none as of the moment)
   private int spriteNum;
   private final int framesPerSprite = 3;
   private int curSpriteFrame;
@@ -81,21 +94,31 @@ public class Hero implements CircleCollidable, RectCollidable {
   private boolean gravityCancel = false;
   private boolean dodgeCoolDown = false;
 
+  //damage
   private int damageTaken = 1;
 
   //states: onLeftWall, onRightWall, faceRight, faceLeft, etc
+  //special states count as you do something once,
+  //it runs for a duration of time and cannot be disturbed
   private String state = "onGround";
 
 
-  //special states count as you do something once,
-  //it runs for a duration of time
   private HashMap<String, BufferedImage[]> sprites = 
     new HashMap<String, BufferedImage[]>();
+  
+  //player held weapons/gadgets
   private Weapon fist;
   private Item curItem;
   private Weapon weapon;
   private DamageIndicator damageIndicator;
   
+
+  /**
+   * Loads all the sprite images with data from a text file then
+   * adds all sprites to the player.
+   * @param heroName the name of the Hero (also name of the text file).
+   * @throws IOException
+   */
   private void addAllSprites(String heroName) throws IOException {
     BufferedReader reader = new BufferedReader(
       new FileReader("assets/config/characters/"+heroName+"Sprites.txt")
@@ -104,7 +127,7 @@ public class Hero implements CircleCollidable, RectCollidable {
     String[] data;
     BufferedImage[] sprites;
     while (line != null) {
-      data = line.split("\\s+");
+      data = line.split("\\s+"); //regex for spliting all spaces
       sprites = new BufferedImage[data.length-1];
       for (int i = 1; i < data.length; i++) {
         sprites[i-1] = Util.urlToImage("characters/"+heroName+"/"+data[i]);
@@ -116,7 +139,31 @@ public class Hero implements CircleCollidable, RectCollidable {
     reader.close();
   }
 
-  //constructor
+  /**
+   * Constructor.
+   * @param x the x-position where the player spawns.
+   * @param y the y-position where the player spawns.
+   * @param width the width of the player (for block collision).
+   * @param height the height of the player (for block collision).
+   * @param imageWidth the actual width of the player's images that is greater 
+   *                   than the player width because the actual image may overlap
+   *                   certain things in the world (Ex. weapons overlapping walls).
+   * @param imageHeight the actual height of the player's images that is greater 
+   *                    than the player height because the actual image may overlap
+   *                    certain things in the world (Ex. weapons overlapping walls).
+   * @param hitboxRadius the player's hitbox radius.
+   * @param leftKey the key for this player to move left.
+   * @param rightKey the key for this player to move right.
+   * @param jumpKey the key for this player to jump.
+   * @param dropKey the key for this player to drop down.
+   * @param lightAttackKey the key for this player to perform a light attack.
+   * @param heavyAttackKey the key for this player to perform a heavy attack.
+   * @param pickUpKey the key for this player to pick up or throw items.
+   * @param dodgeKey the key for this player to dodge.
+   * @param fist the initial fist (different players may be configured differently).
+   * @param heroName the name of the hero (to get the sprite datasheet).
+   * @throws IOException
+   */
   public Hero(int x, int y, int width, int height,
               int imageWidth, int imageHeight,
               int hitboxRadius,
@@ -147,10 +194,10 @@ public class Hero implements CircleCollidable, RectCollidable {
 
 
   /**
-   * calling the light attack the player performs based
-   * on their current weapon and state
-   * @param heldKeyList the list of keys held down
-   * @param tappedKeys the list of keys tapped
+   * Calling the light attack the player performs based
+   * on their current weapon and state.
+   * @param heldKeyList the list of keys held down.
+   * @param tappedKeys the list of keys tapped.
    */
   public void lightAttack(HashSet<String> heldKeyList,
                           HashSet<String> tappedKeys) {
@@ -193,10 +240,10 @@ public class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
-   * calling the heavy attacks of the player
-   * based on their current weapon and state
-   * @param heldKeyList the keys held down
-   * @param tappedKeys the keys being tapped
+   * Calling the player to perform a heavy attack 
+   * based on their current weapon and state.
+   * @param heldKeyList the keys held down.
+   * @param tappedKeys the keys being tapped.
    */
   public void heavyAttack(HashSet<String> heldKeyList,
                           HashSet<String> tappedKeys) {
@@ -238,7 +285,8 @@ public class Hero implements CircleCollidable, RectCollidable {
   }
   
   /**
-   * break out of the special state
+   * Break out of the special state.
+   * The player is now controllable.
    */
   private void breakSpecialState() {
     this.inSpecialState = false;
@@ -247,23 +295,23 @@ public class Hero implements CircleCollidable, RectCollidable {
 
 
   /**
-   * deal damage to the other player
-   * @param other Hero, the other player
+   * Deal damage to another player.
+   * @param other Hero, the another player.
    */
   public void damage(Hero other) {
     this.weapon.knockBack(other, this.state, this.dir);
   }
 
   /**
-   * adds to the player's damage
-   * @param damage int, the amount of damage
+   * Adds to the current player's damage.
+   * @param damage int, the amount of damage dealt.
    */
   public void takeDamage(int damage) {
     this.damageTaken += damage;
   }
 
   /**
-   * make the player jump if they are still allowed to jump
+   * Make the player jump if they are still allowed to jump.
    */
   public void jump() {
     if (this.numJumps < 3) {
@@ -282,34 +330,34 @@ public class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
-   * resets the y-velocity to 0
+   * Resets the y-velocity to 0.
    */
   public void resetYVel() {
     this.yVel = 0;
   }
 
   /**
-   * change the direction and target vel to move left
+   * Change the direction and the x target speed to move left.
    */
   public void moveLeft() {
     if (!this.state.equals("onLeftWall")) {
       this.dir = -1;
-      this.xTargetSpeed = this.xMaxSpeed;
+      this.xTargetSpeed = this.X_MAX_SPEED;
     }
   }
 
   /**
-   * change the direction and target vel to move right
+   * Change the direction and x target speed to move right.
    */
   public void moveRight() {
     if (!this.state.equals("onRightWall")) {
       this.dir = 1;
-      this.xTargetSpeed = this.xMaxSpeed;
+      this.xTargetSpeed = this.X_MAX_SPEED;
     }
   }
 
   /**
-   * reset the x vel and x target vel
+   * Reset the x vel and x target speed.
    */
   public void resetXMovement() {
     this.xVel = 0;
@@ -317,8 +365,9 @@ public class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
-   * reset the number of jumps to zero
-   * set recovery states to false
+   * Reset the number of jumps to zero.
+   * Set recovery states to false (the player is allowed one light and
+   * one heavy recovery per "airtime").
    */
   public void resetJumps() {
     this.numJumps = 0;
@@ -326,9 +375,12 @@ public class Hero implements CircleCollidable, RectCollidable {
     this.heavyRecovery = false;
   }
 
-  public void updateTimerTasks() {
-    if (TimerTasks.validTask(this)) {
-      String action = TimerTasks.getTask().getAction();
+  /**
+   * Updates all the timed tasks/events correspondingly if their time is up.
+   */
+  public void updateTimedTasks() {
+    if (TimedEventQueue.validTask(this)) {
+      String action = TimedEventQueue.getTask().getAction();
       if (action.equals("gravityCancelOver")) {
         this.gravityCancel = false;
         this.yVel = 0;
@@ -349,7 +401,7 @@ public class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
-   * updates sprite animation
+   * Updates sprite animation (though it is only looping through one image for now).
    */
   public void updateSprite() {
     //move to next frame
@@ -365,10 +417,10 @@ public class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
-   * update all movements (left, right, up, down)
+   * Update all movements (left, right, up, down).
    */
-  //the logic is kinda messy here, come back later to fix it
   public void updateMovement() {
+    //if the x speed hasn't reached its max, increase the velocity
     if (Math.abs(this.xVel) < this.xTargetSpeed) {
       this.xVel += this.acceleration*this.dir;
     }
@@ -383,41 +435,42 @@ public class Hero implements CircleCollidable, RectCollidable {
     }
 
     this.x += this.xVel;
-
+    
     if (!this.gravityCancel) {
       this.y += this.yVel;
     }
   }
 
   /**
-   * creates a gravity cancel for a period of time
-   * @param delay the time of the gravity cancel
+   * Creates a gravity cancel for a period of time.
+   * The player/character is immune to gravity and will freeze in the air.
+   * @param delay the time of the gravity cancel.
    */
   public void gravityCancel(int delay) {
     this.gravityCancel = true;
-    TimerTasks.addTask(new Timer(this, "gravityCancelOver", delay));
+    TimedEventQueue.addTask(new TimedTask(this, "gravityCancelOver", delay));
   }
 
   /**
-   * allow the player to drop down faster
+   * Allow the player to drop down faster.
    */
   public void dropDown() {
     this.setState("drop");
-    if (Math.abs(this.yVel) < this.yMaxSpeed) {
+    if (Math.abs(this.yVel) < this.Y_MAX_SPEED) {
       this.yVel += this.dropVel;
     }
   }
 
   /**
-   * allows the player to be in dodge state
-   * the player cannot move but the player is immune to all attacking
-   * for one second
-   * the player has a 3 seconds cool down before it can dodge again
+   * Allows the player to be in dodge state.
+   * The player cannot move but the player is immune to all attacking
+   * for one second.
+   * The player has a 3 seconds cool down before it can dodge again.
    */
   public void dodge() {
     this.dodgeCoolDown = true;
     this.setSpecialState("dodge", 1000); //1sec dodge
-    TimerTasks.addTask(new Timer(this, "dodgeCoolDownOver", 4000));
+    TimedEventQueue.addTask(new TimedTask(this, "dodgeCoolDownOver", 4000));
   }
 
   /**
@@ -536,17 +589,6 @@ public class Hero implements CircleCollidable, RectCollidable {
     this.damageIndicator.display(g2d, this.damageTaken);
   }
 
-
-  // /**
-  //  * throws runtime exception if the state is an invalid state
-  //  * @param state the state to check for
-  //  */
-  // private void checkValidState(String state) {
-  //   if (!States.all.contains(state)) {
-  //     throw new RuntimeException(state + " is not a valid state");
-  //   }
-  // }
-
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //setters and getters
 
@@ -600,10 +642,11 @@ public class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
-   * @return this.xMaxSpeed double, the max x-speed
+   * Get the the horizontal maximum speed.
+   * @return this.X_MAX_SPEED double, the max x-speed
    */
   public double getxMaxSpeed() {
-    return this.xMaxSpeed;
+    return this.X_MAX_SPEED;
   }
 
   /**
@@ -633,8 +676,9 @@ public class Hero implements CircleCollidable, RectCollidable {
 
 
   /**
+   * Get the direction that the player is currently facing.
+   * 1 for right, -1 for left.
    * @return dir, the direction that the player is facing
-   * 1 for right, -1 for left
    */
   public int getDir() {
     return this.dir;
@@ -645,56 +689,64 @@ public class Hero implements CircleCollidable, RectCollidable {
   //control key getters
 
   /**
-   * @return the control for the player to go left
+   * Get the control key for the player to go left.
+   * @return the control key for the player to go left.
    */
   public String getLeftKey() {
     return this.leftKey;
   }
 
-   /**
-   * @return the control for the player to go right
+  /**
+   * Get the control key for the player to go right.
+   * @return the control key for the player to go right.
    */
   public String getRightKey() {
     return this.rightKey;
   }
 
-   /**
-   * @return the control for the player to jump
+  /**
+   * Get the control key for the player to jump.
+   * @return the control key for the player to jump.
    */
   public String getJumpKey() {
     return this.jumpKey;
   }
 
-   /**
-   * @return the control for the player to drop
+  /**
+   * Get the control key for the player to drop.
+   * @return the control key for the player to drop.
    */
   public String getDropKey() {
     return this.dropKey;
   }
 
-   /**
-   * @return the control for the player to make a light attack
+  /**
+   * Get the control key for the player to make a light attack.
+   * @return the control key for the player to make a light attack.
    */
   public String getLightAttackKey() {
     return this.lightAttackKey;
   }
 
   /**
-   * @return the control fo the player to make a heavy attack
+   * Get the control key for the player to make a heavy attack.
+   * @return the control key fo the player to make a heavy attack.
    */
   public String getHeavyAttackKey() {
     return this.heavyAttackKey;
   }
 
   /**
-   * @return the control for the player to pickUp/throw an item
+   * Get the control key for the player to pick up/throw an item.
+   * @return the control key for the player to pick up/throw an item.
    */
   public String getPickUpKey() {
     return this.pickUpKey;
   }
 
   /**
-   * @return the control for the player to dodge/dash
+   * Get the control key for the player to dodge.
+   * @return the control key for the player to dodge.
    */
   public String getDodgeKey() {
     return this.dodgeKey;
@@ -756,7 +808,7 @@ public class Hero implements CircleCollidable, RectCollidable {
       this.curSpriteFrame = 0;
       this.state = state;
       this.inSpecialState = true;
-      TimerTasks.addTask(new Timer(this, "breakSpecialState", delay));
+      TimedEventQueue.addTask(new TimedTask(this, "breakSpecialState", delay));
     }
   }
 
@@ -775,37 +827,43 @@ public class Hero implements CircleCollidable, RectCollidable {
                              int recoveryTime) {
     this.setSpecialState(state, loadingTime+activeTime+recoveryTime);
     this.resetXMovement();
-    TimerTasks.addTask(new Timer(this, "activeAttackState", loadingTime));
-    TimerTasks.addTask(new Timer(this, "activeAttackStateOver", 
+    TimedEventQueue.addTask(new TimedTask(this, "activeAttackState", loadingTime));
+    TimedEventQueue.addTask(new TimedTask(this, "activeAttackStateOver", 
                                  loadingTime+activeTime));
     
   }
 
   /**
-   * @return boolean, whether the player is in the middle of attacking
+   * Get whether or not the player is in the middle of attacking.
+   * @return boolean, whether the player is in the middle of attacking.
    */
   public boolean isAttackState() {
     return States.attack.contains(this.state);
   }
 
   /**
-   * @return boolean, whether the state is an activeAttackState,
+   * Get whether or not the attack is "active",
    * meaning the player is able to harm others (weapon not loading
-   * or recovering) 
+   * or recovering). 
+   * @return boolean, whether the state is an activeAttackState.
+   *
    */
   public boolean isActiveAttackState() {
     return this.activeAttackState;
   }
 
   /**
-   * @return boolean, whether the player is in a special state
+   * Get whether or not the player is in a special state that 
+   * cannot be disturbed.
+   * @return boolean, whether the player is in a special state.
    */
   public boolean inSpecialState() {
     return this.inSpecialState;
   }
 
   /**
-   * @return the player's hurtboxes
+   * Get the player's hurtboxes based on the weapon (or fist) that it posses.
+   * @return the player's hurtboxes.
    */
   public Hurtbox[] getHurtboxes() {
     return this.weapon.getHurtboxes();
@@ -820,23 +878,26 @@ public class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
+   * Get whether or not the player currently have an item.
    * @return boolean, whether or not the player 
-   * currently have an item (weapon counts)
+   * currently have an item (weapon counts).
    */
   public boolean hasItem() {
     return (this.curItem != null);
   }
 
   /**
+   * Get whether or not the player currently possesses a gadget.
    * @return boolean, whether or not the player
-   * currently possesses a gadget
+   * currently possesses a gadget.
    */
   public boolean hasGadget() {
     return (this.curItem instanceof Gadget);
   }
 
   /**
-   * @return whether the player is damagable at the moment
+   * Get whether the player is damagable at the moment.
+   * @return boolean, whether the player is damagable at the moment.
    */
   public boolean damagable() {
     return !this.state.equals("knockedBack")
@@ -844,13 +905,21 @@ public class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
+   * Get whether the player's dodge ability is in the 
+   * cooldown state or not.
    * @return boolean, whether the player's dodge ability is in the 
-   *                  cooldown state or not
+   *                  cooldown state or not.
    */
   public boolean inDodgeCoolDown() {
     return this.dodgeCoolDown;
   }
 
+  /**
+   * Set the x position of the player's damage indicator.
+   * @param x the x position of the damage indicator. The value
+   *          is calculated in the world (based on how many
+   *          players there are in total). 
+   */
   public void setDamageIndicatorPos(int x) {
     this.damageIndicator = new DamageIndicator(
       x, 

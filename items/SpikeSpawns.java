@@ -1,7 +1,7 @@
 package items;
 
 import characters.Hero;
-import util.Timer;
+import util.TimedTask;
 import util.*;
 
 public class SpikeSpawns extends DamagableItemSpawns {
@@ -16,7 +16,7 @@ public class SpikeSpawns extends DamagableItemSpawns {
   public SpikeSpawns(int x, int y, int dir) {
     super(SpikeSpawns.NUM_SPIKES, 
           SpikeSpawns.ATTACK_TIME+SpikeSpawns.LOADING_TIME);
-    TimerTasks.addTask(new Timer(this, "setActive", 
+    TimedEventQueue.addTask(new TimedTask(this, "setActive", 
                                  SpikeSpawns.LOADING_TIME));
     for (int i = 0; i < SpikeSpawns.NUM_SPIKES; i++) {
       this.setHurtboxPos(i, 
@@ -29,7 +29,7 @@ public class SpikeSpawns extends DamagableItemSpawns {
 
   @Override
   public void update() {
-    // this.updateTimerTasks();
+    // this.updateTimedTasks();
   }
 
   @Override

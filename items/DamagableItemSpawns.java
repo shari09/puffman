@@ -8,31 +8,48 @@ import util.Hurtbox;
 import util.*;
 
 /**
- * everyone can get damaged by the item spawns
+ * DamagableItemSpawns.java
+ * Everyone can get damaged by the item spawns (including the person
+ * who spawned/summoned/used the gadget to make these actions).
+ * 
+ * Jan 17, 2020
+ * @author Shari Sun
+ * @version 0.0.2
  */
 
 public abstract class DamagableItemSpawns {
   private Hurtbox[] hurtboxes;
   private boolean over;
   private boolean isActive;
-  private final static HashSet<String> RESPONDING_TASKS = new HashSet<String>();
 
+  //doesn't respond to all events (in case of when this super class takes
+  //away the local timed events/tasks made by its subclasses)
+  private final static HashSet<String> RESPONDING_TASKS = new HashSet<String>();
   static {
     RESPONDING_TASKS.add("over");
     RESPONDING_TASKS.add("setActive");
   }
 
+
+  /**
+   * Constructor.
+   * @param num the number of hurtboxes the effect/action will have.
+   * @param attackTime the attack time of the entire effect/action.
+   */
   public DamagableItemSpawns(int num, int attackTime) {
     this.hurtboxes = new Hurtbox[num];
     for (int i = 0; i < num; i++) {
       this.hurtboxes[i] = new Hurtbox();
     }
-    TimerTasks.addTask(new Timer(this, "over", attackTime));
+    TimedEventQueue.addTask(new TimedTask(this, "over", attackTime));
   }
 
-  private void updateTimerTasks() {
-    if (TimerTasks.validTask(this, DamagableItemSpawns.RESPONDING_TASKS)) {
-      String action = TimerTasks.getTask().getAction();
+  /**
+   * Update necessary/responding timed tasks/events.
+   */
+  private void updateTimedTasks() {
+    if (TimedEventQueue.validTask(this, DamagableItemSpawns.RESPONDING_TASKS)) {
+      String action = TimedEventQueue.getTask().getAction();
       if (action.equals("over")) {
         this.over = true;
       } else if (action.equals("setActive")) {
@@ -41,12 +58,20 @@ public abstract class DamagableItemSpawns {
     }
   }
 
+  /**
+   * Updates everything. This includes the timed tasks/events as well
+   * as the update method that was meant for the subclass to use.
+   */
   public void updateAll() {
-    this.updateTimerTasks();
+    this.updateTimedTasks();
     this.update();
   }
 
-  //in case if I want to animate the spikes 
+  /**
+   * An update method for the subclasses. The update method will be
+   * called on a per loop basis in 'world' so if there are any animation,
+   * movement, etc, it can be put inside this method.
+   */
   public abstract void update(); 
 
   /**
@@ -120,15 +145,15 @@ public abstract class DamagableItemSpawns {
   /**
    * whether or not the spawned item is in the "loading stage"
    * or if they can damage players
-   * @return
+   * @return boolean, wehter or not the hurtbox is active (can deal damage).
    */
   public boolean isActive() {
     return this.isActive;
   }
 
   /**
-   * decides what happens if the item spawn hits a player
-   * @param player
+   * Decides what happens if the item spawn hits a player.
+   * @param player the player that was hit.
    */
   public abstract void hitPlayer(Hero player);
 

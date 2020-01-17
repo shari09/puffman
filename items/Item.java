@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 
 import characters.Hero;
 import util.RectCollidable;
-import util.Timer;
+import util.TimedTask;
 import util.Util;
 import util.*;
 import world.World;
@@ -36,7 +36,7 @@ public abstract class Item implements RectCollidable {
   private int thrownKnockbackX = Util.scaleX(10);
   private int thrownKnockbackY = Util.scaleY(-5);
 
-  private Timer disappearingTask;
+  private TimedTask disappearingTask;
 
   private double yVel;
   private double xVel;
@@ -117,9 +117,9 @@ public abstract class Item implements RectCollidable {
   public void setState(int state) {
     this.state = state;
     if (this.state == Item.DISAPPEARING) {
-      this.disappearingTask = new Timer(this, "disappear",
+      this.disappearingTask = new TimedTask(this, "disappear",
                                         this.disappearingTime);
-      TimerTasks.addTask(this.disappearingTask);
+      TimedEventQueue.addTask(this.disappearingTask);
     }
   }
 
@@ -128,7 +128,7 @@ public abstract class Item implements RectCollidable {
    */
   public void reset() {
     if (this.disappearingTask != null) {
-      TimerTasks.removeTask(this.disappearingTask);
+      TimedEventQueue.removeTask(this.disappearingTask);
       this.disappearingTask = null;
       this.xVel = 0;
       this.yVel = 0;
@@ -136,9 +136,9 @@ public abstract class Item implements RectCollidable {
     
   }
 
-  public void updateTimerTasks() {
-    if (TimerTasks.validTask(this)) {
-      String action = TimerTasks.getTask().getAction();
+  public void updateTimedTasks() {
+    if (TimedEventQueue.validTask(this)) {
+      String action = TimedEventQueue.getTask().getAction();
       if (action.equals("disappear")) {
         this.alive = false;
       }
