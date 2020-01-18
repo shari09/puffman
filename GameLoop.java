@@ -9,9 +9,11 @@ import world.Menu;
 
 public class GameLoop {
 
-  //decreases cpu intensity
+  /**
+   * Decreases CPU intensity by keeping the game at 60fps
+   * and letting the thread to pause for a while.
+   */
   private static void timeOut() {
-    //decreases cpu intensity
     int fps = 60;
     int timePerFrame = 1000/fps;
     try {
@@ -21,11 +23,15 @@ public class GameLoop {
     }
   }
 
-  
+  /**
+   * The main method.
+   * @param args supplies command-line arguments.
+   */
   public static void main(String[] args) throws IOException {
     
     boolean quit = false;
 
+    //initate panels/window
     World world = null;
     Menu startMenu = MenuFactory.getStartMenu();
     Menu choosemapMenu = MenuFactory.getChooseMapMenu();
@@ -34,7 +40,7 @@ public class GameLoop {
     GameWindow window = new GameWindow(startMenu);
     JPanel curPanel = window.getCurPanel();
 
-
+    //game loop
     while (!quit) {
       String action = "";
       if (curPanel instanceof Menu) {

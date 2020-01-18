@@ -29,12 +29,12 @@ import weapons.Weapon;
 import world.World;
 
 /**
- * Hero.java
+ * [Hero.java]
  * Creates a player controlled Hero (character).
  * 
- * Jan 17, 2020
- * @author Shari Sun
+ * 2020-01-17
  * @version 0.0.4
+ * @author Shari Sun
  */
 
 //cast to RectCollidable to get block collision box
@@ -515,13 +515,14 @@ public class Hero implements CircleCollidable, RectCollidable {
   }
 
   /**
-   * @return boolean, whether the player is still alive
+   * Get whether or not the player is dead.
+   * @return boolean, whether the player is dead
    */
   public boolean isDead() {
     if (this.x + this.radius/2 < 0
-        || this.x - this.radius/2 > World.mapWidth
+        || this.x - this.radius/2 > World.MAP_WIDTH
         || this.y + this.radius < 0
-        || this.y - this.radius > World.mapHeight) {
+        || this.y - this.radius > World.MAP_HEIGHT) {
       return true;
     }
     return false;

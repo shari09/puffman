@@ -4,6 +4,14 @@ import characters.Hero;
 import util.TimedTask;
 import util.*;
 
+/**
+ * [SpikeSpawns.java]
+ * A row of spikes (action for using a spike ball).
+ * 
+ * 2020-01-17
+ * @version 0.0.2
+ * @author Shari Sun
+ */
 public class SpikeSpawns extends DamagableItemSpawns {
   private static final int NUM_SPIKES = 10;
   private static final int RADIUS = Util.scaleX(20);

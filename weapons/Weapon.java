@@ -8,9 +8,20 @@ import java.util.Scanner;
 import characters.Hero;
 import util.Hurtbox;
 
-//weapons control the movement of the players
-
+/**
+ * [Weapon.java]
+ * The weapons can be picked up from a PickupableWeaponHolder and can 
+ * has their own attacks that overrides the player's default fist attack.
+ * They also dictates how the player moves (different weapons cause the
+ * player to move in a different way).
+ * 
+ * 2020-01-17
+ * @version 0.0.2
+ * @author Shari Sun
+ */
 public abstract class Weapon {
+  //data is loaded from a text file
+  //the int is the index of the array created by loading the data files
   private static final int LOADING_TIME = 0;
   private static final int ACTIVE_TIME = 1;
   private static final int RECOVERY_TIME = 2;
@@ -22,6 +33,11 @@ public abstract class Weapon {
   private int numHurtboxes = 1;
 
 
+  /**
+   * Constructor.
+   * @param filePath the file path to the text file with the weapon data.
+   * @throws IOException
+   */
   public Weapon(String filePath) throws IOException {
     this.getStates(filePath);
     for (int i = 0; i < this.hurtboxes.length; i++) {
@@ -31,9 +47,9 @@ public abstract class Weapon {
 
 
   /**
-   * get the states data of the weapon
-   * @param filePath the file path to the data sheet
-   * @throws IOException exception reading the file
+   * Get the states data of the weapon.
+   * @param filePath the file path to the data sheet.
+   * @throws IOException
    */
   private void getStates(String filePath) throws IOException {
     File file = new File(filePath);
@@ -57,8 +73,8 @@ public abstract class Weapon {
   }
 
   /**
-   * sets the number of hurtboxes during the attack
-   * @param num the number of hurtboxes
+   * Sets the number of hurtboxes during the attack.
+   * @param num the number of hurtboxes.
    */
   public void setNumHurtboxes(int num) {
     this.numHurtboxes = num;
@@ -283,7 +299,7 @@ public abstract class Weapon {
     } else if (state.equals("heavyJump")) {
       this.heavyJumpHurtbox(curPlayer);
     } else if (state.equals("heavyDown")) {
-      this.heavyDownHurtbox(curPlayer, dir);
+      this.heavyDownHurtbox(curPlayer);
     } else if (state.equals("heavyNLair") || state.equals("heavyNRair")) {
       this.heavyNairHurtbox(curPlayer, dir);
     } else if (state.equals("heavySLair") || state.equals("heavySRair")) {
@@ -449,31 +465,149 @@ public abstract class Weapon {
 
   //////////////
 
+  /**
+   * Sets the movement of the player during a side heavy attack.
+   * @param curPlayer the player performing the attack.
+   * @param dir the direction the attacking player is facing.
+   * @param originalState the original state of the player,
+   *                      whether it's left/right side.
+   */
   public abstract void heavySideAttack(Hero curPlayer, int dir,
                                        String originalState);
+
+  /**
+   * Sets the movement of the player of the player that got hit
+   * during a side heavy attack.
+   * @param other the player that was hit by the attack.
+   * @param dir the direction the attacking player is facing.
+   */
   public abstract void heavySideKnockback(Hero other, int dir);
+  
+  /**
+   * Sets the hurtbox movement for the player during a side heavy attack.
+   * @param curPlayer the player performing the attack.
+   * @param dir the direction of the player attacking.
+   */
   public abstract void heavySideHurtbox(Hero curPlayer, int dir);
 
+
+  /**
+   * Sets the movement of the player during a neutral heavy attack.
+   * @param curPlayer the player performing the attack.
+   * @param dir the direction the attacking player is facing.
+   * @param originalState the original state of the player,
+   *                      whether it's left/right side.
+   */
   public abstract void heavyNeutralAttack(Hero curPlayer, int dir,
                                        String originalState);
+
+  /**
+   * Sets the movement of the player of the player that got hit
+   * during a neutral heavy attack.
+   * @param other the player that was hit by the attack.
+   * @param dir the direction the attacking player is facing.
+   */
   public abstract void heavyNeutralKnockback(Hero other, int dir);
+
+  /**
+   * Sets the hurtbox movement for the player during a neutral heavy attack.
+   * @param curPlayer the player performing the attack.
+   * @param dir the direction of the player attacking.
+   */
   public abstract void heavyNeutralHurtbox(Hero curPlayer, int dir);
 
+
+  /**
+   * Sets the movement of the player during a jump heavy attack.
+   * @param curPlayer the player performing the attack.
+   */
   public abstract void heavyJumpAttack(Hero curPlayer);
+
+  /**
+   * Sets the movement of the player of the player that got hit
+   * during a jump heavy attack.
+   * @param other the player that was hit by the attack.
+   * @param dir the direction the attacking player is facing.
+   */
   public abstract void heavyJumpKnockback(Hero other);
+
+  /**
+   * Sets the hurtbox movement for the player during a jump heavy attack.
+   * @param curPlayer the player performing the attack.
+   */
   public abstract void heavyJumpHurtbox(Hero curPlayer);
 
+
+  /**
+   * Sets the movement of the player during a neutral air heavy attack.
+   * @param curPlayer the player performing the attack.
+   * @param dir the direction the attacking player is facing.
+   * @param originalState the original state of the player,
+   *                      whether it's left/right side.
+   */
   public abstract void heavyNairAttack(Hero curPlayer, int dir,
                                        String originalState);
+
+  /**
+   * Sets the movement of the player of the player that got hit
+   * during a neutral air heavy attack.
+   * @param other the player that was hit by the attack.
+   * @param dir the direction the attacking player is facing.
+   */
   public abstract void heavyNairKnockback(Hero other, int dir);
+
+  /**
+   * Sets the hurtbox movement for the player during a neutral air heavy attack.
+   * @param curPlayer the player performing the attack.
+   * @param dir the direction of the player attacking.
+   */
   public abstract void heavyNairHurtbox(Hero curPlayer, int dir);
 
+
+  /**
+   * Sets the movement of the player during a side air heavy attack.
+   * @param curPlayer the player performing the attack.
+   * @param dir the direction the attacking player is facing.
+   * @param originalState the original state of the player,
+   *                      whether it's left/right side.
+   */
   public abstract void heavySairAttack(Hero curPlayer, int dir,
                                        String originalState);
+
+  /**
+   * Sets the movement of the player of the player that got hit
+   * during a side air heavy attack.
+   * @param other the player that was hit by the attack.
+   * @param dir the direction the attacking player is facing.
+   */
   public abstract void heavySairKnockback(Hero other, int dir);
+
+  /**
+   * Sets the hurtbox movement for the player during a side air heavy attack.
+   * @param curPlayer the player performing the attack.
+   * @param dir the direction of the player attacking.
+   */
   public abstract void heavySairHurtbox(Hero curPlayer, int dir);
 
+
+  /**
+   * Sets the movement of the player during a down heavy attack.
+   * @param curPlayer the player performing the attack.
+   * @param dir the direction the attacking player is facing.
+   */
   public abstract void heavyDownAttack(Hero curPlayer, int dir);
+
+  /**
+   * Sets the movement of the player of the player that got hit
+   * during a down heavy attack.
+   * @param other the player that was hit by the attack.
+   * @param dir the direction the attacking player is facing.
+   */
   public abstract void heavyDownKnockback(Hero other);
-  public abstract void heavyDownHurtbox(Hero curPlayer, int dir);
+
+  /**
+   * Sets the hurtbox movement for the player during a down heavy attack.
+   * @param curPlayer the player performing the attack.
+   */
+  public abstract void heavyDownHurtbox(Hero curPlayer);
 }

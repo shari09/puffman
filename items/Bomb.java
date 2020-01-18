@@ -5,12 +5,12 @@ import java.io.IOException;
 import util.Util;
 
 /**
- * Bomb.java
+ * [Bomb.java]
  * Making a bomb gadget. The bomb has an exploding effect if used.
  * 
- * Jan 17, 2020
- * @author Shari Sun
+ * 2020-01-17
  * @version 0.0.1
+ * @author Shari Sun
  */
 
 public class Bomb extends Gadget {
@@ -29,6 +29,9 @@ public class Bomb extends Gadget {
           2000);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public DamagableItemSpawns use(int x, int y, int dir) {
     return new BombSpawns(x, y, dir);

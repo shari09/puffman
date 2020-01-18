@@ -5,6 +5,14 @@ import java.io.IOException;
 import blocks.RectBlock;
 import weapons.Hammer;
 
+/**
+ * [ItemFactory.java]
+ * Creates items for the world.
+ * 
+ * 2020-01-17
+ * @version 0.0.2
+ * @author Shari Sun
+ */
 public class ItemFactory {
   private static final int BOMB = 0;
   private static final int HORN = 1;
@@ -13,16 +21,22 @@ public class ItemFactory {
   private RectBlock[] blocks;
   
 
+  /**
+   * Constructor.
+   * @param blocks the blocks in the world. Their positions are used
+   *               to generate a random position in the world that is
+   *               on top of one of the blocks.
+   */
   public ItemFactory(RectBlock[] blocks) {
     this.blocks = blocks;
   }
 
   /**
-   * determines a random available position for item to spawn on
-   * given the location of the blocks in the world
+   * Determines a random available position for item to spawn on
+   * given the location of the blocks in the world.
    * @param width the width of the item
    * @param height the height of the item
-   * @return pos int[], random [x, y] pos
+   * @return pos int[], random [x, y] pos.
    */
   private int[] randomPos(int width, int height) {
     int blockNum = (int)(Math.random()*this.blocks.length);

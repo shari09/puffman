@@ -6,13 +6,13 @@ import util.TimedEventQueue;
 import util.Util;
 
 /**
- * BombSpawns.java
+ * [BombSpawns.java]
  * This is the effects of using the bomb gadget. A number of explosions
  * will pop up in random places at a certain area/range.
  * 
- * Jan 17, 2020
+ * 2020-01-17
+ * @version 0.0.2
  * @author Shari Sun
- * @version 0.0.2 
  */
 
 public class BombSpawns extends DamagableItemSpawns {
@@ -72,11 +72,17 @@ public class BombSpawns extends DamagableItemSpawns {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void update() {
     this.updateTimedTasks();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void hitPlayer(Hero player) {
     player.takeDamage(BombSpawns.DAMAGE);

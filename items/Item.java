@@ -12,6 +12,16 @@ import util.Util;
 import util.*;
 import world.World;
 
+/**
+ * [Item.java]
+ * An item has a 0.1% chance of randomly spawning 
+ * on a block in the world per frame.
+ * It can be a weapon or gadget, anything that a player can pick up and throw.
+ * 
+ * 2020-01-17
+ * @version 0.0.4
+ * @author Shari Sun
+ */
 public abstract class Item implements RectCollidable {
   public static final int SPAWNED = 0;
   public static final int ON_PLAYER = 1;
@@ -41,6 +51,16 @@ public abstract class Item implements RectCollidable {
   private double yVel;
   private double xVel;
 
+  /**
+   * Constructor.
+   * @param x the x position of where to spawn the item.
+   * @param y the y position of where to spawn the item.
+   * @param width the width of the item.
+   * @param height the height of the item.
+   * @param sprite the sprite image of the item.
+   * @param disappearingTime the time it takes for the item to disappear
+   *                         once the player throws it and it hits the ground.
+   */
   public Item(int x, int y, int width, int height, 
               BufferedImage sprite,
               int disappearingTime) {
@@ -53,10 +73,10 @@ public abstract class Item implements RectCollidable {
   }
 
   /**
-   * displays the item
-   * @param panel the JPanel for displaying everything
-   * @param g2d the graphics2d manager
-   * @param players the players used for scaling purposes
+   * Displays the item.
+   * @param panel the JPanel for displaying everything.
+   * @param g2d the graphics2d manager.
+   * @param players the players used for scaling purposes.
    */
   public void display(JPanel panel, Graphics2D g2d, Hero[] players) {
     int[] pos = {(int)(this.x), 
@@ -136,6 +156,9 @@ public abstract class Item implements RectCollidable {
     
   }
 
+  /**
+   * Update the relevant timed tasks/events.
+   */
   public void updateTimedTasks() {
     if (TimedEventQueue.validTask(this)) {
       String action = TimedEventQueue.getTask().getAction();
@@ -146,11 +169,13 @@ public abstract class Item implements RectCollidable {
   }
 
   /**
-   * @return boolean, whether or not the item is "alive" (not disappeared)
+   * Get whether or not the item is still "alive", meaning it's still 
+   * supposed to be on the screen. 
+   * @return boolean, whether or not the item is "alive" (not disappeared).
    */
   public boolean isAlive() {
-    if (this.x < 0 || this.x > World.mapWidth
-        || this.y < 0 || this.y > World.mapHeight) {
+    if (this.x < 0 || this.x > World.MAP_WIDTH
+        || this.y < 0 || this.y > World.MAP_HEIGHT) {
       return false;
     }
     return this.alive;
@@ -188,21 +213,34 @@ public abstract class Item implements RectCollidable {
     this.y += y;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getX() {
     return (int)(this.x + this.width/2);
   }
+
+  /**
+   * {@inheritDoc}
+   */
 
   @Override
   public int getY() {
     return (int)(this.y + this.height/2);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getWidth() {
     return this.width;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getHeight() {
     return this.height;

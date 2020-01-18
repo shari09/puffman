@@ -10,12 +10,12 @@ import util.RectCollidable;
 import util.Zoom;
 
 /**
- * RectBlock.java
+ * [RectBlock.java]
  * The most basic rectangular blocks
  * 
- * Jan 17, 2020
- * @author Shari Sun
+ * 2020-01-17
  * @version 0.0.1
+ * @author Shari Sun
  */
 
 public class RectBlock extends Block implements RectCollidable {
@@ -43,26 +43,41 @@ public class RectBlock extends Block implements RectCollidable {
     this.height = height;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getX() {
     return this.x + this.width/2;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getY() {
     return this.y + this.height/2;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getWidth() {
     return this.width;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getHeight() {
     return this.height;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void display(JPanel panel, Graphics2D g2d, Hero[] players) {
     int[] pos = {this.x, this.y, this.width, this.height};

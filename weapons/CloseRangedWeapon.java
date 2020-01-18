@@ -7,15 +7,30 @@ import util.TimedTask;
 import util.TimedEventQueue;
 import util.Util;
 
+/**
+ * [CloseRangedWeapon.java]
+ * The universal attack patterns for close ranged weapons.
+ * 
+ * 2020-01-17
+ * @version 0.0.1
+ * @author Shari Sun
+ */
+public class CloseRangedWeapon extends Weapon {
 
-public class CloseRange extends Weapon {
-
-  public CloseRange(String dataPath) throws IOException {
+  /**
+   * Constructor.
+   * @param dataPath the path to the text file that contains all the weapon data.
+   * @throws IOException
+   */
+  public CloseRangedWeapon(String dataPath) throws IOException {
     super(dataPath);
   }
 
   /////////////////
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void lightSideAttack(Hero curPlayer, int dir, 
                               String originalState) {
@@ -29,7 +44,9 @@ public class CloseRange extends Weapon {
     curPlayer.setxTargetSpeed(curPlayer.getxMaxSpeed()/2);
   }
 
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void lightSideHurtbox(Hero curPlayer, int dir) {
     this.setNumHurtboxes(2);
@@ -47,7 +64,9 @@ public class CloseRange extends Weapon {
     );
   }
 
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void lightSideKnockback(Hero other, int dir) {
     int power = this.getPower("lightSide");
@@ -61,7 +80,9 @@ public class CloseRange extends Weapon {
 
 
   ///////////////
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void lightNeutralAttack(Hero curPlayer, int dir,
                                  String originalState) {
@@ -74,6 +95,9 @@ public class CloseRange extends Weapon {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void lightNeutralKnockback(Hero other, int dir) {
     int power = this.getPower("lightNeutral");
@@ -86,6 +110,9 @@ public class CloseRange extends Weapon {
                   -Util.scaleY(other.getDamageTaken()/10));
   }
 
+  /**
+   * {@inheritDoc}
+   */  
   @Override
   public void lightNeutralHurtbox(Hero curPlayer, int dir) {
     this.setNumHurtboxes(1);
@@ -99,6 +126,9 @@ public class CloseRange extends Weapon {
 
 
   /////////////////////
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void lightJumpAttack(Hero curPlayer) {
     String state = "lightJump";
@@ -109,6 +139,9 @@ public class CloseRange extends Weapon {
     curPlayer.setYVel(Util.scaleY(-7));
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void lightJumpKnockback(Hero other) {
     int power = this.getPower("lightNeutral");
@@ -118,6 +151,9 @@ public class CloseRange extends Weapon {
                   -Util.scaleY(other.getDamageTaken()/7));
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void lightJumpHurtbox(Hero curPlayer) {
     this.setNumHurtboxes(1);
@@ -132,6 +168,9 @@ public class CloseRange extends Weapon {
 
   ///////////////
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void lightDownAttack(Hero curPlayer, int dir, String originalState) {
     String state = "lightDown";
@@ -144,6 +183,9 @@ public class CloseRange extends Weapon {
     curPlayer.setxTargetSpeed(Util.scaleY(7));
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void lightDownKnockback(Hero other, int dir) {
     int power = this.getPower("lightDown");
@@ -156,6 +198,9 @@ public class CloseRange extends Weapon {
     other.setDir(dir);
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void lightDownHurtbox(Hero curPlayer, int dir) {
     this.setNumHurtboxes(3);
@@ -181,6 +226,9 @@ public class CloseRange extends Weapon {
 
   ///////////////////////
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void lightNairAttack(Hero curPlayer,  int dir,
                               String originalState) {
@@ -191,6 +239,9 @@ public class CloseRange extends Weapon {
                              this.getRecoveryTime(state));
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void lightNairKnockback(Hero other, int dir) {
     int power = this.getPower("lightNair");
@@ -202,6 +253,9 @@ public class CloseRange extends Weapon {
     other.setDir(dir);
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void lightNairHurtbox(Hero curPlayer, int dir) {
     int dist = Util.scaleX((int)(curPlayer.getWidth()/1.6));
@@ -211,6 +265,7 @@ public class CloseRange extends Weapon {
     int x = curPlayer.getX()+dir*Util.scaleX(curPlayer.getWidth()/2);
     int y = curPlayer.getY()+Util.scaleY((int)(curPlayer.getWidth()/1.3));
 
+    //use of distance formula
     int offsetY = this.getOffsetY(1)-curPlayer.getHeight()/20;
     int offsetX = dir*(int)Math.sqrt(dist*dist-Math.pow(
       y+offsetY-curPlayer.getY(), 2));
@@ -239,6 +294,9 @@ public class CloseRange extends Weapon {
 
   ////////////////////
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void lightSairAttack(Hero curPlayer,  int dir,
                               String originalState) {
@@ -250,7 +308,9 @@ public class CloseRange extends Weapon {
     curPlayer.setxTargetSpeed(Util.scaleX(10));
   }
   
-
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void lightSairKnockback(Hero other, int dir) {
     int power = this.getPower("lightSair");
@@ -260,12 +320,16 @@ public class CloseRange extends Weapon {
     other.setDir(dir);
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void lightSairHurtbox(Hero curPlayer, int dir) {
     int dist = Util.scaleX((int)(curPlayer.getWidth()/1.17));
     this.setNumHurtboxes(2);
 
     //goes from up to down in an arc
+    //use of distance formula to keep it circular
     int x = curPlayer.getX()+dir*Util.scaleX(curPlayer.getWidth()/2);
     int y = curPlayer.getY()-Util.scaleY((int)(curPlayer.getHeight()/1.3));
     int offsetY = this.getOffsetY(1)+curPlayer.getHeight()/20;
@@ -296,6 +360,9 @@ public class CloseRange extends Weapon {
 
   ///////////////////////////////////////////////////////////////////////
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavySideAttack(Hero curPlayer, int dir,
                               String originalState) {
@@ -311,6 +378,9 @@ public class CloseRange extends Weapon {
                                 + this.getActiveTime(state)));
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavySideKnockback(Hero other, int dir) {
     int power = this.getPower("heavySide");
@@ -321,6 +391,9 @@ public class CloseRange extends Weapon {
     other.setDir(dir);
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavySideHurtbox(Hero curPlayer, int dir) {
     this.setNumHurtboxes(1);
@@ -330,6 +403,9 @@ public class CloseRange extends Weapon {
      (int)(curPlayer.getRadius()*this.getSize("heavySide")));
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavyNeutralAttack(Hero curPlayer, int dir,
                                  String originalState) {
@@ -338,9 +414,11 @@ public class CloseRange extends Weapon {
                              this.getLoadingTime(state), 
                              this.getActiveTime(state), 
                              this.getRecoveryTime(state));
-    // curPlayer.setxTargetSpeed(Util.scaleX(3));
   }
   
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavyNeutralKnockback(Hero other, int dir) {
     int power = this.getPower("heavyNeutral");
@@ -352,6 +430,9 @@ public class CloseRange extends Weapon {
     other.setDir(dir);
   }
  
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavyNeutralHurtbox(Hero curPlayer, int dir) {
     int dist = Util.scaleX(curPlayer.getWidth()/2);
@@ -371,6 +452,9 @@ public class CloseRange extends Weapon {
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavyJumpAttack(Hero curPlayer) {
     String state = "heavyJump";
@@ -381,6 +465,9 @@ public class CloseRange extends Weapon {
     curPlayer.setYVel(Util.scaleY(-10));
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavyJumpKnockback(Hero other) {
     int power = this.getPower("heavyJump");
@@ -389,6 +476,9 @@ public class CloseRange extends Weapon {
     other.setYVel(Util.scaleY(-other.getDamageTaken()*2));
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavyJumpHurtbox(Hero curPlayer) {
     this.setNumHurtboxes(1);
@@ -400,6 +490,9 @@ public class CloseRange extends Weapon {
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavyNairAttack(Hero curPlayer, int dir,
                               String originalState) {
@@ -412,6 +505,9 @@ public class CloseRange extends Weapon {
                             +this.getActiveTime(state));                          
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavyNairKnockback(Hero other, int dir) {
     int power = this.getPower("heavyNair");
@@ -422,6 +518,9 @@ public class CloseRange extends Weapon {
     other.setDir(dir);
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavyNairHurtbox(Hero curPlayer, int dir) {
     this.setNumHurtboxes(2);
@@ -440,6 +539,9 @@ public class CloseRange extends Weapon {
   }
 
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavySairAttack(Hero curPlayer, int dir,
                               String originalState) {
@@ -452,6 +554,9 @@ public class CloseRange extends Weapon {
     curPlayer.setYVel(-5);
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavySairKnockback(Hero other, int dir) {
     int power = this.getPower("heavySair");
@@ -462,6 +567,9 @@ public class CloseRange extends Weapon {
     other.setDir(dir);
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavySairHurtbox(Hero curPlayer, int dir) {
     this.setNumHurtboxes(2);
@@ -480,6 +588,9 @@ public class CloseRange extends Weapon {
   }
 
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavyDownAttack(Hero curPlayer, int dir) {
     String state = "heavyDown";
@@ -490,16 +601,22 @@ public class CloseRange extends Weapon {
     curPlayer.setYVel(10);
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
   public void heavyDownKnockback(Hero other) {
     int power = this.getPower("heavyDown");
-    other.setSpecialState("knockedBack", other.getDamageTaken()*7);
+    other.setSpecialState("knockedBack", other.getDamageTaken()*5);
     other.takeDamage(power);
     other.setYVel(Util.scaleY(10+other.getDamageTaken()/10));
   }
 
+  /**
+   * {@inheritDoc}
+   */ 
   @Override
-  public void heavyDownHurtbox(Hero curPlayer, int dir) {
+  public void heavyDownHurtbox(Hero curPlayer) {
     this.setNumHurtboxes(2);
     this.setHurtboxPos(
       1,

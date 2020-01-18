@@ -26,67 +26,82 @@ import util.Collision;
 import util.DamageIndicator;
 import util.RectCollidable;
 import util.*;
-import weapons.CloseRange;
+import weapons.CloseRangedWeapon;
 
+/**
+ * [World.java]
+ * The world where everything is happening.
+ * All players, blocks, items, etc. are stored in the world.
+ * All collisions happen in the world as well.
+ * 
+ * 2020-01-17
+ * @version 0.0.5
+ * @author Shari Sun
+ */
 public class World extends JPanel {
 
-  public static final int mapWidth = Util.scaleX(4000);
-  public static final int mapHeight = Util.scaleY(2400);
+  public static final int MAP_WIDTH = Util.scaleX(4000);
+  public static final int MAP_HEIGHT = Util.scaleY(2400);
 
-  public static final int screenMarginX = Util.scaleX(150);
-  public static final int screenMarginY = Util.scaleY(150);
+  public static final int SCREEN_MARGIN_X = Util.scaleX(150);
+  public static final int SCREEN_MARGIN_Y = Util.scaleY(150);
 
   public static final double GRAVITY = Util.scaleY(0.25);
   
   private String mapName;
   private BufferedImage background;
 
+  //objects stored in the world
   private HashSet<Item> items = new HashSet<Item>();
   private HashSet<DamagableItemSpawns> damagableItemSpawns = 
     new HashSet<DamagableItemSpawns>();
   private Hero[] players;
   private Block[] blocks;
+
+
   private boolean running = true;
 
 
   //key listeners doesn't work all the time
-  //need constant update on keys
+  //need constant update on keys so a hashset of all pressed keys is useful
   private HashSet<String> activeHeldKeys = new HashSet<String>();
 
   private ItemFactory itemFactory;
 
   /**
-   * add the players to the world
+   * Add the players to the world.
    * @throws IOException ImageIO
    */
   private void addPlayers() throws IOException {
     this.players = new Hero[2];
     int scaledPlayerSize = Math.min(Util.scaleX(80), Util.scaleY(80));
     this.players[0] = new Hero(
-      World.mapWidth/2 - Util.scaleX(300),
-      (int)(World.mapHeight/2.2),
+      World.MAP_WIDTH/2 - Util.scaleX(300),
+      (int)(World.MAP_HEIGHT/2.2),
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize/2,
-      "A", "D", "Space", "S", "J", "K", "H", "U",
-      new CloseRange("assets/config/weapons/fist.txt"), "ash");
+      "A", "D", "Space", "S", "G", "H", "F", "T",
+      new CloseRangedWeapon("assets/config/weapons/fist.txt"), "ash");
     this.players[1] = new Hero(
-      World.mapWidth/2 + Util.scaleX(300),
-      (int)(World.mapHeight/2.2),
+      World.MAP_WIDTH/2 + Util.scaleX(300),
+      (int)(World.MAP_HEIGHT/2.2),
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize,
       scaledPlayerSize/2,
       "Left", "Right", "Up", "Down", "Comma", "Period", "Slash", "L",
-      new CloseRange("assets/config/weapons/fist.txt"), "ashCopy");
+      new CloseRangedWeapon("assets/config/weapons/fist.txt"), "ashCopy");
 
+    //initiate the damage indicators for each player depending on how
+    //many players there are in total (possibility of having more than two)
     int gap = Util.scaleX(30);
     for (int i = 0; i < this.players.length; i++) {
       this.players[i].setDamageIndicatorPos(
-        GameWindow.width
+        GameWindow.WIDTH
         -this.players.length*(DamageIndicator.RADIUS*2)
         -gap*(this.players.length-i)
         +i*DamageIndicator.RADIUS*2
@@ -95,23 +110,20 @@ public class World extends JPanel {
     }
   }
 
+  /**
+   * Reset the world.
+   * @throws IOException
+   */
   public void reset() throws IOException {
-    this.addPlayers();
+    this.addPlayers(); //re-adds the players
     this.activeHeldKeys.clear();
     this.running = true;
   }
-  
-  // /**
-  //  * add the necessary blocks to the world
-  //  * @throws IOException ImageIO
-  //  */
-  // private void addBlocks() throws IOException {
-    
-  // }
 
   /**
-   * constructor
-   * @throws IOException ImageIO
+   * Constructor.
+   * @param mapName the name of the map for the world.
+   * @throws IOException
    */
   public World(String mapName) throws IOException {
     
@@ -171,9 +183,7 @@ public class World extends JPanel {
     
   }
 
-  // this method is
-  // reaaaallllyyyyy sketchy
-  // the return doesnt make sense other than that it's convenient
+
   /**
    * Check to see what the state the player is in
    * in terms of movement (ex, mid-air, at a wall, on the ground)
@@ -303,9 +313,10 @@ public class World extends JPanel {
   /**
    * update the held-key controls for the players
    */
-  private synchronized void updateControls() {
+  private void updateControls() {
     Iterator<String> itr = this.activeHeldKeys.iterator();
 
+    synchronized(this.activeHeldKeys) {
     while (itr.hasNext()) {
       String key = itr.next();
 
@@ -324,6 +335,7 @@ public class World extends JPanel {
       } 
       
       
+    }
     }
   }
 
@@ -459,18 +471,26 @@ public class World extends JPanel {
     }
   }
 
-  private synchronized void updateGadgetAction() {
+  /**
+   * Update the item-spawns/gadget-action.
+   * Remove ones that are finished.
+   */
+  private void updateGadgetAction() {
     Iterator<DamagableItemSpawns> itr = this.damagableItemSpawns.iterator();
-    DamagableItemSpawns curItemSpawns;
-    while (itr.hasNext()) {
-      curItemSpawns = itr.next();
-      curItemSpawns.updateAll();
-      if (curItemSpawns.isOver()) {
-        itr.remove();
-      } else if (curItemSpawns.isActive()) {
-        this.checkItemSpawnsPlayerCollision(curItemSpawns);
+
+    synchronized(this.damagableItemSpawns) {
+      DamagableItemSpawns curItemSpawns;
+      while (itr.hasNext()) {
+        curItemSpawns = itr.next();
+        curItemSpawns.updateAll();
+        if (curItemSpawns.isOver()) {
+          itr.remove();
+        } else if (curItemSpawns.isActive()) {
+          this.checkItemSpawnsPlayerCollision(curItemSpawns);
+        }
       }
     }
+    
   }
 
   /**
@@ -490,8 +510,8 @@ public class World extends JPanel {
   private void drawBackground(Graphics2D g2d) {
     g2d.drawImage(this.background, 
                   0, 0,
-                  GameWindow.width,
-                  GameWindow.height, 
+                  GameWindow.WIDTH,
+                  GameWindow.HEIGHT, 
                   this);
   }
 
@@ -533,10 +553,10 @@ public class World extends JPanel {
   }
 
 
-  @Override
   /**
-   * actually drawing everything on the screen
+   * {@inheritDoc}
    */
+  @Override
   public void paintComponent(Graphics g) {
     Graphics2D g2d = (Graphics2D) g;
     this.drawBackground(g2d);
@@ -566,7 +586,8 @@ public class World extends JPanel {
   }
 
   /**
-   * @return boolean, whether the game is running or not
+   * Get whether or not the game is running.
+   * @return boolean, whether the game is running or not.
    */
   public boolean isRunning() {
     return this.running;
@@ -595,6 +616,8 @@ public class World extends JPanel {
   public void removeActiveHeldKey(String key) {
     this.activeHeldKeys.remove(key);
 
+    //if it's the left/right key that is being removed,
+    //the player's x-speed is reset
     for (int i = 0; i < this.players.length; i++) {
       Hero curPlayer = this.players[i];
       if (key.equals(curPlayer.getLeftKey())

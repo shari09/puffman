@@ -1,5 +1,13 @@
 package util;
 
+/**
+ * [Collision.java]
+ * Has static methods for collision related methods.
+ * 
+ * 2020-01-17
+ * @version 0.0.1
+ * @author Shari Sun
+ */
 public class Collision {
 
   private static final int X = 0;
@@ -105,8 +113,13 @@ public class Collision {
       return false;
   }
 
-  // find where the collision is
-  // used after moving the player back
+  /**
+   * Find which side is touching which side,
+   * used after the objects are being moved back.
+   * @param first the first object to check for.
+   * @param second the second object to check for.
+   * @return String, where the two objects are touching.
+   */
   public static String getTouchingSide(RectCollidable first, 
                                        RectCollidable second) {
     if (isTouching(first, second)) {

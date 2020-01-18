@@ -6,6 +6,14 @@ import java.awt.geom.Ellipse2D;
 
 import characters.Hero;
 
+/**
+ * [Hurtbox.java]
+ * If the hurtbox collides with the player, the player will be damaged.
+ * 
+ * 2020-01-17
+ * @version 0.0.2
+ * @author Shari Sun
+ */
 public class Hurtbox implements CircleCollidable {
 
   private static final Color INACTIVE_COLOUR = new Color(10, 10, 10, 30);
@@ -16,24 +24,42 @@ public class Hurtbox implements CircleCollidable {
   private int offsetX = 0;
   private int offsetY = 0;
 
+  /**
+   * Constructor.
+   */
   public Hurtbox() {};
   
+  /**
+   * Constructor.
+   * @param x the initial x position of the hurtbox.
+   * @param y the initial y position of the hurtbox.
+   * @param radius the radius of the hurtbox.
+   */
   public Hurtbox(int x, int y, int radius) {
     this.x = x;
     this.y = y;
     this.radius = radius;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getX() {
     return this.x;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getY() {
     return this.y;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getRadius() {
     return this.radius;

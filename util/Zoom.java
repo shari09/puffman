@@ -6,16 +6,24 @@ import characters.Hero;
 import world.GameWindow;
 import world.World;
 
-//me is dumb with basic math and spent forever on this :// 
+/**
+ * [Zoom.java]
+ * Controls the zooming of the screen based on the player positions.
+ * 
+ * 2020-01-17
+ * @version 0.0.3
+ * @author Shari Sun
+ */
 public class Zoom {
+  //index definitions (for arrays)
   private static final int X = 0;
   private static final int Y = 1;
   private static final int WIDTH = 2;
   private static final int HEIGHT = 3;
 
-  private static final int minWidth = Util.scaleX(700);
-  private static final int minHeight = 
-    minWidth*GameWindow.height/GameWindow.width;
+  private static final int MIN_WIDTH = Util.scaleX(700);
+  private static final int MIN_HEIGHT = 
+    MIN_WIDTH*GameWindow.HEIGHT/GameWindow.WIDTH;
 
   /**
    * Get the section of the map for displaying
@@ -23,9 +31,9 @@ public class Zoom {
    * @return int[] the dimensions of the display section
    */
   private static int[] getDisplaySection(Hero[] players) {
-    int minX = World.mapWidth;
+    int minX = World.MAP_WIDTH;
     int maxX = 0;
-    int minY = World.mapHeight;
+    int minY = World.MAP_HEIGHT;
     int maxY = 0;
     for (int i = 0; i < players.length; i++) {
       Hero curPlayer = players[i];
@@ -36,10 +44,10 @@ public class Zoom {
     }
 
     //add the margin
-    minX -= World.screenMarginX;
-    maxX += World.screenMarginX; 
-    minY -= World.screenMarginY; 
-    maxY += World.screenMarginY;
+    minX -= World.SCREEN_MARGIN_X;
+    maxX += World.SCREEN_MARGIN_X; 
+    minY -= World.SCREEN_MARGIN_Y; 
+    maxY += World.SCREEN_MARGIN_Y;
 
     //scale it to match the frame ratio
     int width = maxX - minX;
@@ -47,8 +55,8 @@ public class Zoom {
     
     // expanding the width/height to match the height ratio
     // whichever one is not negative gets added
-    int addValX = GameWindow.width*height/GameWindow.height - width;
-    int addValY = GameWindow.height*width/GameWindow.width - height;
+    int addValX = GameWindow.WIDTH*height/GameWindow.HEIGHT - width;
+    int addValY = GameWindow.HEIGHT*width/GameWindow.WIDTH - height;
     if (addValX > 0) {
       minX -= addValX/2;
       width += addValX;
@@ -58,11 +66,11 @@ public class Zoom {
     }
 
     //max zoom
-    if (width < minWidth) {
-      minX -= (minWidth-width)/2;
-      minY -= (minHeight-height)/2;
-      width = minWidth;
-      height = minHeight;
+    if (width < MIN_WIDTH) {
+      minX -= (MIN_WIDTH-width)/2;
+      minY -= (MIN_HEIGHT-height)/2;
+      width = MIN_WIDTH;
+      height = MIN_HEIGHT;
     }
 
     //prevent it from going out the map
@@ -72,11 +80,11 @@ public class Zoom {
     if (minY < 0) {
       minY = 0;
     }
-    if (maxX > World.mapWidth) {
-      minX -= maxX-World.mapWidth;
+    if (maxX > World.MAP_WIDTH) {
+      minX -= maxX-World.MAP_WIDTH;
     }
-    if (maxY > World.mapHeight) {
-      minY -= maxY-World.mapHeight;
+    if (maxY > World.MAP_HEIGHT) {
+      minY -= maxY-World.MAP_HEIGHT;
     }
 
     return new int[]{minX, minY, width, height};
@@ -102,8 +110,8 @@ public class Zoom {
 
     // g2d.drawRect(x, y, width, height);
 
-    double magX = GameWindow.width/(double)width;
-    double magY = GameWindow.height/(double)height;
+    double magX = GameWindow.WIDTH/(double)width;
+    double magY = GameWindow.HEIGHT/(double)height;
 
     //magX*x is the translate ratio
     newPos[X] = (int)(pos[X]*magX-magX*x);  

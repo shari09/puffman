@@ -10,12 +10,12 @@ import characters.Hero;
 import util.Util;
 
 /**
- * Block.java
+ * [Block.java]
  * Abstract class to be extended on for making different types of blocks
  * 
- * Jan 17, 2020
- * @author Shari Sun
+ * 2020-01-17
  * @version 0.0.1
+ * @author Shari Sun
  */
 
 public abstract class Block {

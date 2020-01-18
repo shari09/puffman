@@ -6,12 +6,25 @@ import java.util.HashSet;
 
 import characters.Hero;
 
+/**
+ * [Controls.java]
+ * The main key listener in the world.
+ * 
+ * 2020-01-17
+ * @version 0.0.3
+ * @author Shari Sun 
+ */
 public class Controls implements KeyListener {
   private World world;
-  private HashSet<String> tappedKeys = new HashSet<String>();  
 
+  //stores all the tapped/held keys for simutaneously using multiple keys at once
+  private HashSet<String> tappedKeys = new HashSet<String>();  
   private HashSet<String> heldKeyList = new HashSet<String>();
   
+  /**
+   * Constructor.
+   * @param world the world that's binded to this key listener.
+   */
   public Controls(World world) {
     this.world = world;
     for (int i = 0; i < this.world.getPlayers().length; i++) {
@@ -23,7 +36,9 @@ public class Controls implements KeyListener {
   }
 
 
-  //key listeners
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void keyPressed(KeyEvent e) {
     String key = KeyEvent.getKeyText(e.getKeyCode());
@@ -76,11 +91,17 @@ public class Controls implements KeyListener {
     
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void keyTyped(KeyEvent e) {
     //not used
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void keyReleased(KeyEvent e) {
     String key = KeyEvent.getKeyText(e.getKeyCode());

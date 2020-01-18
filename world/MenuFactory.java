@@ -6,22 +6,43 @@ import java.io.*;
 import maps.MapFactory;
 import util.*;
 
+/**
+ * [MenuFactory.java]
+ * Static methods that creates different menus.
+ * 
+ * 2020-01-17
+ * @version 0.0.2
+ * @author Shari Sun
+ */
 public class MenuFactory {
+
+  /**
+   * Get the start menu.
+   * It has a play, instruction, and quit button.
+   * @return Menu, the start menu.
+   * @throws IOException
+   */
   public static Menu getStartMenu() throws IOException {
     Menu menu = new Menu(3, "background/startMenu.png");
     int width = 800;
     menu.setButton(0,
-      GameWindow.width/2-Util.scaleX(width/2), Util.scaleY(550),
+      GameWindow.WIDTH/2-Util.scaleX(width/2), Util.scaleY(550),
       Util.scaleX(width), Util.scaleY(80), "Play");
     menu.setButton(1,
-      GameWindow.width/2-Util.scaleX(width/2), Util.scaleY(700),
+      GameWindow.WIDTH/2-Util.scaleX(width/2), Util.scaleY(700),
       Util.scaleX(width), Util.scaleY(80), "Instruction");
     menu.setButton(2,
-      GameWindow.width/2-Util.scaleX(width/2), Util.scaleY(850),
+      GameWindow.WIDTH/2-Util.scaleX(width/2), Util.scaleY(850),
       Util.scaleX(width), Util.scaleY(80), "Quit");
     return menu;
   }
 
+  /**
+   * Get the game over menu.
+   * It has three buttons, the rematch, main menu, and quit button.
+   * @return Menu, the game over menu.
+   * @throws IOException
+   */
   public static Menu getGameOverMenu() throws IOException {
     Menu menu = new Menu(3, "background/gameOver.jpg");
     menu.setButton(0,
@@ -36,6 +57,12 @@ public class MenuFactory {
     return menu;
   }
 
+  /**
+   * Get the choose map menu.
+   * It has multiple buttons for map selection and a back button.
+   * @return Menu, choose map menu.
+   * @throws IOException
+   */
   public static Menu getChooseMapMenu() throws IOException {
     int numButtons = 5;
     int numRows = 2;
@@ -43,9 +70,11 @@ public class MenuFactory {
     int height = Util.scaleY(300);
     int gapX = Util.scaleX(100);
     int gapY = Util.scaleY(50);
+
+    //some math to calculate offsets for centering the buttons
     int offsetX = (int)
-      (GameWindow.width-Math.ceil(numButtons/(double)numRows)*(width+gapX))/2;
-    int offsetY = (GameWindow.height-numRows*(height+gapY))/2;
+      (GameWindow.WIDTH-Math.ceil(numButtons/(double)numRows)*(width+gapX))/2;
+    int offsetY = (GameWindow.HEIGHT-numRows*(height+gapY))/2;
     
     Menu menu = new Menu(numButtons+1, "background/chooseMapMenu.jpg");
     menu.setButton(0, 
@@ -69,6 +98,12 @@ public class MenuFactory {
     return menu;
   }
 
+  /**
+   * Get the instruction menu.
+   * It simply displays the instructions and has a back button.
+   * @return Menu, the instructions menu.
+   * @throws IOException
+   */
   public static Menu getInstructionMenu() throws IOException {
     Menu menu = new Menu(1, "background/instruction.png");
     menu.setButton(0,

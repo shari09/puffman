@@ -5,7 +5,14 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
-
+/**
+ * [Button.java]
+ * Creates a button.
+ * 
+ * 2020-01-17
+ * @version 0.0.1
+ * @author Shari Sun
+ */
 public class Button {
   private static final Color BLUE = new Color(92, 156, 255);
   private static final Color TAN = new Color(220, 220, 220);
@@ -18,6 +25,15 @@ public class Button {
   private boolean hover;
   private boolean clicked;
 
+  /**
+   * Constructor.
+   * @param x the x position of the button.
+   * @param y the y position of the button.
+   * @param width the width of the button.
+   * @param height the height of the button.
+   * @param text the text displayed on the button,
+   *             also the action of the button.
+   */
   public Button(int x, int y, int width, int height, String text) {
     this.x = x;
     this.y = y;
@@ -95,6 +111,7 @@ public class Button {
     Font font = new Font("Helvetica", Font.PLAIN, this.width/10);
     g2d.setFont(font);
     FontMetrics metrics = g2d.getFontMetrics(font);
+    //centering the text on the button
     int x = this.x+(int)(
       (this.width-metrics.stringWidth(this.text.toUpperCase()))/2);
     int y = this.y+(this.height-metrics.getHeight())/2+metrics.getAscent();

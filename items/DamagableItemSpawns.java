@@ -8,13 +8,13 @@ import util.Hurtbox;
 import util.*;
 
 /**
- * DamagableItemSpawns.java
+ * [DamagableItemSpawns.java]
  * Everyone can get damaged by the item spawns (including the person
  * who spawned/summoned/used the gadget to make these actions).
  * 
- * Jan 17, 2020
- * @author Shari Sun
+ * 2020-01-17
  * @version 0.0.2
+ * @author Shari Sun
  */
 
 public abstract class DamagableItemSpawns {

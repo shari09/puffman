@@ -2,6 +2,14 @@ package maps;
 
 import java.io.IOException;
 
+/**
+ * [MapFactory.java]
+ * The global static class for getting different maps based on String names.
+ * 
+ * 2020-01-17
+ * @version 0.0.1
+ * @author Shari Sun
+ */
 public class MapFactory {
   public static final String ARENA = "Arena";
   public static final String TREE = "Tree";
@@ -9,16 +17,22 @@ public class MapFactory {
   public static final String NIGHT = "Night";
   public static final String BLUE_MAMMOTH = "Blue Mammoth";
 
-  public static Map getMap(String num) throws IOException {
-    if (num.equals(MapFactory.ARENA)) {
+  /**
+   * Gets the requested map.
+   * @param mapName the name of the map.
+   * @return Map, the requested map.
+   * @throws IOException
+   */
+  public static Map getMap(String mapName) throws IOException {
+    if (mapName.equals(MapFactory.ARENA)) {
       return new ArenaMap();
-    } else if (num.equals(MapFactory.TREE)) {
+    } else if (mapName.equals(MapFactory.TREE)) {
       return new TreeMap();
-    } else if (num.equals(MapFactory.MIAMI_DOME)) {
+    } else if (mapName.equals(MapFactory.MIAMI_DOME)) {
       return new MiamiDomeMap();
-    } else if (num.equals(MapFactory.NIGHT)) {
+    } else if (mapName.equals(MapFactory.NIGHT)) {
       return new NightMap();
-    } else if (num.equals(MapFactory.BLUE_MAMMOTH)) {
+    } else if (mapName.equals(MapFactory.BLUE_MAMMOTH)) {
       return new BlueMammothMap();
     }
     return null;
