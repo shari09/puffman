@@ -4,9 +4,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.FileWriter;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -25,7 +25,7 @@ import util.CircleCollidable;
 import util.Collision;
 import util.DamageIndicator;
 import util.RectCollidable;
-import util.*;
+import util.Util;
 import weapons.CloseRangedWeapon;
 
 /**

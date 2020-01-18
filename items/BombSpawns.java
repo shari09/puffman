@@ -1,8 +1,8 @@
 package items;
 
 import characters.Hero;
-import util.TimedTask;
 import util.TimedEventQueue;
+import util.TimedTask;
 import util.Util;
 
 /**

@@ -1,10 +1,10 @@
 package world;
 
 
-import java.io.*;
+import java.io.IOException;
 
 import maps.MapFactory;
-import util.*;
+import util.Util;
 
 /**
  * [MenuFactory.java]

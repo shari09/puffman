@@ -14,3 +14,4 @@ Player2 lost: Arena map
 Player1 lost: Arena map
 Player2 lost: Arena map
 Player1 lost: Arena map
+Player1 lost: Tree map

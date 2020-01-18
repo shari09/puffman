@@ -7,9 +7,10 @@ import javax.swing.JPanel;
 
 import characters.Hero;
 import util.RectCollidable;
+import util.TimedEventQueue;
 import util.TimedTask;
 import util.Util;
-import util.*;
+import util.Zoom;
 import world.World;
 
 /**

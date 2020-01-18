@@ -1,8 +1,9 @@
 package items;
 
 import characters.Hero;
+import util.TimedEventQueue;
 import util.TimedTask;
-import util.*;
+import util.Util;
 
 /**
  * [SpikeSpawns.java]

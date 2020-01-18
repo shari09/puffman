@@ -1,11 +1,13 @@
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import javax.swing.*;
 
-import util.*;
+import javax.swing.JPanel;
+
+import util.TimedEventQueue;
 import world.GameWindow;
-import world.*;
 import world.Menu;
+import world.MenuFactory;
+import world.World;
 
 public class GameLoop {
 

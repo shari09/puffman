@@ -1,12 +1,13 @@
 package world;
 
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.*;
 
 /**
  * [GameWindow.java]

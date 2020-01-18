@@ -1,10 +1,11 @@
 package world;
 
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.swing.JPanel;
-import java.awt.image.*;
 
 import util.Button;
 import util.ButtonListener;
