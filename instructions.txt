@@ -37,23 +37,23 @@ CONTROLS
 
 player 1
 
-a - move left
-d - move right
-s - down drop
-space - jump
+A - move left
+D - move right
+S - down drop
+Space - jump
 
-j - light attack
-k - heavy attack
-h - throw/pick up item
-u - dodge
+G - light attack
+H - heavy attack
+F - throw/pick up item
+T - dodge
 
 
 
 player 2
 
-arrow left/right - move left/right
-arrow up - jump
-arrow down - down drop
+Arrow left/right - move left/right
+Arrow up - jump
+Arrow down - down drop
 
 , - light attack
 . - heavy attack
